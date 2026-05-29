@@ -4,10 +4,12 @@
 
 按 `idea-discovery-workflow` 的 workflow、role contracts、source policy、memory schema 和 report format 执行。若 shell 可用，先运行该 skill 的 `scripts/idea-scout-kit.mjs` 生成查询清单；若本地 evidence store 未初始化，可运行 `scripts/init-store.mjs`。
 
-尽量把关键 signals、ideas、claims、competitors、decisions 和 graph-like edges 追加到本地 evidence store（默认 `${IDEA_MINER_HOME:-$HOME/.idea-miner}`，兼容旧的 `CODEX_IDEA_DISCOVERY_HOME`）。不要写入 token、secret、私有账户信息或不可公开内容。
+必须把关键 signals、ideas、claims、competitors、decisions 和 graph-like edges 追加到本地 evidence store（默认 `${IDEA_MINER_HOME:-$HOME/.idea-miner}`，兼容旧的 `CODEX_IDEA_DISCOVERY_HOME`）。不要写入 token、secret、私有账户信息或不可公开内容。
+
+必须同时保存 handoff-ready run artifacts：完整报告 `runs/<run_id>/report.md`、来源摘要 `runs/<run_id>/source-notes.jsonl`、每个 final/paused idea 的 `runs/<run_id>/ideas/<idea_id>.json` 和 `runs/<run_id>/ideas/<idea_id>.md`、以及 `runs/<run_id>/handoff-index.md`。每个 idea dossier 要包含原始来源链接、来源支持了什么 claim、竞品/替代判断、Red Team 记录、CEO 裁决、MVP 边界、验证计划、停止线和 outreach 候选。以后用户要求 handoff 时，默认应读取这些 artifact，不重新做搜索；只有用户明确要求刷新当前状态时才联网补查。
 
 必须联网或使用可用实时工具核验所有当前性、竞品、市场和来源判断。无法访问某信息源时，明确标注“未覆盖/受限”，不要编造。不要把热闹话题、viral 帖、单个抱怨、单个产品新闻或“AI 能做出来”直接当成机会。
 
 若当前环境提供真实 sub-agent / multi-agent 工具，就实际创建并调度；否则模拟角色并在报告里说明。
 
-最终中文输出，严格使用 `idea-discovery-workflow` 的固定报告格式。完整报告必须作为普通 Markdown 正文输出，放在任何宿主环境控制块之前。若找不到 3 个过线 idea，不得降低标准凑数。
+最终中文输出，严格使用 `idea-discovery-workflow` 的固定报告格式。完整报告必须作为普通 Markdown 正文输出，放在任何宿主环境控制块之前。若找不到 3 个过线 idea，不得降低标准凑数。报告末尾必须写明 artifact 保存路径；如果保存失败，要明确说明失败原因。

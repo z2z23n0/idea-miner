@@ -24,6 +24,8 @@ report format, and local evidence memory format.
 - A Chinese report that can be read as a daily or weekly research memo.
 - Optional local JSONL memory for signals, ideas, competitors, claims,
   decisions, and evidence edges.
+- Handoff-ready idea dossiers so a later one-line handoff request can package
+  the stored context without repeating source discovery.
 
 ## How It Works
 
@@ -37,6 +39,7 @@ prepare_run
   -> ceo_decision
   -> persist_memory
   -> render_report
+  -> persist_run_artifacts
 ```
 
 The default run is cheap and sequential. If the runtime provides real
@@ -46,6 +49,10 @@ it does not, one agent can simulate the roles and label the report accordingly.
 The useful output is the evidence-to-decision chain: where a signal came from,
 which idea it supports, what alternatives already exist, why the idea survived
 or failed review, and what should be validated next.
+
+Recurring runs also save per-idea dossiers. Handoff should be a packaging step:
+read the stored dossier, write a temporary handoff file, and avoid web refreshes
+unless the user explicitly asks for current status.
 
 ## Skills
 
@@ -179,6 +186,15 @@ Creates the local JSONL evidence store.
 node skills/idea-discovery-workflow/scripts/init-store.mjs
 ```
 
+`skills/idea-discovery-workflow/scripts/idea-handoff.mjs`
+
+Resolves a stored idea by name or alias and copies its handoff-ready dossier to
+a temporary handoff file. It does not browse the web.
+
+```bash
+node skills/idea-discovery-workflow/scripts/idea-handoff.mjs "Tool-Call Compatibility"
+```
+
 ## Runtime Data and Privacy
 
 Runtime data lives outside this repository. Set `IDEA_MINER_HOME` to choose a
@@ -199,8 +215,21 @@ claims.jsonl
 competitors.jsonl
 decisions.jsonl
 edges.jsonl
-runs/
+runs/<run_id>/
+  run-manifest.json
+  report.md
+  source-notes.jsonl
+  signal-portfolio.jsonl
+  ideas/<idea_id>.json
+  ideas/<idea_id>.md
+  handoff-index.md
 ```
+
+The top-level JSONL files are indexes. The detailed context for each final or
+resumable paused idea belongs in `runs/<run_id>/ideas/<idea_id>.md`, with source
+links, source-to-claim mapping, competitor reasoning, Red Team records, CEO
+decisions, MVP boundaries, validation plans, stop lines, and outreach
+candidates.
 
 Keep runtime data, automation configs, API keys, edit tokens, private source
 lists, private idea priorities, and outreach targets out of the repository.

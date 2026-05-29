@@ -1,6 +1,6 @@
 ---
 name: idea-discovery-workflow
-description: Use when running or designing recurring product/open-source idea discovery, daily or scheduled idea mining, Signal Portfolio workflows, multi-role Scout/Critic/Competitor/CEO evaluation, evidence-to-decision pipelines, idea backlog memory, or automation prompts for finding product, open-source, CLI, MCP, Skill, agent workflow, and developer-tool ideas. This skill orchestrates discovery and uses ai-founder-playbook for judgment, pressure testing, competitor analysis, and validation plans.
+description: Use when running or designing recurring product/open-source idea discovery, daily or scheduled idea mining, Signal Portfolio workflows, multi-role Scout/Critic/Competitor/CEO evaluation, evidence-to-decision pipelines, idea backlog memory, idea handoffs, handoff-ready idea dossiers, or automation prompts for finding product, open-source, CLI, MCP, Skill, agent workflow, and developer-tool ideas. This skill orchestrates discovery and uses ai-founder-playbook for judgment, pressure testing, competitor analysis, and validation plans.
 ---
 
 # Idea Discovery Workflow
@@ -29,6 +29,8 @@ For a normal run, load only the references needed for the task:
    report.
 5. Read [memory-schema.md](references/memory-schema.md) when persisting or reading
    historical signals, ideas, competitors, decisions, or graph edges.
+6. Read [handoff-mode.md](references/handoff-mode.md) when the user asks to
+   hand off one or more stored ideas.
 
 Use `ai-founder-playbook` during Candidate Draft, Critic Review, Competitor
 Check, CEO Decision, and Validation Plan. Do not duplicate its rubrics here.
@@ -41,6 +43,8 @@ Check, CEO Decision, and Validation Plan. Do not duplicate its rubrics here.
 - `scripts/init-store.mjs` creates the local JSONL evidence store under
   `${IDEA_MINER_HOME:-$HOME/.idea-miner}`. It also honors the legacy
   `CODEX_IDEA_DISCOVERY_HOME` variable for existing installs.
+- `scripts/idea-handoff.mjs <idea name...>` resolves a stored idea dossier and
+  copies it into a temporary handoff file. It does not browse the web.
 
 ## Execution Rules
 
@@ -53,6 +57,9 @@ Check, CEO Decision, and Validation Plan. Do not duplicate its rubrics here.
 - Do not lower the bar to produce exactly 3 ideas. Output the actual number that
   passes.
 - Keep full reports as normal Markdown before any host-specific control block.
+- For every final or resumable paused idea, persist a handoff-ready dossier.
+  Later handoff requests should read the stored dossier first and should not
+  repeat source discovery unless the user explicitly asks for a current refresh.
 
 ## Automation Prompt Boundary
 

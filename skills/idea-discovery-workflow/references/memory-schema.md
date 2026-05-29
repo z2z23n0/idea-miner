@@ -11,13 +11,26 @@ ${IDEA_MINER_HOME:-$HOME/.idea-miner}/
   decisions.jsonl
   edges.jsonl
   runs/<run_id>/
+    run-manifest.json
+    report.md
+    signal-portfolio.jsonl
+    source-notes.jsonl
+    ideas/<idea_id>.json
+    ideas/<idea_id>.md
+    handoff-index.md
 ```
 
 Existing installs can keep using `CODEX_IDEA_DISCOVERY_HOME`; the helper
 scripts still honor it as a fallback.
 
-The storage model is graph-shaped but starts as JSONL. Do not introduce a graph
-database until relationship queries or volume justify it.
+The top-level JSONL files are indexes for search and cross-run memory. They are
+not enough for handoff by themselves. Each run must also save full run artifacts
+under `runs/<run_id>/`, including one handoff-ready dossier per final or paused
+idea that may be resumed.
+
+The storage model is graph-shaped but starts as JSONL plus Markdown artifacts.
+Do not introduce a graph database until relationship queries or volume justify
+it.
 
 ## Record Types
 
@@ -30,8 +43,12 @@ database until relationship queries or volume justify it.
 `ideas.jsonl`
 
 ```json
-{"id":"idea_...","run_id":"...","name":"...","source_type":"...","shape":"CLI|MCP|Skill|OSS|...","target_user":"...","status":"candidate|final|rejected|paused|revived","priority":"P0|P1|P2|null"}
+{"id":"idea_...","run_id":"...","name":"...","aliases":["..."],"source_type":"...","shape":"CLI|MCP|Skill|OSS|...","target_user":"...","status":"candidate|final|rejected|paused|revived","priority":"P0|P1|P2|null","dossier_path":"runs/<run_id>/ideas/<idea_id>.md","detail_path":"runs/<run_id>/ideas/<idea_id>.json"}
 ```
+
+Keep `ideas.jsonl` compact. Put the full human-readable and machine-readable
+idea context into the run artifact paths referenced by `dossier_path` and
+`detail_path`.
 
 `claims.jsonl`
 
@@ -57,13 +74,104 @@ database until relationship queries or volume justify it.
 {"from":"sig_...","to":"idea_...","type":"supports|challenges|inspires|duplicates|revives","run_id":"...","note":"..."}
 ```
 
+`runs/<run_id>/source-notes.jsonl`
+
+```json
+{"id":"src_...","run_id":"...","url":"...","platform":"GitHub","title":"...","access_status":"fetched|summary-only|blocked|not-covered","observed_at":"...","freshness":"...","evidence_type":"issue|comment|docs|product_news|competitor","summary":"...","used_for":["idea_..."],"claims":["..."]}
+```
+
+This file is the source-level cache for later handoffs. It should contain
+summaries and claim mappings, not raw copyrighted articles or private content.
+
+`runs/<run_id>/ideas/<idea_id>.json`
+
+```json
+{
+  "id": "idea_...",
+  "run_id": "...",
+  "name": "...",
+  "aliases": ["..."],
+  "verdict": "advance|validate|narrow|pause|reject",
+  "confidence": "low|medium|high",
+  "source_type": "...",
+  "what_it_is": "...",
+  "usage": {"when": "...", "input": "...", "does": "...", "output": "...", "replaces": "..."},
+  "scale_path": "...",
+  "problem": "...",
+  "target_user": "...",
+  "buyer_or_oss_audience": "...",
+  "sources": ["src_..."],
+  "alternatives": ["..."],
+  "mvp": {"does": ["..."], "does_not_do": ["..."]},
+  "product_forms": ["CLI", "GitHub Action"],
+  "competitors": ["comp_..."],
+  "why_still_worth_doing": "...",
+  "ai_leverage": "...",
+  "red_team": [{"objection": "...", "response": "...", "ceo_ruling": "..."}],
+  "dangerous_assumptions": ["..."],
+  "validation_plan_7_14d": ["..."],
+  "stop_line": "...",
+  "outreach_targets": [{"url":"...","why":"...","angle":"..."}],
+  "next_actions": ["..."]
+}
+```
+
+`runs/<run_id>/ideas/<idea_id>.md`
+
+This Markdown file is the handoff-ready dossier. It must be detailed enough that
+a later handoff request can be answered by reading the dossier and relevant run
+artifacts, without repeating source discovery or competitor searches.
+
+Required sections:
+
+- Handoff purpose and current verdict.
+- What this is and how it is used.
+- Origin in this workflow, including merged/duplicated prior ideas.
+- Source map: original URLs, access status, observed freshness, and what each
+  source supports.
+- Current alternatives and competitor reasoning.
+- Product form, MVP scope, explicit non-goals, and product-scale path.
+- Red Team objections, responses, and CEO rulings.
+- Dangerous assumptions, validation plan, stop line.
+- Outreach candidates and suggested outreach angle.
+- Next-thread first actions.
+
+Do not include generic skill recommendations.
+
+`runs/<run_id>/handoff-index.md`
+
+The index lists every final, paused, rejected, or merged idea and links to its
+dossier. It should also call out aliases, duplicates, and renamed/merged
+directions so one-line handoff requests can resolve the right dossier.
+
 ## When to Persist
 
 - Persist all final ideas, rejected ideas, key signals, competitor findings, CEO
   decisions, and high-confidence claims.
+- Persist the full report as `runs/<run_id>/report.md`.
+- Persist a handoff-ready dossier for every final idea and every paused idea
+  that may plausibly be resumed.
+- Persist a `handoff-index.md` before the run completes. If persistence fails,
+  say so in the user-facing report instead of silently relying on chat history.
 - Do not persist raw secrets, private user data, edit tokens, or unavailable
   page content.
 - Mark links as inaccessible instead of fabricating summaries.
+
+## Handoff Reads
+
+When the user asks for a handoff of an idea from a prior run:
+
+1. Search `ideas.jsonl` and `runs/*/handoff-index.md` for the idea name and
+   known aliases.
+2. Read the matching `runs/<run_id>/ideas/<idea_id>.md` dossier and adjacent
+   `report.md`, `source-notes.jsonl`, and JSON detail only if needed.
+3. Do not repeat web searches or competitor scans by default. The handoff should
+   be a packaging task, not a new research run.
+4. Only refresh current facts when the user explicitly asks for latest/current
+   status, or when the handoff will be used for immediate outreach and stale
+   claims could mislead. Label refreshed facts separately from stored context.
+5. If no dossier exists, reconstruct from available JSONL/report/chat artifacts
+   and mark the output as `reconstructed; source detail may be incomplete`.
 
 ## When to Upgrade to a Graph Database
 

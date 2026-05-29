@@ -74,3 +74,15 @@ Only high-confidence actionable suggestions. If none, say so.
 # Source Appendix
 
 Deduplicate links and group by source.
+
+# Persistence Note
+
+End each scheduled or recurring run with a short note stating where the run
+artifacts were saved:
+
+- `report.md`
+- `handoff-index.md`
+- per-idea dossiers under `ideas/<idea_id>.md`
+
+If persistence failed or the environment was read-only, state that explicitly.
+Do not leave the only detailed copy inside the chat transcript.

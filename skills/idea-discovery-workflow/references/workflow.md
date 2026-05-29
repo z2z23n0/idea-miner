@@ -12,6 +12,7 @@ prepare_run
   -> ceo_decision
   -> persist_memory
   -> render_report
+  -> persist_run_artifacts
 ```
 
 ## Nodes
@@ -27,6 +28,11 @@ prepare_run
 | ceo_decision | CEO | revised candidates, objections, competitors | final decisions, priorities, product-scale judgment, and rationale |
 | persist_memory | Orchestrator | signals, ideas, claims, decisions | JSONL records and graph-like edges |
 | render_report | Orchestrator | run artifacts | final Chinese Markdown report |
+| persist_run_artifacts | Orchestrator | report, source notes, final/paused ideas | `runs/<run_id>/report.md`, `source-notes.jsonl`, per-idea JSON, per-idea Markdown dossiers, `handoff-index.md` |
+
+`persist_run_artifacts` is required, not best effort. If the runtime cannot
+write files, the final report must explicitly say that handoff artifacts were
+not saved.
 
 ## Iteration Rules
 
@@ -60,3 +66,18 @@ Use debate only when:
 
 Debate output must be summarized into claims, counterclaims, evidence, and CEO
 decision. Do not paste long transcripts unless explicitly requested.
+
+## Handoff-Ready Artifact Rule
+
+Every final or paused idea must be saved as a standalone dossier before the run
+is considered complete. The dossier should contain enough context for a future
+agent to continue the idea without browsing again:
+
+- original signal links and source summaries;
+- what the idea is, how it is used, what it replaces, and product scale;
+- competitor and alternative reasoning;
+- Red Team objections and CEO rulings;
+- dangerous assumptions, validation plan, stop line, and outreach candidates.
+
+Future handoff requests should read these dossiers first and should not repeat
+source discovery unless the user asks for a current refresh.
