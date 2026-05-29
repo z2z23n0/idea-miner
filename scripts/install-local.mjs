@@ -1,0 +1,111 @@
+#!/usr/bin/env node
+
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const args = new Set(process.argv.slice(2));
+const dryRun = args.has('--dry-run');
+const force = args.has('--force');
+const link = args.has('--link');
+
+function argValue(name, fallback) {
+  const prefix = `${name}=`;
+  const found = process.argv.slice(2).find((arg) => arg.startsWith(prefix));
+  return found ? found.slice(prefix.length) : fallback;
+}
+
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const home = os.homedir();
+const skillsDir = path.resolve(argValue('--skills-dir', path.join(home, '.codex', 'skills')));
+const dataDir = path.resolve(
+  argValue(
+    '--data-dir',
+    process.env.CODEX_IDEA_DISCOVERY_HOME || path.join(home, '.codex', 'data', 'idea-discovery'),
+  ),
+);
+
+const skillNames = ['ai-founder-playbook', 'idea-discovery-workflow'];
+const jsonlFiles = [
+  'signals.jsonl',
+  'ideas.jsonl',
+  'claims.jsonl',
+  'competitors.jsonl',
+  'decisions.jsonl',
+  'edges.jsonl',
+];
+
+function log(action, target) {
+  console.log(`${dryRun ? '[dry-run] ' : ''}${action}: ${target}`);
+}
+
+function ensureDir(dir) {
+  if (dryRun) {
+    log('mkdir -p', dir);
+    return;
+  }
+  fs.mkdirSync(dir, { recursive: true });
+}
+
+function installSkill(name) {
+  const src = path.join(repoRoot, 'skills', name);
+  const dest = path.join(skillsDir, name);
+
+  if (!fs.existsSync(src)) {
+    throw new Error(`Missing skill source: ${src}`);
+  }
+
+  ensureDir(skillsDir);
+
+  if (fs.existsSync(dest)) {
+    if (!force) {
+      log('skip existing skill', dest);
+      return;
+    }
+    log('remove existing skill', dest);
+    if (!dryRun) fs.rmSync(dest, { recursive: true, force: true });
+  }
+
+  if (link) {
+    log('symlink skill', `${dest} -> ${src}`);
+    if (!dryRun) fs.symlinkSync(src, dest, 'dir');
+    return;
+  }
+
+  log('copy skill', `${src} -> ${dest}`);
+  if (!dryRun) fs.cpSync(src, dest, { recursive: true });
+}
+
+function initStore() {
+  ensureDir(dataDir);
+  ensureDir(path.join(dataDir, 'runs'));
+
+  for (const file of jsonlFiles) {
+    const target = path.join(dataDir, file);
+    if (fs.existsSync(target)) {
+      log('keep existing store file', target);
+      continue;
+    }
+    log('create store file', target);
+    if (!dryRun) fs.writeFileSync(target, '', { mode: 0o600 });
+  }
+}
+
+for (const name of skillNames) installSkill(name);
+initStore();
+
+console.log('');
+console.log('Installed idea-miner skills.');
+console.log('');
+console.log('Next steps:');
+console.log(`1. Create a Codex automation and paste: ${path.join(repoRoot, 'prompts', 'codex-automation-default.md')}`);
+console.log(`2. Optionally append: ${path.join(repoRoot, 'prompts', 'customization-block.md')}`);
+console.log('3. Set schedule in Codex automation UI, not inside the prompt.');
+console.log('');
+console.log('Options:');
+console.log('  --dry-run           Preview changes');
+console.log('  --force             Replace existing local skill copies');
+console.log('  --link              Symlink skills instead of copying');
+console.log('  --skills-dir=PATH   Override Codex skills directory');
+console.log('  --data-dir=PATH     Override idea-discovery data directory');

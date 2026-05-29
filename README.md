@@ -15,9 +15,59 @@ The skills are designed to work together: `idea-discovery-workflow` runs the
 discovery pipeline, and `ai-founder-playbook` supplies the founder/open-source
 judgment.
 
+## Quick Start
+
+Clone the repo and install the skills locally:
+
+```bash
+git clone git@github.com:z2z23n0/idea-miner.git
+cd idea-miner
+node scripts/install-local.mjs
+```
+
+This copies both skills into `~/.codex/skills/` and initializes the local
+evidence store under:
+
+```text
+~/.codex/data/idea-discovery/
+```
+
+To preview actions without changing files:
+
+```bash
+node scripts/install-local.mjs --dry-run
+```
+
+To overwrite existing local copies:
+
+```bash
+node scripts/install-local.mjs --force
+```
+
+## Codex Automation
+
+Create a Codex automation and paste the default prompt from:
+
+```text
+prompts/codex-automation-default.md
+```
+
+Set the schedule in Codex itself. Do not put the schedule inside the prompt.
+
+Optional customization can be appended from:
+
+```text
+prompts/customization-block.md
+```
+
 ## Layout
 
 ```text
+prompts/
+  codex-automation-default.md
+  customization-block.md
+scripts/
+  install-local.mjs
 skills/
   ai-founder-playbook/
   idea-discovery-workflow/
