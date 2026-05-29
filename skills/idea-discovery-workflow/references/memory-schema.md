@@ -3,7 +3,7 @@
 Store run artifacts outside the skill directory:
 
 ```text
-${CODEX_IDEA_DISCOVERY_HOME:-$HOME/.codex/data/idea-discovery}/
+${IDEA_MINER_HOME:-$HOME/.idea-miner}/
   signals.jsonl
   ideas.jsonl
   claims.jsonl
@@ -12,6 +12,9 @@ ${CODEX_IDEA_DISCOVERY_HOME:-$HOME/.codex/data/idea-discovery}/
   edges.jsonl
   runs/<run_id>/
 ```
+
+Existing installs can keep using `CODEX_IDEA_DISCOVERY_HOME`; the helper
+scripts still honor it as a fallback.
 
 The storage model is graph-shaped but starts as JSONL. Do not introduce a graph
 database until relationship queries or volume justify it.

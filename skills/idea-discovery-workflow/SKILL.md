@@ -39,7 +39,8 @@ Check, CEO Decision, and Validation Plan. Do not duplicate its rubrics here.
   checklists, Signal Portfolio templates, candidate scoring tables, and Red Team
   questions. It does not fetch the web; use it to plan and normalize searches.
 - `scripts/init-store.mjs` creates the local JSONL evidence store under
-  `${CODEX_IDEA_DISCOVERY_HOME:-$HOME/.codex/data/idea-discovery}`.
+  `${IDEA_MINER_HOME:-$HOME/.idea-miner}`. It also honors the legacy
+  `CODEX_IDEA_DISCOVERY_HOME` variable for existing installs.
 
 ## Execution Rules
 
@@ -51,7 +52,7 @@ Check, CEO Decision, and Validation Plan. Do not duplicate its rubrics here.
 - Use expensive debate only for high-disagreement or high-value candidates.
 - Do not lower the bar to produce exactly 3 ideas. Output the actual number that
   passes.
-- Keep full reports as normal Markdown before heartbeat XML.
+- Keep full reports as normal Markdown before any host-specific control block.
 
 ## Automation Prompt Boundary
 

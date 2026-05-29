@@ -4,8 +4,9 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-const root = process.env.CODEX_IDEA_DISCOVERY_HOME
-  || path.join(os.homedir(), '.codex', 'data', 'idea-discovery');
+const root = process.env.IDEA_MINER_HOME
+  || process.env.CODEX_IDEA_DISCOVERY_HOME
+  || path.join(os.homedir(), '.idea-miner');
 
 const files = [
   'signals.jsonl',

@@ -48,7 +48,8 @@ Use parallelism where it reduces wall-clock time without multiplying noise:
 
 - Good: source modules in parallel, competitor searches in parallel, independent
   critic perspectives in parallel.
-- Bad: many unconstrained brainstorming agents.
+- Weak: parallel brainstorming without source modules, hypotheses, or review
+  gates.
 
 Use debate only when:
 

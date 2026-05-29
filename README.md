@@ -1,78 +1,31 @@
 # idea-miner
 
-Codex skills for evidence-based product and open-source idea discovery.
+Automatic startup and open-source idea mining for agents.
 
-`idea-miner` is not an "automatic startup idea generator." It is a repeatable
-research workflow for turning messy external signals into a small number of
-ideas that can be pressure-tested, compared against competitors, and validated
-in 7-14 days.
+`idea-miner` helps an agent turn fresh public signals into startup and
+open-source project candidates. It scans places like Hacker News, Reddit,
+GitHub issues, Product Hunt, release notes, developer forums, review sites, and
+product news, then organizes the evidence into a small set of ideas with
+competitor context, risk notes, and 7-14 day validation plans.
 
-It is built for people who want to mine opportunities from places like Hacker
-News, Reddit, GitHub issues, Product Hunt, release notes, developer forums,
-review sites, and product/platform news without lowering the bar to generic
-brainstorming.
+The repo contains two agent skills plus a few helper scripts. The skills define
+the research workflow, source policy, role contracts, pressure-test rubrics,
+report format, and local evidence memory format.
 
-## What It Does
+## What It Produces
 
-- Builds a **Signal Portfolio** from pain points, product news, competitor
-  gaps, open-source ecosystem signals, reviews, and short-term trend windows.
-- Drafts candidate ideas across multiple shapes: commercial products,
-  open-source projects, CLI tools, MCP servers, Codex/ChatGPT Skills, browser
-  extensions, SDKs, GitHub Actions, templates, scripts, and agent workflows.
-- Separates **commercial product success** from **open-source project success**:
-  revenue/budget/buyer path vs installs, stars, forks, issues, PRs, tutorials,
-  ecosystem references, and real workflow dependency.
-- Uses role-based review: Signal Scout, Idea Drafter, Red Team, Competitor
-  Investigator, CEO/Orchestrator, and Skill Optimizer.
-- Treats competitors carefully: the existence of a competitor is not automatic
-  rejection; adoption, satisfaction, price, openness, UX, distribution, and
-  "good enough" substitutes all matter.
-- Produces a fixed Chinese report with final ideas, rejected candidates,
-  conflicts, CEO decisions, source appendix, and validation plans.
-- Optionally stores graph-shaped evidence locally as JSONL so future runs can
-  remember signals, ideas, competitors, claims, and decisions.
+- A **Signal Portfolio** grouped by pain points, product news, competitor gaps,
+  open-source ecosystem changes, reviews, and short-term trend windows.
+- Candidate startup and open-source ideas with target users, usage moments,
+  expected inputs and outputs, MVP shape, AI leverage, and validation plans.
+- Competitor and substitute checks for serious candidates.
+- Red Team objections, dangerous assumptions, and CEO-style decisions:
+  advance, narrow, pause, or reject.
+- A Chinese report that can be read as a daily or weekly research memo.
+- Optional local JSONL memory for signals, ideas, competitors, claims,
+  decisions, and evidence edges.
 
-## Architecture
-
-This repo contains two skills that are meant to work together.
-
-| Skill | Role |
-|---|---|
-| `idea-discovery-workflow` | Orchestration layer: workflow DAG, role contracts, source policy, Signal Portfolio, evidence memory, and report format |
-| `ai-founder-playbook` | Judgment layer: idea pressure testing, competitor analysis, commercial/open-source split, validation plans, launch/distribution support |
-
-The split is intentional:
-
-- `idea-discovery-workflow` answers: "How do we run the daily research process?"
-- `ai-founder-playbook` answers: "Is this idea actually worth validating?"
-
-## Implementation Model
-
-The system is intentionally simple:
-
-- **Skills hold the reusable method.** The two `SKILL.md` files and their
-  references define the process, roles, rubrics, source policy, output format,
-  and pressure-test rules.
-- **The automation prompt stays thin.** A Codex automation should say what kind
-  of recurring run to perform, what topics or exclusions to prefer, and which
-  skills to use. It should not duplicate the full workflow.
-- **Helper scripts provide scaffolding, not magic.** They initialize local
-  storage and generate search/query templates. They do not replace real web
-  verification or judgment.
-- **Runtime memory is external.** Signals, ideas, competitors, claims,
-  decisions, and edges live in local JSONL files outside the repo. This keeps
-  reusable methodology separate from private research history.
-- **The workflow can be simulated or agentic.** If Codex has real sub-agent or
-  workflow tooling, the roles can be dispatched. If not, the same role contract
-  is executed in one run and clearly labeled as simulated.
-
-In practice, `idea-miner` behaves like a lightweight research operating system:
-Codex gathers current evidence, normalizes it into a Signal Portfolio, drafts
-ideas, attacks them, checks competitors, records decisions, and renders a
-stable report. The important part is not "more agents"; it is preserving the
-evidence-to-decision chain so the output is auditable instead of vibes.
-
-## How a Run Works
+## How It Works
 
 ```text
 prepare_run
@@ -86,66 +39,58 @@ prepare_run
   -> render_report
 ```
 
-The workflow is cheap by default. It should use real sub-agents or multi-agent
-tools only when the environment provides them and the candidate is worth the
-extra cost. Otherwise it simulates the roles in one run and says so in the
-report.
+The default run is cheap and sequential. If the runtime provides real
+sub-agent or multi-agent tools, the same role contracts can be dispatched. If
+it does not, one agent can simulate the roles and label the report accordingly.
 
-Parallelism is useful for independent source modules and critic perspectives.
-It is not useful for unconstrained brainstorming by many agents.
+The useful output is the evidence-to-decision chain: where a signal came from,
+which idea it supports, what alternatives already exist, why the idea survived
+or failed review, and what should be validated next.
+
+## Skills
+
+| Skill | Role |
+|---|---|
+| `idea-discovery-workflow` | Runs the research workflow: source plan, roles, Signal Portfolio, evidence memory, and report format |
+| `ai-founder-playbook` | Judges the ideas: pressure tests, competitor reasoning, commercial/open-source split, validation plans, and launch support |
+
+The split keeps orchestration and judgment separate. A scheduled run can use
+`idea-discovery-workflow` to gather and normalize evidence, then call on
+`ai-founder-playbook` when ideas need pressure testing, competitor checks, or a
+validation plan.
 
 ## Signal Sources
 
-The workflow does not only search for explicit complaints. It combines several
-signal buckets:
-
 | Bucket | Examples |
 |---|---|
-| Pain / complaints | Reddit/HN threads, GitHub issues, low reviews, workarounds, "I wish there was..." |
-| Product / platform news | official blogs, release notes, changelogs, Show HN, Product Hunt, new agent/devtool features |
-| Competitor gaps | closed source, no self-hosting, expensive pricing, poor docs, complex setup, slow issues |
-| Open-source ecosystem | GitHub topics/trending/releases, stars/forks, PRs, tutorials, dependencies |
-| Trend window | repeated signals across multiple communities in the last 7-30 days |
+| Pain / complaints | Reddit and HN threads, GitHub issues, low reviews, workarounds, "I wish there was..." |
+| Product / platform news | Official blogs, release notes, changelogs, Show HN, Product Hunt, new agent/devtool features |
+| Competitor gaps | Closed source, no self-hosting, expensive pricing, poor docs, complex setup, slow issue response |
+| Open-source ecosystem | GitHub topics, trending projects, releases, stars/forks, PRs, tutorials, dependencies |
+| Trend windows | Repeated signals across multiple communities in the last 7-30 days |
 | Reviews / evaluations | G2, Capterra, Chrome Web Store, App Store, Product Hunt comments, blog/video reviews |
 
-The goal is not to chase hype. A single viral post or product launch is only a
-trigger. Final ideas still need evidence, competitor checks, Red Team review,
-and a falsifiable validation plan.
-
-## Output
+## Report Format
 
 The default report includes:
 
-- Today's verdict
-- Covered and uncovered sources
-- Signal Portfolio
-- Candidate pool and iteration history
-- Final ideas, each with the same sections:
-  - what the idea actually is
-  - when and how the user would use it
-  - expected inputs and outputs
-  - product scale and possible evolution path
-  - problem
-  - target user / buyer / open-source audience
-  - sources
-  - current alternatives
-  - MVP / small-tool workflow
-  - product shape
-  - competitor table
-  - why it is still worth doing or should be narrowed
-  - AI leverage
-  - Red Team objections
-  - dangerous assumptions
-  - 7-14 day validation plan
-  - priority
-- Rejected or paused candidates
-- Role conflicts and CEO decisions
-- Skill Optimizer observations
-- Source appendix
+- Today's verdict.
+- Covered and uncovered sources.
+- Signal Portfolio.
+- Candidate pool and iteration history.
+- Final ideas with problem, target user, sources, current alternatives, MVP
+  shape, competitor table, AI leverage, objections, assumptions, priority, and
+  7-14 day validation plan.
+- Rejected or paused candidates.
+- Role conflicts and CEO decisions.
+- Source appendix.
 
 ## Quick Start
 
-Clone the repo and install the skills locally:
+Install the skills into an agent-readable skills directory and initialize the
+local evidence store.
+
+For Codex:
 
 ```bash
 git clone git@github.com:z2z23n0/idea-miner.git
@@ -153,11 +98,12 @@ cd idea-miner
 node scripts/install-local.mjs
 ```
 
-This copies both skills into `~/.codex/skills/` and initializes the local
-evidence store under:
+For another agent runtime:
 
-```text
-~/.codex/data/idea-discovery/
+```bash
+node scripts/install-local.mjs \
+  --skills-dir=/path/to/skills \
+  --data-dir=/path/to/idea-miner-data
 ```
 
 Preview actions without changing files:
@@ -178,15 +124,13 @@ Symlink instead of copying, useful while editing the repo:
 node scripts/install-local.mjs --link --force
 ```
 
-## Codex Automation
+## Scheduled Runs
 
-Create a Codex automation and paste the default prompt from:
+Use `prompts/codex-automation-default.md` as a ready-made scheduled-run prompt
+for Codex, or adapt the same instructions for another agent runtime.
 
-```text
-prompts/codex-automation-default.md
-```
-
-Set the schedule in Codex itself. Do not put the schedule inside the prompt.
+The schedule belongs to the host environment. Keep the prompt focused on the
+run objective, source preferences, exclusions, and output expectations.
 
 Optional customization can be appended from:
 
@@ -207,8 +151,8 @@ Customization examples:
 
 `scripts/install-local.mjs`
 
-Installs both skills into a Codex skills directory and initializes local runtime
-data.
+Installs both skills into a target skills directory and initializes local
+runtime data.
 
 ```bash
 node scripts/install-local.mjs --dry-run
@@ -220,8 +164,8 @@ node scripts/install-local.mjs --skills-dir=/path/to/skills --data-dir=/path/to/
 `skills/idea-discovery-workflow/scripts/idea-scout-kit.mjs`
 
 Generates a query pack, source-module checklist, Signal Portfolio template,
-candidate scoring table, and Red Team questions. It does not browse the web;
-it creates a structured search plan.
+candidate scoring table, and Red Team questions. It creates a structured
+search plan; it does not browse the web.
 
 ```bash
 node skills/idea-discovery-workflow/scripts/idea-scout-kit.mjs "AI coding agents" "MCP"
@@ -237,12 +181,13 @@ node skills/idea-discovery-workflow/scripts/init-store.mjs
 
 ## Runtime Data and Privacy
 
-Runtime data is intentionally not stored in this repository. Idea signals,
-decisions, backlog items, and outreach targets should live outside the repo,
-for example under:
+Runtime data lives outside this repository. Set `IDEA_MINER_HOME` to choose a
+store location. The scripts also honor the legacy `CODEX_IDEA_DISCOVERY_HOME`
+variable for existing installs. If neither variable is set, the default store
+is:
 
 ```text
-~/.codex/data/idea-discovery/
+~/.idea-miner/
 ```
 
 The store is graph-shaped but starts as JSONL:
@@ -257,24 +202,10 @@ edges.jsonl
 runs/
 ```
 
-Do not commit runtime data, automation configs, API keys, edit tokens, private
-source lists, private idea priorities, or outreach targets.
+Keep runtime data, automation configs, API keys, edit tokens, private source
+lists, private idea priorities, and outreach targets out of the repository.
 
-## When to Use It
-
-Use it when you want:
-
-- recurring product/open-source idea discovery;
-- a daily or weekly idea research automation;
-- structured competitor and substitute checks;
-- multi-role debate around high-uncertainty ideas;
-- a local evidence trail for why an idea was advanced, narrowed, paused, or
-  rejected.
-
-Do not use it when you only need a quick one-off brainstorm, a generic trend
-summary, or a simple list of startup ideas without verification.
-
-## Layout
+## Repository Layout
 
 ```text
 prompts/
@@ -290,5 +221,5 @@ skills/
 ## Notes
 
 This repo stores reusable skill instructions, workflow references, and helper
-scripts. It should not contain private automation configuration, historical
-idea runs, edit tokens, API keys, or personal signal/backlog data.
+scripts. Private automation configuration, historical idea runs, edit tokens,
+API keys, and personal signal/backlog data belong in the local runtime store.

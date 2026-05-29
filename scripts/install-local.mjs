@@ -22,7 +22,9 @@ const skillsDir = path.resolve(argValue('--skills-dir', path.join(home, '.codex'
 const dataDir = path.resolve(
   argValue(
     '--data-dir',
-    process.env.CODEX_IDEA_DISCOVERY_HOME || path.join(home, '.codex', 'data', 'idea-discovery'),
+    process.env.IDEA_MINER_HOME
+      || process.env.CODEX_IDEA_DISCOVERY_HOME
+      || path.join(home, '.idea-miner'),
   ),
 );
 
@@ -99,13 +101,13 @@ console.log('');
 console.log('Installed idea-miner skills.');
 console.log('');
 console.log('Next steps:');
-console.log(`1. Create a Codex automation and paste: ${path.join(repoRoot, 'prompts', 'codex-automation-default.md')}`);
+console.log(`1. For scheduled runs, use this prompt: ${path.join(repoRoot, 'prompts', 'codex-automation-default.md')}`);
 console.log(`2. Optionally append: ${path.join(repoRoot, 'prompts', 'customization-block.md')}`);
-console.log('3. Set schedule in Codex automation UI, not inside the prompt.');
+console.log('3. Set the schedule in the host automation UI, not inside the prompt.');
 console.log('');
 console.log('Options:');
 console.log('  --dry-run           Preview changes');
 console.log('  --force             Replace existing local skill copies');
 console.log('  --link              Symlink skills instead of copying');
-console.log('  --skills-dir=PATH   Override Codex skills directory');
-console.log('  --data-dir=PATH     Override idea-discovery data directory');
+console.log('  --skills-dir=PATH   Override target skills directory');
+console.log('  --data-dir=PATH     Override local evidence store directory');

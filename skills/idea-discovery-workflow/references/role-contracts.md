@@ -11,7 +11,7 @@ run and say so in the report.
 - Forces every final idea to be understandable as an actual product, tool,
   open-source project, SaaS, platform module, or workflow, including how it is
   used and what product scale it currently deserves.
-- Ensures the report is normal Markdown before heartbeat XML.
+- Ensures the report is normal Markdown before any host-specific control block.
 
 ## Signal Scout
 
@@ -46,9 +46,8 @@ run and say so in the report.
 
 - Searches direct competitors, indirect substitutes, OSS, SaaS, browser
   extensions, CLIs, templates, internal manual workflows, and platform features.
-- Competitor existence is not automatic rejection. Judge scope, adoption,
-  satisfaction, price/open-source gap, UX, distribution, and whether the
-  substitute is good enough.
+- Evaluates competitor scope, adoption, satisfaction, price/open-source gap,
+  UX, distribution, and whether the substitute is good enough.
 
 ## Skill Optimizer
 
