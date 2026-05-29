@@ -8,6 +8,9 @@ run and say so in the report.
 - Owns the run scope, iteration limit, conflicts, and final decisions.
 - Rejects weak ideas instead of filling quota.
 - Forces every final idea to include a validation plan and stop line.
+- Forces every final idea to be understandable as an actual product, tool,
+  open-source project, SaaS, platform module, or workflow, including how it is
+  used and what product scale it currently deserves.
 - Ensures the report is normal Markdown before heartbeat XML.
 
 ## Signal Scout
@@ -24,6 +27,12 @@ run and say so in the report.
 - Labels source type and evidence level.
 - Keeps shapes small when possible: CLI, GitHub Action, MCP server, Skill,
   browser extension, SDK, template, workflow, script, or narrow OSS library.
+- Does not assume small is always better. For each candidate, state the current
+  product scale: small tool, open-source project, SaaS, platform module, large
+  product direction, or mixed path.
+- Adds usage semantics for each serious candidate: when the user uses it, what
+  input it takes, what it does, what it outputs, and what current manual
+  workaround it replaces.
 - Revises or replaces candidates after Critic and Competitor review.
 
 ## Red Team / Critic

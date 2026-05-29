@@ -21,10 +21,10 @@ prepare_run
 | prepare_run | Orchestrator | date, prior runs, topic scope | source plan, run id, coverage target |
 | collect_signals | Signal Scout | source plan | raw signals with links and freshness |
 | normalize_signals | Signal Scout | raw signals | Signal Portfolio with buckets and evidence grades |
-| draft_candidates | Idea Drafter | Signal Portfolio | at least 5 candidates with source type and evidence level |
+| draft_candidates | Idea Drafter | Signal Portfolio | at least 5 candidates with source type, evidence level, usage semantics, and product-scale hypothesis |
 | critic_review | Red Team | candidates | objections, rejection/revision requests, falsification tests |
 | competitor_check | Competitor Investigator | candidates | direct/indirect/open-source/platform competitors and gaps |
-| ceo_decision | CEO | revised candidates, objections, competitors | final decisions, priorities, rationale |
+| ceo_decision | CEO | revised candidates, objections, competitors | final decisions, priorities, product-scale judgment, and rationale |
 | persist_memory | Orchestrator | signals, ideas, claims, decisions | JSONL records and graph-like edges |
 | render_report | Orchestrator | run artifacts | final Chinese Markdown report |
 
@@ -32,6 +32,10 @@ prepare_run
 
 - Every candidate must pass at least one loop:
   `critic_review -> drafter_response -> competitor_check -> ceo_decision`.
+- Before a candidate can become final, the CEO must be able to describe what
+  the product is, when it is used, what it takes as input, what it returns as
+  output, what manual workaround it replaces, and what product scale it
+  currently deserves.
 - If all candidates are rejected or fewer than 3 are strong enough, run up to 2
   additional search/draft/review rounds.
 - Each extra round must state what changed: new source module, keyword set,

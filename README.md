@@ -121,6 +121,10 @@ The default report includes:
 - Signal Portfolio
 - Candidate pool and iteration history
 - Final ideas, each with the same sections:
+  - what the idea actually is
+  - when and how the user would use it
+  - expected inputs and outputs
+  - product scale and possible evolution path
   - problem
   - target user / buyer / open-source audience
   - sources
