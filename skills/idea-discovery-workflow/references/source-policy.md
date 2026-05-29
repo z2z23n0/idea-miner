@@ -12,7 +12,7 @@ allows it.
 | Product / platform news | official blogs, release notes, changelogs, Show HN, Product Hunt, new model/agent/devtool features | cross-platform replicas, compatibility tools, templates, migration helpers |
 | Competitor gaps | closed source, expensive, no self-hosting, complex install, poor docs, slow issues, enterprise-heavy positioning | developer-first OSS, CLI-first tools, repair layers |
 | Open-source ecosystem | GitHub topics/trending/releases, stars/forks, recent commits, issues/PRs, tutorials, downstream dependencies | maintainership takeovers, plugins, adapters, test/conformance suites |
-| Trend window | repeated signals across communities within 7-30 days | timing judgment, ICP refinement, outreach list |
+| Trend window | repeated signals across communities within 7-30 days | timing judgment, ICP refinement, shortest evidence path |
 | Reviews / evaluations | G2, Capterra, Chrome Web Store, App Store, Product Hunt comments, blog/video reviews | UX gaps, price gaps, missing workflows |
 
 ## Source Modules
@@ -42,7 +42,7 @@ Label every candidate:
 - Original hypothesis
 
 Original, analogy, news-triggered, and replica ideas require stricter Red Team
-review and a concrete 7-14 day falsification plan.
+review and a concrete shortest evidence path that can falsify the opportunity.
 
 ## Query Planning
 

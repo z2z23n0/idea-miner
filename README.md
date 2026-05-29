@@ -6,7 +6,7 @@ Automatic startup and open-source idea mining for agents.
 open-source project candidates. It scans places like Hacker News, Reddit,
 GitHub issues, Product Hunt, release notes, developer forums, review sites, and
 product news, then organizes the evidence into a small set of ideas with
-competitor context, risk notes, and 7-14 day validation plans.
+competitor context, risk notes, shortest evidence paths, and stop lines.
 
 The repo contains two agent skills plus a few helper scripts. The skills define
 the research workflow, source policy, role contracts, pressure-test rubrics,
@@ -17,7 +17,8 @@ report format, and local evidence memory format.
 - A **Signal Portfolio** grouped by pain points, product news, competitor gaps,
   open-source ecosystem changes, reviews, and short-term trend windows.
 - Candidate startup and open-source ideas with target users, usage moments,
-  expected inputs and outputs, MVP shape, AI leverage, and validation plans.
+  expected inputs and outputs, MVP shape, AI leverage, and shortest evidence
+  paths.
 - Competitor and substitute checks for serious candidates.
 - Red Team objections, dangerous assumptions, and CEO-style decisions:
   advance, narrow, pause, or reject.
@@ -34,21 +35,27 @@ prepare_run
   -> collect_signals
   -> normalize_signals
   -> draft_candidates
+  -> hard_gate
   -> critic_review
   -> competitor_check
   -> ceo_decision
+  -> replenish_if_underfilled
   -> persist_memory
   -> render_report
   -> persist_run_artifacts
 ```
 
-The default run is cheap and sequential. If the runtime provides real
-sub-agent or multi-agent tools, the same role contracts can be dispatched. If
-it does not, one agent can simulate the roles and label the report accordingly.
+The default run is rigorous: weak candidates are killed before long write-ups,
+and fewer than three passing ideas triggers replenish rounds with new sources,
+keywords, ICPs, product shapes, or competitor categories. If the runtime
+provides real sub-agent or multi-agent tools, the same role contracts can be
+dispatched. If it does not, one agent can simulate the roles and label the
+report accordingly.
 
 The useful output is the evidence-to-decision chain: where a signal came from,
 which idea it supports, what alternatives already exist, why the idea survived
-or failed review, and what should be validated next.
+or failed review, and what shortest evidence path would actually change the
+decision.
 
 Recurring runs also save per-idea dossiers. Handoff should be a packaging step:
 read the stored dossier, write a temporary handoff file, and avoid web refreshes
@@ -59,12 +66,12 @@ unless the user explicitly asks for current status.
 | Skill | Role |
 |---|---|
 | `idea-discovery-workflow` | Runs the research workflow: source plan, roles, Signal Portfolio, evidence memory, and report format |
-| `ai-founder-playbook` | Judges the ideas: pressure tests, competitor reasoning, commercial/open-source split, validation plans, and launch support |
+| `ai-founder-playbook` | Judges the ideas: pressure tests, competitor reasoning, commercial/open-source split, shortest evidence paths, and launch support |
 
 The split keeps orchestration and judgment separate. A scheduled run can use
 `idea-discovery-workflow` to gather and normalize evidence, then call on
 `ai-founder-playbook` when ideas need pressure testing, competitor checks, or a
-validation plan.
+decision-changing next action.
 
 ## Signal Sources
 
@@ -87,7 +94,7 @@ The default report includes:
 - Candidate pool and iteration history.
 - Final ideas with problem, target user, sources, current alternatives, MVP
   shape, competitor table, AI leverage, objections, assumptions, priority, and
-  7-14 day validation plan.
+  shortest evidence path.
 - Rejected or paused candidates.
 - Role conflicts and CEO decisions.
 - Source appendix.
@@ -228,11 +235,11 @@ runs/<run_id>/
 The top-level JSONL files are indexes. The detailed context for each final or
 resumable paused idea belongs in `runs/<run_id>/ideas/<idea_id>.md`, with source
 links, source-to-claim mapping, competitor reasoning, Red Team records, CEO
-decisions, MVP boundaries, validation plans, stop lines, and outreach
-candidates.
+decisions, MVP boundaries, shortest evidence paths, and stop lines.
 
 Keep runtime data, automation configs, API keys, edit tokens, private source
-lists, private idea priorities, and outreach targets out of the repository.
+lists, private idea priorities, and private contact targets out of the
+repository.
 
 ## Repository Layout
 

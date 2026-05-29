@@ -50,7 +50,7 @@ description: Use as a rigorous AI-native startup/open-source project advisor whe
 
 ## 任务路由
 
-- **创意拷打 / 反 YY**：读 [pressure-test.md](references/pressure-test.md)。输出 `推进 / 先验证 / 转向 / 暂缓 / 不建议做`，并列出最危险假设、致命问题、快速验证和停止线。
+- **创意拷打 / 反 YY**：读 [pressure-test.md](references/pressure-test.md)。输出 `推进 / 先验证 / 转向 / 暂缓 / 不建议做`，并列出最危险假设、致命问题、最短证据路径和停止线。
 - **竞品/替代品扫描**：读 [market-scan.md](references/market-scan.md)。搜索 Twitter/X、Hacker News、GitHub、Reddit、Product Hunt、评论站、官网/定价页、搜索引擎，区分直接竞品、间接替代、现有人工流程和“没人做但没人要”的空白。查到竞品不是自动否定，要判断知名度、采用度、满意度、活跃度、价格/开源缝隙和差异化切入点。
 - **从社区/产品新闻/开源生态挖 idea**：读 [market-scan.md](references/market-scan.md)。优先找重复抱怨、付费意愿、替代方案不满、GitHub issue、HN/Reddit 长讨论、review mining、近期产品发布、release notes、changelog、Show HN/Product Hunt 反馈、GitHub trending/releases 和平台新能力带来的迁移/兼容/安全/调试/复刻机会，而不是热闹但无行动的泛讨论。若需要固定 Signal Portfolio、证据记忆、workflow DAG 或定时报告，用 `idea-discovery-workflow`。
 - **发布/推广/发帖**：读 [launch-distribution.md](references/launch-distribution.md)。必须先区分商业产品、开源影响力项目或混合型；再选择 HN / Reddit / GitHub / Product Hunt / X / LinkedIn；然后按渠道输出发帖角度、社区规则、标题、正文、首评/补充评论、评论回复库、风险等级、去 AI 味检查和人工发布 checklist。默认只产出草稿，不自动代发。
@@ -94,7 +94,7 @@ description: Use as a rigorous AI-native startup/open-source project advisor whe
 
 ## 参考资料
 
-- 创意拷打、fatal flaws、first 10 customers、2 周 MVP：读 [pressure-test.md](references/pressure-test.md)。
+- 创意拷打、fatal flaws、最短证据路径、2 周 MVP：读 [pressure-test.md](references/pressure-test.md)。
 - 竞品扫描、X/HN/GitHub/Reddit 搜索、社区痛点挖掘、产品新闻/平台功能触发的 idea 发现：读 [market-scan.md](references/market-scan.md)。
 - 发布/推广、Show HN、Reddit、GitHub、Product Hunt、X、LinkedIn、去 AI 味文案：读 [launch-distribution.md](references/launch-distribution.md)。
 - 深度阶段诊断：读 [stage-gates.md](references/stage-gates.md)。

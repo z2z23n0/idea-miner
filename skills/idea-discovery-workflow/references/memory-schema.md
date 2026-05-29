@@ -109,12 +109,16 @@ summaries and claim mappings, not raw copyrighted articles or private content.
   "ai_leverage": "...",
   "red_team": [{"objection": "...", "response": "...", "ceo_ruling": "..."}],
   "dangerous_assumptions": ["..."],
-  "validation_plan_7_14d": ["..."],
+  "shortest_evidence_path": ["..."],
   "stop_line": "...",
-  "outreach_targets": [{"url":"...","why":"...","angle":"..."}],
   "next_actions": ["..."]
 }
 ```
+
+Legacy run artifacts may contain `validation_plan_7_14d` or
+`outreach_targets`; new runs should prefer `shortest_evidence_path` and only
+include contact targets when the user explicitly asks for distribution or
+outreach prep.
 
 `runs/<run_id>/ideas/<idea_id>.md`
 
@@ -132,8 +136,8 @@ Required sections:
 - Current alternatives and competitor reasoning.
 - Product form, MVP scope, explicit non-goals, and product-scale path.
 - Red Team objections, responses, and CEO rulings.
-- Dangerous assumptions, validation plan, stop line.
-- Outreach candidates and suggested outreach angle.
+- Dangerous assumptions, shortest evidence path, and stop line.
+- Distribution or contact targets only when explicitly requested for the run.
 - Next-thread first actions.
 
 Do not include generic skill recommendations.

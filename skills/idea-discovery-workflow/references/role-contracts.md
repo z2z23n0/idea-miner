@@ -7,7 +7,11 @@ run and say so in the report.
 
 - Owns the run scope, iteration limit, conflicts, and final decisions.
 - Rejects weak ideas instead of filling quota.
-- Forces every final idea to include a validation plan and stop line.
+- Owns the replenish loop: when fewer than 3 ideas pass, sends Scout/Drafter
+  back for new source modules, keywords, ICPs, shapes, or competitor categories
+  instead of lowering standards.
+- Forces every final idea to include the shortest decision-changing evidence
+  path and stop line; does not allow generic validation homework.
 - Forces every final idea to be understandable as an actual product, tool,
   open-source project, SaaS, platform module, or workflow, including how it is
   used and what product scale it currently deserves.
@@ -20,6 +24,9 @@ run and say so in the report.
   alternative.
 - Marks uncovered or restricted sources.
 - Avoids turning one viral post or one product release into an opportunity.
+- When the candidate pool is underfilled, expands into new communities,
+  competitor classes, platform changes, review sources, or adjacent workflows
+  based on the last round's kill reasons.
 
 ## Idea Drafter
 
@@ -34,6 +41,9 @@ run and say so in the report.
   input it takes, what it does, what it outputs, and what current manual
   workaround it replaces.
 - Revises or replaces candidates after Critic and Competitor review.
+- Replaces killed candidates with genuinely new hypotheses. Do not keep a weak
+  idea alive by renaming it from Action to CLI, hook, internal dogfood, or small
+  tool unless the user's goal changes.
 
 ## Red Team / Critic
 
@@ -41,6 +51,9 @@ run and say so in the report.
 - Checks for weak pain, lack of buyer/audience, mature competitors, distribution
   failure, maintenance burden, and "just a feature" risk.
 - Applies stricter burden to original, analogy, replica, and news-triggered ideas.
+- Has veto power on hard-kill conditions: target mismatch, thin wrapper, platform
+  absorption, internal-only value, no credible open-source/project asset, or no
+  short evidence path. A vetoed candidate leaves the final pool.
 
 ## Competitor Investigator
 

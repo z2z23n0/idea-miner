@@ -21,7 +21,7 @@ research run.
 5. Return the file path and a short note.
 
 Do not browse, search, or re-run competitor checks by default. If the user asks
-for "最新", "刷新", "current", "prepare outreach", or similar current-state work,
+for "最新", "刷新", "current", distribution prep, or similar current-state work,
 refresh only the facts that need freshness and label them separately from the
 stored dossier context.
 
@@ -49,7 +49,7 @@ reading the original chat. Include:
 - current alternatives and competitor reasoning;
 - MVP scope, explicit non-goals, product form, and product-scale path;
 - Red Team objections, responses, and CEO rulings;
-- dangerous assumptions, validation plan, stop line, and outreach candidates;
+- dangerous assumptions, shortest evidence path, and stop line;
 - concrete first actions for the next thread.
 
 Do not include generic skill recommendations. Different users have different

@@ -1,6 +1,6 @@
 ---
 name: idea-discovery-workflow
-description: Use when running or designing recurring product/open-source idea discovery, daily or scheduled idea mining, Signal Portfolio workflows, multi-role Scout/Critic/Competitor/CEO evaluation, evidence-to-decision pipelines, idea backlog memory, idea handoffs, handoff-ready idea dossiers, or automation prompts for finding product, open-source, CLI, MCP, Skill, agent workflow, and developer-tool ideas. This skill orchestrates discovery and uses ai-founder-playbook for judgment, pressure testing, competitor analysis, and validation plans.
+description: Use when running or designing recurring product/open-source idea discovery, daily or scheduled idea mining, Signal Portfolio workflows, multi-role Scout/Critic/Competitor/CEO evaluation, evidence-to-decision pipelines, idea backlog memory, idea handoffs, handoff-ready idea dossiers, or automation prompts for finding product, open-source, CLI, MCP, Skill, agent workflow, and developer-tool ideas. This skill orchestrates discovery and uses ai-founder-playbook for judgment, pressure testing, competitor analysis, and shortest evidence paths.
 ---
 
 # Idea Discovery Workflow
@@ -14,8 +14,8 @@ This skill is intentionally separate from `ai-founder-playbook`:
 - `idea-discovery-workflow` owns workflow, roles, evidence memory, run artifacts,
   report shape, and automation integration.
 - `ai-founder-playbook` owns founder/open-source judgment: pressure tests,
-  market scans, competitor reasoning, scoring, validation plans, and launch
-  advice.
+  market scans, competitor reasoning, scoring, shortest evidence paths, and
+  launch advice.
 
 ## Core Run
 
@@ -51,13 +51,17 @@ Check, CEO Decision, and Validation Plan. Do not duplicate its rubrics here.
 - Always use current web/realtime tools for current claims, competitors,
   adoption, pricing, releases, and source freshness.
 - If a source cannot be accessed, mark it `未覆盖/受限`; do not infer content.
-- Default to a cheap sequential workflow. Use real sub-agents or multi-agent
-  tools only when available and useful; otherwise simulate roles and state that.
+- Default to a rigorous replenish workflow. Use real sub-agents or multi-agent
+  tools when they help cover more sources, run independent critique, or refill
+  the candidate pool after vetoes; otherwise simulate roles and state that.
 - Use expensive debate only for high-disagreement or high-value candidates.
-- Do not lower the bar to produce exactly 3 ideas. Output the actual number that
-  passes.
+- Aim to return 3 ideas that pass the current standard. Do not lower the bar to
+  fill three slots; if fewer than 3 pass, treat it as an underfilled run and
+  show the replenishment rounds and why coverage was exhausted.
 - Keep full reports as normal Markdown before any host-specific control block.
-- For every final or resumable paused idea, persist a handoff-ready dossier.
+- For every final idea, persist a handoff-ready dossier. Persist a paused dossier
+  only for a strong idea that narrowly missed a known evidence gap; do not save
+  vetoed, weak, internal-only, or "could be a small tool" ideas as handoff work.
   Later handoff requests should read the stored dossier first and should not
   repeat source discovery unless the user explicitly asks for a current refresh.
 

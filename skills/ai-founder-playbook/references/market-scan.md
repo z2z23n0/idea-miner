@@ -27,7 +27,7 @@
 | **产品/平台新闻** | 官方 blog、release notes、changelog、Show HN、Product Hunt、launch thread、模型/agent 新功能 | 跨平台复刻、Codex/Claude/Cursor 互补工具、兼容层、模板、migration helper |
 | **竞品缺陷** | pricing backlash、复杂安装、文档差、停更、issue 积压、企业化过重、闭源/不可自托管 | developer-first 开源版、CLI-first 小工具、self-hosted 版本、UX repair |
 | **开源生态** | GitHub trending/topics/releases、stars/forks、recent commits、issue/PR 活跃度、依赖和教程 | 维护接手、插件、adapter、测试工具、conformance suite |
-| **趋势/参与度** | 近 7-30 天跨 Reddit/X/HN/GitHub/web 的重复讨论、搜索热度、多个社区同时出现 | 时机判断、细分 ICP、first 10 outreach 列表 |
+| **趋势/参与度** | 近 7-30 天跨 Reddit/X/HN/GitHub/web 的重复讨论、搜索热度、多个社区同时出现 | 时机判断、细分 ICP、最短证据路径 |
 | **评论/评测** | G2/Capterra/Chrome Web Store/App Store/Product Hunt 评论、博客评测、YouTube/TikTok demo 反馈 | 体验缺口、价格切口、缺失工作流、用户真正珍惜的价值 |
 
 内置扫描流程：
@@ -147,7 +147,7 @@ site:github.com "<tool>" "issues" "feature request"
 
 判读：
 
-- **70+**：值得做验证 sprint，但仍要先跑外部扫描和 first 10 outreach。
+- **70+**：值得进入最短证据路径，但仍要先跑外部扫描，确认能用真实行为改变推进/停止判断。
 - **50-69**：有苗头，先缩窄 ICP 或换切入点。
 - **30-49**：多半是讨论热闹但需求弱，或竞品/分发/预算缺口大。
 - **<30**：不建议做，除非出现新的强证据。
@@ -199,8 +199,8 @@ Top pick：
 - 痛点：
 - 当前替代：
 - 最小产品/开源项目：
-- first 10 用户在哪里：
-- 7 天验证：
+- 最短证据路径：
+- 停止线：
 ```
 
 ## 证据纪律

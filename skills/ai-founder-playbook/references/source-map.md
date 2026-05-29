@@ -25,7 +25,7 @@ Playbook 的核心抽象：
 - Bessemer Venture Partners, The AI Pricing Playbook for Founders, 2026：`https://www.bvp.com/assets/uploads/2026/02/The_AI_pricing_playbook_for_founders_Bessemer_Venture_Partners_2026.pdf`
   - 参考点：AI 产品毛利、收费指标、copilot/agent/service 类型、混合定价、ROI 叙事和成本风险。
 - Kappaemme-git / `codex-startup-pressure-test-skill`：`https://github.com/Kappaemme-git/codex-startup-pressure-test-skill`
-  - 参考点：强/弱/转向 verdict、fatal flaws、problem validation、first 10 customers、2 周 MVP。
+  - 参考点：强/弱/转向 verdict、fatal flaws、problem validation、早期真实证据路径、2 周 MVP。
 - OpenClaw `solo-validate`：`https://playbooks.com/skills/openclaw/skills/solo-validate`
   - 参考点：truth-first validation、S.E.E.D. niche check、Devil's Advocate inversion、go/kill/pivot、dead startup / competitor failure 搜索、单位经济压力测试。
 - OpenClaw `saas-idea-discovery`：`https://playbooks.com/skills/openclaw/skills/saas-idea-discovery`

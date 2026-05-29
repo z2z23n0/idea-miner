@@ -10,7 +10,7 @@ Final output must be Chinese Markdown and use this structure.
   Product Feed / Opportunity Scoring / Adversarial Pass；若有步骤未做，说明原因
 - 覆盖的信息源与信号桶
 - 未覆盖或受限的信息源
-- CEO 总判断：今天是否有 3 个能过线的 idea；不要为了凑数降低标准
+- CEO 总判断：今天是否凑齐 3 个过线 idea；如果没有，说明已跑哪些补源轮次以及为什么仍 underfilled。不要为了凑数降低标准。
 
 # Signal Portfolio
 
@@ -25,11 +25,14 @@ Use a table with at least 12 rows when possible:
 |---|---|---|---:|---|---|---|---|
 
 If there are multiple rounds, explain why the previous round failed and what
-sources, keywords, shapes, or assumptions changed.
+sources, keywords, shapes, ICPs, competitor categories, or assumptions changed.
+If fewer than 3 ideas pass, this section must show the replenish attempts.
 
-# 最终 3 个 Idea
+# 最终过线 Idea（目标 3 个，最多 3 个）
 
-Each final idea must use the same sections:
+Only include ideas with verdict `推进` or strong `先验证` that match the user's
+goal. Do not include `暂缓`, `不建议做`, internal-only tools, or thin wrappers as
+final ideas. Each final idea must use the same sections:
 
 ## Idea N：名称
 
@@ -56,12 +59,15 @@ Each final idea must use the same sections:
 - AI 杠杆
 - Red Team 拷打记录
 - 最危险假设
-- 7-14 天验证计划
+- 最短证据路径：只写当前最短、最低成本、能改变推进/停止判断的动作；不要机械写找 N 个用户/issue/maintainer
 - 今日优先级：P0 / P1 / P2
 
 # 被拒绝或暂缓的候选
 
-List at least 3 and give specific reasons.
+List killed or paused candidates with specific reasons. For each, say whether it
+failed by target mismatch, thin wrapper/platform absorption, weak pain, weak
+distribution, mature substitutes, no repo asset, no short evidence path, or
+personal/internal-only value. Do not attach generic validation plans.
 
 # 角色冲突与 CEO 裁决
 
