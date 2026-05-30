@@ -20,8 +20,10 @@ ${IDEA_MINER_HOME:-$HOME/.idea-miner}/
     handoff-index.md
 ```
 
-Existing installs can keep using `CODEX_IDEA_DISCOVERY_HOME`; the helper
-scripts still honor it as a fallback.
+Existing installs can keep using `CODEX_IDEA_DISCOVERY_HOME`. Helper scripts
+should prefer an explicitly configured root, then reuse an existing readable
+store under `$HOME/.idea-miner` or `$HOME/.codex/data/idea-discovery` before
+creating a new empty store. Do not fork history just because defaults changed.
 
 The top-level JSONL files are indexes for search and cross-run memory. They are
 not enough for handoff by themselves. Each run must also save full run artifacts
@@ -43,12 +45,13 @@ it.
 `ideas.jsonl`
 
 ```json
-{"id":"idea_...","run_id":"...","name":"...","aliases":["..."],"source_type":"...","shape":"CLI|MCP|Skill|OSS|...","target_user":"...","status":"candidate|final|rejected|paused|revived","priority":"P0|P1|P2|null","dossier_path":"runs/<run_id>/ideas/<idea_id>.md","detail_path":"runs/<run_id>/ideas/<idea_id>.json"}
+{"id":"idea_...","run_id":"...","name":"...","aliases":["..."],"source_type":"...","shape":"CLI|MCP|Skill|OSS|...","target_user":"...","status":"candidate|final|rejected|paused|revived|updated|duplicate","priority":"P0|P1|P2|null","history_relation":"new|update_existing|duplicate_of|revives|merged_from|splits_from|adjacent_to","related_ideas":["idea_..."],"dossier_path":"runs/<run_id>/ideas/<idea_id>.md","detail_path":"runs/<run_id>/ideas/<idea_id>.json"}
 ```
 
-Keep `ideas.jsonl` compact. Put the full human-readable and machine-readable
-idea context into the run artifact paths referenced by `dossier_path` and
-`detail_path`.
+Keep `ideas.jsonl` compact, but always include `aliases`, `history_relation`,
+`related_ideas`, `dossier_path`, and `detail_path` when known. Put the full
+human-readable and machine-readable idea context into the run artifact paths
+referenced by `dossier_path` and `detail_path`.
 
 `claims.jsonl`
 
@@ -71,7 +74,7 @@ idea context into the run artifact paths referenced by `dossier_path` and
 `edges.jsonl`
 
 ```json
-{"from":"sig_...","to":"idea_...","type":"supports|challenges|inspires|duplicates|revives","run_id":"...","note":"..."}
+{"from":"sig_...","to":"idea_...","type":"supports|challenges|inspires|updates_existing|duplicate_of|revives|merged_from|splits_from|adjacent_to","run_id":"...","note":"..."}
 ```
 
 `runs/<run_id>/source-notes.jsonl`
@@ -91,6 +94,8 @@ summaries and claim mappings, not raw copyrighted articles or private content.
   "run_id": "...",
   "name": "...",
   "aliases": ["..."],
+  "history_relation": "new|update_existing|duplicate_of|revives|merged_from|splits_from|adjacent_to",
+  "related_ideas": [{"id": "idea_...", "name": "...", "relationship": "merged_from", "note": "..."}],
   "verdict": "advance|validate|narrow|pause|reject",
   "confidence": "low|medium|high",
   "source_type": "...",
@@ -131,6 +136,8 @@ Required sections:
 - Handoff purpose and current verdict.
 - What this is and how it is used.
 - Origin in this workflow, including merged/duplicated prior ideas.
+- History relation: whether this is new, an update, a duplicate, a revival, a
+  merge, a split, or adjacent to stored ideas.
 - Source map: original URLs, access status, observed freshness, and what each
   source supports.
 - Current alternatives and competitor reasoning.
@@ -150,13 +157,16 @@ directions so one-line handoff requests can resolve the right dossier.
 
 ## When to Persist
 
-- Persist all final ideas, rejected ideas, key signals, competitor findings, CEO
-  decisions, and high-confidence claims.
+- Persist all final ideas, rejected ideas, duplicate/update decisions, key
+  signals, competitor findings, CEO decisions, and high-confidence claims.
 - Persist the full report as `runs/<run_id>/report.md`.
 - Persist a handoff-ready dossier for every final idea and every paused idea
   that may plausibly be resumed.
 - Persist a `handoff-index.md` before the run completes. If persistence fails,
   say so in the user-facing report instead of silently relying on chat history.
+- If a candidate is related to a prior idea, persist both the compact
+  `history_relation` fields in `ideas.jsonl` and explicit relationship edges in
+  `edges.jsonl`.
 - Do not persist raw secrets, private user data, edit tokens, or unavailable
   page content.
 - Mark links as inaccessible instead of fabricating summaries.

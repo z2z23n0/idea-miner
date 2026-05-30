@@ -19,13 +19,16 @@ function argValue(name, fallback) {
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const home = os.homedir();
 const skillsDir = path.resolve(argValue('--skills-dir', path.join(home, '.codex', 'skills')));
+const defaultDataDir = path.join(home, '.idea-miner');
+const legacyDataDir = path.join(home, '.codex', 'data', 'idea-discovery');
+const explicitDataDir = argValue('--data-dir', null)
+  || process.env.IDEA_MINER_HOME
+  || process.env.CODEX_IDEA_DISCOVERY_HOME;
 const dataDir = path.resolve(
-  argValue(
-    '--data-dir',
-    process.env.IDEA_MINER_HOME
-      || process.env.CODEX_IDEA_DISCOVERY_HOME
-      || path.join(home, '.idea-miner'),
-  ),
+  explicitDataDir
+    || (hasReadableStore(defaultDataDir) ? defaultDataDir : null)
+    || (hasReadableStore(legacyDataDir) ? legacyDataDir : null)
+    || defaultDataDir,
 );
 
 const skillNames = ['ai-founder-playbook', 'idea-discovery-workflow'];
@@ -40,6 +43,24 @@ const jsonlFiles = [
 
 function log(action, target) {
   console.log(`${dryRun ? '[dry-run] ' : ''}${action}: ${target}`);
+}
+
+function walk(dir) {
+  if (!fs.existsSync(dir)) return [];
+  const out = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...walk(full));
+    else out.push(full);
+  }
+  return out;
+}
+
+function hasReadableStore(dir) {
+  const ideasFile = path.join(dir, 'ideas.jsonl');
+  const runsDir = path.join(dir, 'runs');
+  return (fs.existsSync(ideasFile) && fs.statSync(ideasFile).size > 0)
+    || (fs.existsSync(runsDir) && walk(runsDir).length > 0);
 }
 
 function ensureDir(dir) {

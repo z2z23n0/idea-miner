@@ -32,9 +32,12 @@ report format, and local evidence memory format.
 
 ```text
 prepare_run
+  -> load_history
   -> collect_signals
   -> normalize_signals
   -> draft_candidates
+  -> fit_gate
+  -> history_relation_gate
   -> hard_gate
   -> critic_review
   -> competitor_check
@@ -45,17 +48,20 @@ prepare_run
   -> persist_run_artifacts
 ```
 
-The default run is rigorous: weak candidates are killed before long write-ups,
-and fewer than three passing ideas triggers replenish rounds with new sources,
-keywords, ICPs, product shapes, or competitor categories. If the runtime
-provides real sub-agent or multi-agent tools, the same role contracts can be
-dispatched. If it does not, one agent can simulate the roles and label the
-report accordingly.
+The default run is rigorous and source-first. Unless the user explicitly gives
+topics, the scout starts from current source-native feeds instead of fixed
+standing keywords. Keywords are derived later from promising raw signals to
+enrich evidence, search competitors, and test repeatability. Weak candidates are
+killed before long write-ups, and fewer than three passing ideas triggers
+replenish rounds with new source-native feeds, communities, ICPs, product
+shapes, or evidence types. If the runtime provides real sub-agent or multi-agent
+tools, the same role contracts can be dispatched. If it does not, one agent can
+simulate the roles and label the report accordingly.
 
 The useful output is the evidence-to-decision chain: where a signal came from,
-which idea it supports, what alternatives already exist, why the idea survived
-or failed review, and what shortest evidence path would actually change the
-decision.
+which idea it supports, whether it is new or related to prior ideas, what
+alternatives already exist, why the idea survived or failed review, and what
+shortest evidence path would actually change the decision.
 
 Recurring runs also save per-idea dossiers. Handoff should be a packaging step:
 read the stored dossier, write a temporary handoff file, and avoid web refreshes
@@ -84,6 +90,13 @@ decision-changing next action.
 | Trend windows | Repeated signals across multiple communities in the last 7-30 days |
 | Reviews / evaluations | G2, Capterra, Chrome Web Store, App Store, Product Hunt comments, blog/video reviews |
 
+Default discovery should not begin with standing topic keywords. It should first
+sample current source feeds, then use a fit gate to keep software, OSS,
+automation, CLI, MCP, Skill, SDK, browser extension, SaaS, data-product, and
+agent-workflow opportunities. Physical goods, local services, inventory,
+hardware manufacturing, offline logistics, and pure operations plays are
+filtered unless they can be clearly reframed as software.
+
 ## Report Format
 
 The default report includes:
@@ -92,6 +105,8 @@ The default report includes:
 - Covered and uncovered sources.
 - Signal Portfolio.
 - Candidate pool and iteration history.
+- History relation and novelty handling: new, update_existing, duplicate_of,
+  revives, merged_from, splits_from, adjacent_to.
 - Final ideas with problem, target user, sources, current alternatives, MVP
   shape, competitor table, AI leverage, objections, assumptions, priority, and
   shortest evidence path.
@@ -177,11 +192,13 @@ node scripts/install-local.mjs --skills-dir=/path/to/skills --data-dir=/path/to/
 
 `skills/idea-discovery-workflow/scripts/idea-scout-kit.mjs`
 
-Generates a query pack, source-module checklist, Signal Portfolio template,
-candidate scoring table, and Red Team questions. It creates a structured
-search plan; it does not browse the web.
+Generates a source-first scouting plan, fit gate, Signal Portfolio template,
+history-relation table, candidate scoring table, and Red Team questions. With
+explicit topics it also generates topic-guided enrichment queries. It creates a
+structured search plan; it does not browse the web.
 
 ```bash
+node skills/idea-discovery-workflow/scripts/idea-scout-kit.mjs
 node skills/idea-discovery-workflow/scripts/idea-scout-kit.mjs "AI coding agents" "MCP"
 ```
 
@@ -206,8 +223,10 @@ node skills/idea-discovery-workflow/scripts/idea-handoff.mjs "Tool-Call Compatib
 
 Runtime data lives outside this repository. Set `IDEA_MINER_HOME` to choose a
 store location. The scripts also honor the legacy `CODEX_IDEA_DISCOVERY_HOME`
-variable for existing installs. If neither variable is set, the default store
-is:
+variable for existing installs. Helper scripts prefer an explicit root, then
+reuse an existing readable store under `~/.idea-miner` or
+`~/.codex/data/idea-discovery` before creating a new empty store. If no existing
+store is found, the default store is:
 
 ```text
 ~/.idea-miner/

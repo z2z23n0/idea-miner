@@ -4,9 +4,12 @@ Default DAG:
 
 ```text
 prepare_run
+  -> load_history
   -> collect_signals
   -> normalize_signals
   -> draft_candidates
+  -> fit_gate
+  -> history_relation_gate
   -> hard_gate
   -> critic_review
   -> competitor_check
@@ -21,10 +24,13 @@ prepare_run
 
 | Node | Owner | Input | Output |
 |---|---|---|---|
-| prepare_run | Orchestrator | date, prior runs, topic scope | source plan, run id, coverage target |
-| collect_signals | Signal Scout | source plan | raw signals with links and freshness |
+| prepare_run | Orchestrator | date, user-provided topic scope, exclusions | run id, source-first plan, coverage target |
+| load_history | Orchestrator | evidence store | backlog snapshot, aliases, prior final/paused/rejected ideas, recent source URLs |
+| collect_signals | Signal Scout | source-first plan | raw source-native signals with links and freshness |
 | normalize_signals | Signal Scout | raw signals | Signal Portfolio with buckets and evidence grades |
 | draft_candidates | Idea Drafter | Signal Portfolio | at least 5 candidates with source type, evidence level, usage semantics, and product-scale hypothesis |
+| fit_gate | CEO + Drafter | raw candidates, user goal, fit policy | keep/quarantine decisions for off-target markets and non-software opportunities |
+| history_relation_gate | CEO + Orchestrator | candidates, backlog snapshot | new/update_existing/duplicate_of/revives/merged_from/splits_from/adjacent_to labels |
 | hard_gate | CEO + Red Team | candidates, user goal, source evidence | keep/kill decisions before detailed write-up |
 | critic_review | Red Team | candidates | objections, rejection/revision requests, falsification tests |
 | competitor_check | Competitor Investigator | candidates | direct/indirect/open-source/platform competitors and gaps |
@@ -41,7 +47,22 @@ not saved.
 ## Iteration Rules
 
 - Every candidate must pass at least one loop:
-  `hard_gate -> critic_review -> drafter_response -> competitor_check -> ceo_decision`.
+  `fit_gate -> history_relation_gate -> hard_gate -> critic_review -> drafter_response -> competitor_check -> ceo_decision`.
+- Source collection starts from current source feeds unless the user explicitly
+  gave topics. Do not seed normal daily discovery with standing keywords from
+  prior runs.
+- Topic keywords are enrichment tools, not the default discovery boundary. Once
+  a raw signal is found, derive follow-up queries from that signal to verify
+  repeatability, competitors, and adjacent pain.
+- The history relation gate is mandatory. A candidate cannot enter final
+  selection until it is labelled as one of: `new`, `update_existing`,
+  `duplicate_of`, `revives`, `merged_from`, `splits_from`, or `adjacent_to`.
+- A pure duplicate with no new evidence, changed ICP, changed workflow, or
+  changed decision is rejected as `duplicate_of` and written as a backlog note,
+  not a final idea.
+- `update_existing` candidates belong in the backlog-update section unless the
+  new evidence materially changes verdict, priority, MVP boundary, competitor
+  judgment, or stop line.
 - Hard gate happens before long write-ups. Kill candidates that are only thin
   wrappers, hook recipes, CI glue, internal dogfood, platform-feature aliases,
   generic workflow/eval meta-tools, or ideas that cannot plausibly reach the
@@ -50,18 +71,48 @@ not saved.
   the product is, when it is used, what it takes as input, what it returns as
   output, what manual workaround it replaces, and what product scale it
   currently deserves.
-- Target exactly 3 final ideas, but only if all 3 clear the bar. If fewer than 3
-  survive, run replenish rounds instead of lowering standards.
+- Target up to 3 final ideas, but prioritize genuinely new or meaningfully
+  changed ideas. If fewer than 3 survive, run replenish rounds instead of
+  lowering standards or filling slots with old winners.
 - A replenish round must use the kill reasons to change at least two of: source
-  module, keyword set, community, ICP, product shape, competitor category,
-  platform/news trigger, or evidence type. Rewording the same candidate is not
-  a replenish round.
+  module, source-native feed, community, ICP, product shape, competitor
+  category, platform/news trigger, evidence type, or fit hypothesis. Rewording
+  the same candidate or searching the same old keywords is not a replenish
+  round.
 - Default to at least 3 total rounds when fewer than 3 ideas pass. Continue up
   to 5 rounds when sources are still producing new evidence. Scheduled runs may
   spend more time/token on extra source modules when quality remains promising.
 - Stop underfilled only when the run can show source exhaustion, repeated
   duplicate candidates, or a clear reason additional rounds would lower the bar.
   Treat underfilled output as a failed-to-fill run, not as a normal success.
+
+## History Relation Rules
+
+Build a compact backlog snapshot before drafting final candidates:
+
+- names, aliases, statuses, priorities, and dossier/detail paths from
+  `ideas.jsonl`;
+- prior final/paused/rejected summaries from recent `handoff-index.md` and
+  `report.md` files;
+- known source URLs from top-level signals and run `source-notes.jsonl`;
+- prior `duplicates`, `revives`, `merged_from`, `updates_existing`, and
+  `adjacent_to` edges.
+
+For each candidate, decide the strongest relationship:
+
+- `new`: new problem/workflow/ICP/product form with no close stored idea.
+- `update_existing`: same idea, but new evidence changes priority, verdict,
+  MVP, competitor judgment, or stop line.
+- `duplicate_of`: same idea with no decision-changing new information.
+- `revives`: previously paused/rejected idea now has a new reason to reconsider.
+- `merged_from`: combines two or more prior ideas into a clearer direction.
+- `splits_from`: extracts a narrower, independently useful slice from a prior
+  broad idea.
+- `adjacent_to`: overlaps with a prior idea but targets a different user,
+  trigger, or workflow.
+
+Persist this relationship in `edges.jsonl` and in the per-idea dossier. The
+report must not present a duplicate as a new idea.
 
 ## Validation Wording Rules
 

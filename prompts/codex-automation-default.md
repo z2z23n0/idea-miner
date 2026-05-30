@@ -2,9 +2,11 @@
 
 目标：从当前可用的 Reddit、Hacker News、X/Twitter、GitHub、Product Hunt、开发者论坛、issue tracker、changelog、review site、博客、搜索引擎、官方 blog/release notes 和产品新闻源里，发现最新、真实、可验证的需求、痛点、生态变化、竞品缺口和未满足场景，并尽量产出 3 个过线 idea。可以跑更多轮、花更多时间和 token 来补足质量，但不得降低标准凑数。
 
-按 `idea-discovery-workflow` 的 workflow、role contracts、source policy、memory schema 和 report format 执行。若 shell 可用，先运行该 skill 的 `scripts/idea-scout-kit.mjs` 生成查询清单；若本地 evidence store 未初始化，可运行 `scripts/init-store.mjs`。
+默认采用 source-first discovery：除非用户明确指定主题，不要先用 `MCP`、`Codex`、`AI coding agents`、`developer tools` 等固定关键词限定世界。先从各信息源的今日/近期 source-native feeds 抓原始信号，再从有潜力的信号里派生关键词做补证据、竞品核验和重复痛点搜索。用 fit gate 过滤不适合的市场：纯线下履约、库存、供应链、硬件制造、消费品牌、门店服务、纯运营套利默认排除；只有能清楚转译成软件、开源、小工具、CLI、MCP、Skill、SDK、插件、SaaS、自动化脚本或数据产品的方向才进入候选池。
 
-必须把关键 signals、ideas、claims、competitors、decisions 和 graph-like edges 追加到本地 evidence store（默认 `${IDEA_MINER_HOME:-$HOME/.idea-miner}`，兼容旧的 `CODEX_IDEA_DISCOVERY_HOME`）。不要写入 token、secret、私有账户信息或不可公开内容。
+按 `idea-discovery-workflow` 的 workflow、role contracts、source policy、memory schema 和 report format 执行。若 shell 可用，先运行该 skill 的 `scripts/idea-scout-kit.mjs` 生成 source-first 清单；只有当用户显式给出主题时，才把主题传给该脚本生成 topic-guided enrichment queries。若本地 evidence store 未初始化，可运行 `scripts/init-store.mjs`。
+
+必须先读取本地 evidence store 里的历史 idea/backlog，再把关键 signals、ideas、claims、competitors、decisions 和 graph-like edges 追加进去。优先复用已有可读 store：`${IDEA_MINER_HOME}`、`${CODEX_IDEA_DISCOVERY_HOME}`、`$HOME/.idea-miner`、`$HOME/.codex/data/idea-discovery`；不要因为默认路径不同而新建空历史。不要写入 token、secret、私有账户信息或不可公开内容。每个候选进入 final 前必须标注历史关系：`new`、`update_existing`、`duplicate_of`、`revives`、`merged_from`、`splits_from` 或 `adjacent_to`。纯重复或只有小证据增量的旧 idea 只能进入 backlog update / 重复驳回，不能包装成今日新 idea。
 
 必须同时保存 handoff-ready run artifacts：完整报告 `runs/<run_id>/report.md`、来源摘要 `runs/<run_id>/source-notes.jsonl`、每个 final idea 的 `runs/<run_id>/ideas/<idea_id>.json` 和 `runs/<run_id>/ideas/<idea_id>.md`、以及 `runs/<run_id>/handoff-index.md`。只有强但被明确证据缺口卡住的 paused idea 才保存 dossier；弱 idea、内部小工具、薄 wrapper、平台 hook 配方和被 veto 的方向只在报告里写 death note，不保存成后续工作。每个 idea dossier 要包含原始来源链接、来源支持了什么 claim、竞品/替代判断、Red Team 记录、CEO 裁决、MVP 边界、最短证据路径和停止线。以后用户要求 handoff 时，默认应读取这些 artifact，不重新做搜索；只有用户明确要求刷新当前状态时才联网补查。
 
