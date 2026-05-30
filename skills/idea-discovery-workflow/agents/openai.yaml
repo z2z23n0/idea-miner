@@ -1,7 +1,7 @@
 interface:
   display_name: "Idea Discovery Workflow"
   short_description: "每日挖掘产品/开源 idea，沉淀证据、竞品、裁决、报告和可交接 dossier"
-  default_prompt: "Use $idea-discovery-workflow to run a rigorous product/open-source idea discovery workflow: collect a Signal Portfolio, draft candidates, pressure-test with ai-founder-playbook, check competitors, persist evidence, render a Chinese report, and save handoff-ready idea dossiers."
+  default_prompt: "Use $idea-discovery-workflow to run a thesis-first product/open-source idea discovery workflow: generate AI-era theses, sketch product/OSS bets, run evidence sweep and promotion gates with ai-founder-playbook, check competitors, persist evidence, render a Chinese report, and save handoff-ready idea dossiers."
 
 policy:
   allow_implicit_invocation: true

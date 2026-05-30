@@ -5,10 +5,12 @@ Default DAG:
 ```text
 prepare_run
   -> load_history
-  -> collect_signals
+  -> generate_thesis_portfolio
+  -> sketch_product_oss_bets
+  -> collect_evidence
   -> normalize_signals
-  -> draft_candidates
-  -> fit_gate
+  -> ai_relevance_gate
+  -> product_oss_promotion_gate
   -> history_relation_gate
   -> hard_gate
   -> critic_review
@@ -26,22 +28,24 @@ prepare_run
 
 | Node | Owner | Input | Output |
 |---|---|---|---|
-| prepare_run | Orchestrator | date, user-provided topic scope, exclusions | run id, source-first plan, coverage target |
+| prepare_run | Orchestrator | date, user topic scope, exclusions | run id, thesis-first plan, coverage target |
 | load_history | Orchestrator | evidence store | backlog snapshot, aliases, prior final/paused/rejected ideas, recent source URLs |
-| collect_signals | Signal Scout | source-first plan | raw source-native signals with links and freshness |
-| normalize_signals | Signal Scout | raw signals | Signal Portfolio with buckets and evidence grades |
-| draft_candidates | Idea Drafter | Signal Portfolio | at least 5 candidates with source type, evidence level, usage semantics, and product-scale hypothesis |
-| fit_gate | CEO + Drafter | raw candidates, user goal, fit policy | keep/quarantine decisions for off-target markets and non-software opportunities |
+| generate_thesis_portfolio | Thesis Scout + Orchestrator | user goal, AI/product/OSS thesis seeds, history | 20-30 high-imagination theses |
+| sketch_product_oss_bets | Idea Drafter | thesis portfolio | 8-12 product/OSS bet sketches with demo moment and repo/star asset |
+| collect_evidence | Signal Scout | bet sketches and source modules | current signals, competitors, kill evidence, supporting links |
+| normalize_signals | Signal Scout | raw signals | Signal Portfolio with buckets and evidence role |
+| ai_relevance_gate | CEO + Red Team | bet sketches, user goal | AI-core / AI-native workflow / AI-leveraged / non-AI exceptional / non-AI reject labels |
+| product_oss_promotion_gate | CEO + Report Reader | serious bets | pass/fail on complete-product or high-star-OSS criteria |
 | history_relation_gate | CEO + Orchestrator | candidates, backlog snapshot | new/update_existing/duplicate_of/revives/merged_from/splits_from/adjacent_to labels |
-| hard_gate | CEO + Red Team | candidates, user goal, source evidence | keep/kill decisions before detailed write-up |
-| critic_review | Red Team | candidates | objections, rejection/revision requests, falsification tests |
-| competitor_check | Competitor Investigator | candidates | direct/indirect/open-source/platform competitors and gaps |
-| ceo_decision | CEO | revised candidates, objections, competitors | final decisions, priorities, product-scale judgment, and rationale |
-| replenish_if_underfilled | Orchestrator + Signal Scout + Drafter | final count, killed reasons, source coverage | new source plan, new candidates, or underfilled reason |
-| persist_memory | Orchestrator | signals, ideas, claims, decisions | JSONL records and graph-like edges |
+| hard_gate | CEO + Red Team | candidates, user goal, evidence | keep/kill decisions before detailed write-up |
+| critic_review | Red Team | promoted candidates | objections, rejection/revision requests, kill reasons |
+| competitor_check | Competitor Investigator | promoted candidates | direct/indirect/open-source/platform competitors and absorption risks |
+| ceo_decision | CEO | revised candidates, objections, competitors | final product/OSS bets, priorities, rationale |
+| replenish_if_underfilled | Orchestrator + Thesis Scout + Drafter | final count, kill reasons | new theses, new bet sketches, or underfilled reason |
+| persist_memory | Orchestrator | theses, signals, ideas, claims, decisions | JSONL records and graph-like edges |
 | render_report | Orchestrator | run artifacts | final Chinese Markdown report |
-| reader_clarity_gate | Report Reader + Orchestrator | rendered report, final ideas, dossiers | pass/rewrite decision based on reader comprehension |
-| persist_run_artifacts | Orchestrator | report, source notes, final/paused ideas | `runs/<run_id>/report.md`, `source-notes.jsonl`, per-idea JSON, per-idea Markdown dossiers, `handoff-index.md` |
+| reader_clarity_gate | Report Reader + Orchestrator | rendered report, final ideas, dossiers | pass/rewrite decision |
+| persist_run_artifacts | Orchestrator | report, source notes, final/paused ideas | `runs/<run_id>/report.md`, `source-notes.jsonl`, per-idea JSON/Markdown dossiers, `handoff-index.md` |
 | artifact_quality_gate | Orchestrator | run artifact directory | validation result; explicit failure note or corrected artifacts |
 
 `persist_run_artifacts` is required, not best effort. If the runtime cannot
@@ -61,60 +65,87 @@ that the artifact quality gate was not executed.
 
 ## Iteration Rules
 
-- Every candidate must pass at least one loop:
-  `fit_gate -> history_relation_gate -> hard_gate -> critic_review -> drafter_response -> competitor_check -> ceo_decision`.
-- Source collection starts from current source feeds unless the user explicitly
-  gave topics. Do not seed normal daily discovery with standing keywords from
-  prior runs.
-- Topic keywords are enrichment tools, not the default discovery boundary. Once
-  a raw signal is found, derive follow-up queries from that signal to verify
-  repeatability, competitors, and adjacent pain.
-- The history relation gate is mandatory. A candidate cannot enter final
-  selection until it is labelled as one of: `new`, `update_existing`,
-  `duplicate_of`, `revives`, `merged_from`, `splits_from`, or `adjacent_to`.
-- A pure duplicate with no new evidence, changed ICP, changed workflow, or
-  changed decision is rejected as `duplicate_of` and written as a backlog note,
-  not a final idea.
-- `update_existing` candidates belong in the backlog-update section unless the
-  new evidence materially changes verdict, priority, MVP boundary, competitor
-  judgment, or stop line.
+- The run begins with thesis generation, not complaint mining. Generate
+  high-imagination theses before browsing or evidence collection unless the user
+  explicitly asks for a narrow market scan.
+- Evidence is used after bet sketches exist. It can sharpen, support, or kill a
+  bet, but it should not reduce the run to "one complaint -> one small tool".
+- Every final candidate must pass:
+  `ai_relevance_gate -> product_oss_promotion_gate -> history_relation_gate -> hard_gate -> critic_review -> competitor_check -> ceo_decision`.
+- Default final preference is `AI-core` or `AI-native workflow`. `AI-leveraged`
+  candidates need strong product/OSS completeness. `non-AI exceptional`
+  candidates need exceptional product or high-star OSS potential. `non-AI
+  reject` never enters final.
+- AI is not core when it only summarizes release notes, writes PR comments,
+  explains diffs, or converts text/CSV into config.
+- The product/OSS promotion gate is mandatory. A final idea must be either a
+  complete product direction or a GitHub OSS project with a clear 30-second demo
+  moment, repo/star mindshare, and accumulation asset.
+- GitHub Action, CI gate, PR comment, checklist automation, template, config
+  package, hook recipe, or thin wrapper is an integration surface only. If that
+  is the idea body, reject or backlog it.
+- The history relation gate is mandatory. A candidate cannot enter final until
+  it is labelled as one of: `new`, `update_existing`, `duplicate_of`,
+  `revives`, `merged_from`, `splits_from`, or `adjacent_to`.
+- A pure duplicate with no changed thesis, ICP, product scale, competitor
+  judgment, or stop line is rejected as `duplicate_of` and written as a backlog
+  note, not a final idea.
+- `update_existing` candidates belong in the backlog-update section unless new
+  evidence or a new thesis materially changes verdict, priority, MVP boundary,
+  competitor judgment, or stop line.
 - Hard gate happens before long write-ups. Kill candidates that are only thin
   wrappers, hook recipes, CI glue, internal dogfood, platform-feature aliases,
-  generic workflow/eval meta-tools, or ideas that cannot plausibly reach the
-  user's stated goal. Do not rescue them by changing the goal.
-- Before a candidate can become final, the CEO must be able to describe what
-  the product is, when it is used, what it takes as input, what it returns as
-  output, what manual workaround it replaces, and what product scale it
-  currently deserves.
-- Before artifacts are considered complete, the report must pass the reader
-  clarity gate. A reader who did not participate in discovery must be able to
-  restate each final idea as a concrete product card: product form, target user,
-  trigger moment, inputs, work performed, outputs, replaced workaround, why
-  existing substitutes are not enough, shortest evidence path, and stop line. If
-  any answer is missing or only abstract, rewrite the idea before saving final
-  artifacts.
-- Prefer a real sub-agent for the Report Reader when available. If no sub-agent
-  is available, simulate the role explicitly. The reader does not invent new
-  ideas or browse by default; it only checks whether the written report is
-  understandable from the stored evidence.
-- Target up to 3 final ideas, but prioritize genuinely new or meaningfully
-  changed ideas. If fewer than 3 survive, run replenish rounds instead of
-  lowering standards or filling slots with old winners.
-- A replenish round must use the kill reasons to change at least two of: source
-  module, source-native feed, community, ICP, product shape, competitor
-  category, platform/news trigger, evidence type, or fit hypothesis. Rewording
-  the same candidate or searching the same old keywords is not a replenish
-  round.
+  generic workflow/eval meta-tools, Action-only integrations, or ideas that
+  cannot plausibly reach the user's stated product/OSS goal.
+- Reader Clarity Gate remains required, but clarity is not enough. A candidate
+  can be clear and still fail because it is not imaginative, AI-relevant, or
+  product/OSS-complete.
+- Target up to 3 final product/OSS bets. If fewer than 3 survive, replenish with
+  new theses or product archetypes, not just new complaint sources.
+- A replenish round must change at least two of: thesis seed, AI-era capability
+  shift, product archetype, demo moment, repo asset, ICP, platform shift,
+  competitor category, or source module.
 - Default to at least 3 total rounds when fewer than 3 ideas pass. Continue up
-  to 5 rounds when sources are still producing new evidence. Scheduled runs may
-  spend more time/token on extra source modules when quality remains promising.
-- Stop underfilled only when the run can show source exhaustion, repeated
-  duplicate candidates, or a clear reason additional rounds would lower the bar.
-  Treat underfilled output as a failed-to-fill run, not as a normal success.
+  to 5 rounds when new theses are still producing promising bets. Stop
+  underfilled only when additional rounds would lower the bar.
+
+## Promotion Gates
+
+### AI Relevance Gate
+
+Classify each serious bet:
+
+- `AI-core`
+- `AI-native workflow`
+- `AI-leveraged`
+- `non-AI exceptional`
+- `non-AI reject`
+
+Final slots prefer `AI-core` and `AI-native workflow`. `AI-leveraged` and
+`non-AI exceptional` must explicitly justify why they deserve a final slot.
+
+### Product / OSS Promotion Gate
+
+A final idea must pass at least one:
+
+- **Complete product**: clear user, recurring usage moment, core workflow,
+  product surface, commercial or distribution path, and expansion path.
+- **High-star OSS**: 30-second demo, memorable repo asset, clear GitHub topic or
+  ecosystem, contribution/extension path, and reason developers would star,
+  install, recommend, or depend on it.
+
+Reject candidates that cannot answer:
+
+- Why does this deserve a final slot?
+- Why is this not just a GitHub Action, CI gate, PR comment, wrapper, checklist,
+  platform patch, or one-off script?
+- What is the demo moment?
+- What accumulates over time: rules, dataset, benchmark, protocol, examples,
+  integrations, community plugins, eval corpus, or workflow memory?
 
 ## History Relation Rules
 
-Build a compact backlog snapshot before drafting final candidates:
+Build a compact backlog snapshot before final selection:
 
 - names, aliases, statuses, priorities, and dossier/detail paths from
   `ideas.jsonl`;
@@ -126,21 +157,21 @@ Build a compact backlog snapshot before drafting final candidates:
 
 For each candidate, decide the strongest relationship:
 
-- `new`: new problem/workflow/ICP/product form with no close stored idea.
-- `update_existing`: same idea, but new evidence changes priority, verdict,
-  MVP, competitor judgment, or stop line.
+- `new`: new thesis/workflow/ICP/product form with no close stored idea.
+- `update_existing`: same idea, but a new thesis or evidence changes priority,
+  verdict, MVP, competitor judgment, or stop line.
 - `duplicate_of`: same idea with no decision-changing new information.
 - `revives`: previously paused/rejected idea now has a new reason to reconsider.
 - `merged_from`: combines two or more prior ideas into a clearer direction.
 - `splits_from`: extracts a narrower, independently useful slice from a prior
   broad idea.
 - `adjacent_to`: overlaps with a prior idea but targets a different user,
-  trigger, or workflow.
+  trigger, workflow, or thesis.
 
 Persist this relationship in `edges.jsonl` and in the per-idea dossier. The
 report must not present a duplicate as a new idea.
 
-## Validation Wording Rules
+## Evidence Wording Rules
 
 - Do not use generic validation homework such as "find 10 users",
   "ask 5 maintainers", or "collect N issues" unless that exact count follows
@@ -148,18 +179,20 @@ report must not present a duplicate as a new idea.
 - For weak ideas, write the direct kill reason and the evidence that would have
   been needed. Do not attach a generic 7-14 day validation plan to make the idea
   feel actionable.
-- For final ideas, the next action must be the shortest decision-changing
+- For final bets, the next action must be the shortest decision-changing
   evidence path, not a validation template. If there is no short evidence path,
-  the idea should not be final.
+  the bet should not be final.
+- Evidence should kill boring or false bets; it should not be used as the main
+  imagination source.
 
 ## Parallelism Rules
 
-Use parallelism where it reduces wall-clock time without multiplying noise:
+Use parallelism where it improves breadth:
 
-- Good: source modules in parallel, competitor searches in parallel, independent
-  critic perspectives in parallel.
-- Weak: parallel brainstorming without source modules, hypotheses, or review
-  gates.
+- Good: independent thesis generation, source modules in parallel, competitor
+  searches in parallel, independent critic perspectives in parallel.
+- Weak: parallel complaint scraping without thesis seeds, product archetypes, or
+  promotion gates.
 
 Use debate only when:
 
@@ -179,9 +212,11 @@ blocked on one specific evidence gap; weak/vetoed ideas get only concise death
 notes in the report. The dossier should contain enough context for a future
 agent to continue the idea without browsing again:
 
-- original signal links and source summaries;
-- what the idea is, how it is used, what it replaces, and product scale;
-- competitor and alternative reasoning;
+- core thesis and why-now logic;
+- AI relevance and promotion-gate result;
+- original signal links and source summaries used to support or kill the bet;
+- what the product/OSS is, how it is used, what it replaces, and product scale;
+- demo moment, repo/star asset, competitor and alternative reasoning;
 - Red Team objections and CEO rulings;
 - dangerous assumptions, shortest evidence path, and stop line.
 

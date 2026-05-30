@@ -19,7 +19,7 @@
 
 ## 信号组合，而不是单一路径
 
-成熟的 idea discovery 工作流通常不是只搜“抱怨”。要把多种信号放进同一个候选池，再用证据强度和可验证性筛选：
+成熟的 idea discovery 工作流通常不是只搜“抱怨”，也不是把每个抱怨机械转成一个小工具。一次性市场扫描可以从信号进入；但定时 idea discovery 应先有 thesis 和产品/OSS bet，再用证据来杀掉、收窄或增强判断。
 
 | 信号桶 | 看什么 | 可能产出的 idea |
 |---|---|---|
@@ -39,7 +39,7 @@
 5. **Opportunity Scoring**：把痛点、替代方案、可付费/可安装信号、开源传播路径、可触达渠道和竞争风险放进同一张表。
 6. **Adversarial Pass**：每个候选必须找反证：是否只是 feature、是否已有好方案、是否没人愿意换、是否只是新闻热度。
 
-如果这是定时或多轮 discovery，而不是一次性市场扫描，使用 `idea-discovery-workflow` 来生成查询清单、Signal Portfolio、证据记忆和报告。
+如果这是定时或多轮 discovery，而不是一次性市场扫描，使用 `idea-discovery-workflow` 来生成 thesis portfolio、product/OSS bet sketches、Promotion Gate、证据记忆和报告。不要用本文件的抱怨/搜索模式替代 thesis-first 生成。
 
 ## 验证已有 idea 的扫描顺序
 

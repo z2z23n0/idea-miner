@@ -40,13 +40,13 @@ it.
 `signals.jsonl`
 
 ```json
-{"id":"sig_...","run_id":"...","bucket":"pain","source_url":"...","source":"HN","observed_at":"...","freshness":"...","summary":"...","quote_summary":"...","current_alternative":"...","evidence_grade":"low|medium|high"}
+{"id":"sig_...","run_id":"...","bucket":"ai_platform_shift|oss_mindshare|pain|competitor|...","evidence_role":"supports|challenges|kills|sharpens|competitor","source_url":"...","source":"HN","observed_at":"...","freshness":"...","summary":"...","quote_summary":"...","current_alternative":"...","evidence_grade":"low|medium|high"}
 ```
 
 `ideas.jsonl`
 
 ```json
-{"id":"idea_...","run_id":"...","name":"...","aliases":["..."],"source_type":"...","shape":"CLI|MCP|Skill|OSS|...","target_user":"...","status":"candidate|final|rejected|paused|revived|updated|duplicate","priority":"P0|P1|P2|null","history_relation":"new|update_existing|duplicate_of|revives|merged_from|splits_from|adjacent_to","related_ideas":["idea_..."],"dossier_path":"runs/<run_id>/ideas/<idea_id>.md","detail_path":"runs/<run_id>/ideas/<idea_id>.json"}
+{"id":"idea_...","run_id":"...","name":"...","aliases":["..."],"core_thesis":"...","ai_relevance":"AI-core|AI-native workflow|AI-leveraged|non-AI exceptional|non-AI reject","promotion_gate":"pass|backlog|reject","shape":"complete_product|high_star_oss|SaaS|GitHub OSS|CLI|MCP|Skill|...","target_user":"...","status":"candidate|final|rejected|paused|revived|updated|duplicate","priority":"P0|P1|P2|null","history_relation":"new|update_existing|duplicate_of|revives|merged_from|splits_from|adjacent_to","related_ideas":["idea_..."],"dossier_path":"runs/<run_id>/ideas/<idea_id>.md","detail_path":"runs/<run_id>/ideas/<idea_id>.json"}
 ```
 
 Keep `ideas.jsonl` compact, but always include `aliases`, `history_relation`,
@@ -97,11 +97,12 @@ primary idea.
 `runs/<run_id>/source-notes.jsonl`
 
 ```json
-{"id":"src_...","run_id":"...","url":"...","platform":"GitHub","title":"...","access_status":"fetched|summary-only|blocked|not-covered","observed_at":"...","freshness":"...","evidence_type":"issue|comment|docs|product_news|competitor","summary":"...","used_for":["idea_..."],"claims":["..."]}
+{"id":"src_...","run_id":"...","url":"...","platform":"GitHub","title":"...","access_status":"fetched|summary-only|blocked|not-covered","observed_at":"...","freshness":"...","evidence_type":"issue|comment|docs|product_news|competitor","evidence_role":"supports|challenges|kills|sharpens|competitor","summary":"...","used_for":["idea_..."],"claims":["..."]}
 ```
 
 This file is the source-level cache for later handoffs. It should contain
-summaries and claim mappings, not raw copyrighted articles or private content.
+summaries, evidence roles, and claim mappings, not raw copyrighted articles or
+private content.
 
 `runs/<run_id>/ideas/<idea_id>.json`
 
@@ -115,9 +116,23 @@ summaries and claim mappings, not raw copyrighted articles or private content.
   "related_ideas": [{"id": "idea_...", "name": "...", "relationship": "merged_from", "note": "..."}],
   "verdict": "advance|validate|narrow|pause|reject",
   "confidence": "low|medium|high",
+  "core_thesis": "...",
+  "ai_relevance": "AI-core|AI-native workflow|AI-leveraged|non-AI exceptional|non-AI reject",
+  "promotion_gate": {
+    "decision": "pass|backlog|reject",
+    "product_or_oss_scale": "complete product|high-star OSS|backlog-only small tool",
+    "why_final_slot": "...",
+    "why_not_action_only": "...",
+    "demo_moment": "...",
+    "repo_star_asset": "..."
+  },
   "source_type": "...",
   "product_card": {
+    "core_thesis": "...",
+    "ai_relevance": "...",
     "product_form": "...",
+    "why_final_slot": "...",
+    "why_not_action_only": "...",
     "target_user": "...",
     "usage_moment": "...",
     "inputs": "...",
@@ -125,6 +140,8 @@ summaries and claim mappings, not raw copyrighted articles or private content.
     "outputs": "...",
     "replaced_workaround": "...",
     "why_substitutes_fall_short": "...",
+    "demo_moment": "...",
+    "repo_star_asset": "...",
     "shortest_evidence_path": "...",
     "stop_line": "..."
   },
@@ -137,7 +154,7 @@ summaries and claim mappings, not raw copyrighted articles or private content.
   "sources": ["src_..."],
   "alternatives": ["..."],
   "mvp": {"does": ["..."], "does_not_do": ["..."]},
-  "product_forms": ["CLI", "GitHub Action"],
+  "product_forms": ["GitHub OSS", "CLI"],
   "competitors": ["comp_..."],
   "why_still_worth_doing": "...",
   "ai_leverage": "...",
@@ -163,9 +180,10 @@ artifacts, without repeating source discovery or competitor searches.
 Required sections:
 
 - Handoff purpose and current verdict.
-- Reader-readable product card: product form, target user, usage moment, inputs,
-  system action, outputs, replaced workaround, why substitutes fall short,
-  shortest evidence path, and stop line.
+- Core thesis, AI relevance, and promotion-gate result.
+- Reader-readable product/OSS card: product form, target user, usage moment,
+  inputs, system action, outputs, replaced workaround, why substitutes fall
+  short, 30-second demo, repo/star asset, shortest evidence path, and stop line.
 - What this is and how it is used.
 - Origin in this workflow, including merged/duplicated prior ideas.
 - History relation: whether this is new, an update, a duplicate, a revival, a
@@ -173,7 +191,8 @@ Required sections:
 - Source map: original URLs, access status, observed freshness, and what each
   source supports.
 - Current alternatives and competitor reasoning.
-- Product form, MVP scope, explicit non-goals, and product-scale path.
+- Product form, MVP scope, explicit non-goals, product-scale path, and why this
+  is not merely a GitHub Action, CI gate, PR comment, checklist, or wrapper.
 - Red Team objections, responses, and CEO rulings.
 - Dangerous assumptions, shortest evidence path, and stop line.
 - Distribution or contact targets only when explicitly requested for the run.

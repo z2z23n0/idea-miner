@@ -96,7 +96,11 @@ function sourceMatchesIdea(source, idea) {
 function validateProductCard(idea, md, label, errors) {
   const card = idea.product_card || {};
   const required = [
+    ['core_thesis', '核心 thesis'],
+    ['ai_relevance', 'AI 相关性'],
     ['product_form', '产品形态'],
+    ['why_final_slot', '为什么配占 final 名额'],
+    ['why_not_action_only', '为什么不是 Action/小工具'],
     ['target_user', '目标用户'],
     ['usage_moment', '使用时刻'],
     ['inputs', '输入'],
@@ -104,6 +108,8 @@ function validateProductCard(idea, md, label, errors) {
     ['outputs', '输出'],
     ['replaced_workaround', '替代的手工动作'],
     ['why_substitutes_fall_short', '为什么现有替代不够'],
+    ['demo_moment', '30 秒 demo'],
+    ['repo_star_asset', 'repo/star 资产'],
     ['shortest_evidence_path', '最短证据路径'],
     ['stop_line', '停止线'],
   ];
@@ -112,7 +118,7 @@ function validateProductCard(idea, md, label, errors) {
     .filter(([field]) => !wordy(card[field]))
     .map(([, title]) => title);
 
-  const hasMarkdownCard = /读者可懂产品卡片|Reader-readable product card/i.test(md)
+  const hasMarkdownCard = /读者可懂产品卡片|读者可懂产品\s*\/\s*OSS\s*卡片|Reader-readable product(?:\/OSS)? card/i.test(md)
     && required.every(([, title]) => md.includes(title));
 
   if (missingJsonFields.length > 0 && !hasMarkdownCard) {
@@ -155,6 +161,9 @@ function validateSourceSupport(idea, md, sourceNotes, label, errors) {
     if (!['fetched', 'summary-only', 'blocked', 'not-covered'].includes(source.access_status)) {
       errors.push(`${label}: source note ${source.id || source.url} has invalid access_status`);
     }
+    if (!['supports', 'challenges', 'kills', 'sharpens', 'competitor'].includes(source.evidence_role)) {
+      errors.push(`${label}: source note ${source.id || source.url} has invalid or missing evidence_role`);
+    }
     if (!nonEmptyArray(source.claims)) {
       errors.push(`${label}: source note ${source.id || source.url} must include supported claims`);
     }
@@ -186,6 +195,8 @@ function validateIdea(jsonFile, sourceNotes, errors) {
     ['history_relation', 'history_relation'],
     ['verdict', 'verdict'],
     ['confidence', 'confidence'],
+    ['core_thesis', 'core_thesis'],
+    ['ai_relevance', 'ai_relevance'],
   ];
 
   const requiredLongJson = [
@@ -204,6 +215,31 @@ function validateIdea(jsonFile, sourceNotes, errors) {
 
   for (const [field, title] of requiredLongJson) {
     if (!wordy(idea[field])) errors.push(`${label}: missing or too-short ${title}`);
+  }
+
+  const allowedAiRelevance = new Set([
+    'AI-core',
+    'AI-native workflow',
+    'AI-leveraged',
+    'non-AI exceptional',
+    'non-AI reject',
+  ]);
+  if (nonBlank(idea.ai_relevance) && !allowedAiRelevance.has(idea.ai_relevance)) {
+    errors.push(`${label}: invalid ai_relevance ${idea.ai_relevance}`);
+  }
+  if (idea.ai_relevance === 'non-AI reject') {
+    errors.push(`${label}: non-AI reject ideas must stay in report death notes, not ideas/ dossiers`);
+  }
+
+  const promotionGate = idea.promotion_gate || {};
+  if (!['pass', 'backlog', 'reject'].includes(promotionGate.decision)) {
+    errors.push(`${label}: promotion_gate.decision must be pass/backlog/reject`);
+  }
+  if (promotionGate.decision === 'reject') {
+    errors.push(`${label}: rejected ideas must stay in report death notes, not ideas/ dossiers`);
+  }
+  for (const field of ['product_or_oss_scale', 'why_final_slot', 'why_not_action_only', 'demo_moment', 'repo_star_asset']) {
+    if (!wordy(promotionGate[field])) errors.push(`${label}: missing promotion_gate.${field}`);
   }
 
   const usage = idea.usage || {};
@@ -226,6 +262,10 @@ function validateIdea(jsonFile, sourceNotes, errors) {
   if (!nonEmptyArray(idea.product_forms)) {
     errors.push(`${label}: missing product_forms`);
   }
+  const formsText = idea.product_forms.join(' ').toLowerCase();
+  if (/github action|ci gate|pr comment/.test(formsText) && !wordy(promotionGate.why_not_action_only)) {
+    errors.push(`${label}: Action/CI/PR forms must explain why the idea is not action-only`);
+  }
 
   if (!hasAny(md, [/Current alternatives and competitor reasoning/i, /竞品判断/, /替代方案/])) {
     errors.push(`${label}: dossier must include competitor or alternative reasoning`);
@@ -238,6 +278,21 @@ function validateIdea(jsonFile, sourceNotes, errors) {
   }
   if (!hasAny(md, [/stop line/i, /停止线/])) {
     errors.push(`${label}: dossier must include stop line`);
+  }
+  if (!hasAny(md, [/core thesis/i, /核心 thesis/i, /核心 thesis/])) {
+    errors.push(`${label}: dossier must include core thesis`);
+  }
+  if (!hasAny(md, [/AI 相关性/i, /ai relevance/i])) {
+    errors.push(`${label}: dossier must include AI relevance`);
+  }
+  if (!hasAny(md, [/30 秒 demo/i, /30-second demo/i])) {
+    errors.push(`${label}: dossier must include 30-second demo`);
+  }
+  if (!hasAny(md, [/repo\/star 资产/i, /star asset/i])) {
+    errors.push(`${label}: dossier must include repo/star asset`);
+  }
+  if (!hasAny(md, [/为什么不是 Action/i, /not action-only/i, /Action\/小工具/])) {
+    errors.push(`${label}: dossier must explain why it is not action-only`);
   }
 }
 
@@ -264,18 +319,33 @@ if (fs.existsSync(path.join(absRunDir, 'report.md'))) {
   report = readText(path.join(absRunDir, 'report.md'));
   const reportSections = [
     '今日 Verdict',
-    'Signal Portfolio',
+    'Discovery Thesis',
+    'Product / OSS Bet Sketches',
+    'Evidence Sweep',
     '历史关联与新颖性',
+    'Promotion Gate',
     '候选池与迭代',
-    '最终过线 Idea',
+    '最终 Product / OSS Bets',
     'Reader Clarity Gate',
     'Persistence Note',
   ];
   for (const heading of reportSections) {
     if (!report.includes(heading)) errors.push(`report.md missing section: ${heading}`);
   }
-  if (!/读者可懂产品卡片/.test(report)) {
-    errors.push('report.md must include a reader-readable product card for final ideas');
+  if (!/读者可懂产品 \/ OSS 卡片/.test(report)) {
+    errors.push('report.md must include a reader-readable product/OSS card for final ideas');
+  }
+  if (!/AI-core|AI-native workflow|AI-leveraged|non-AI exceptional/.test(report)) {
+    errors.push('report.md must include AI relevance labels');
+  }
+  if (!/Action\/CI\/PR-only|为什么不是 Action|GitHub Action/.test(report)) {
+    errors.push('report.md must include Action/CI/PR-only promotion gate language');
+  }
+  if (!/30 秒 demo/.test(report)) {
+    errors.push('report.md must include 30-second demo fields');
+  }
+  if (!/repo\/star 资产/.test(report)) {
+    errors.push('report.md must include repo/star asset fields');
   }
 }
 

@@ -3,140 +3,119 @@
 const topics = process.argv.slice(2).filter(Boolean);
 const hasExplicitTopics = topics.length > 0;
 
+const thesisSeeds = [
+  [
+    'Agent-readable software',
+    '哪些人类 UI、状态、权限、配置或审计流程会因为 agent 参与而需要变成协议、状态文件、测试或 policy？',
+  ],
+  [
+    'AI coding aftershocks',
+    'AI 写代码后，测试、review、debug、deploy、rollback、ownership、cost 哪个边界会重新分裂？',
+  ],
+  [
+    'Repo as product demo',
+    '哪个开源 repo 可以用 30 秒 demo 展示一个智能行为，让开发者愿意 star、fork 或依赖？',
+  ],
+  [
+    'Context and memory infrastructure',
+    '当 agent 长期参与项目，哪些 memory、identity、permission、provenance、reputation 层会变成基础设施？',
+  ],
+  [
+    'Eval and conformance',
+    '哪个 AI/agent 工作流缺少事实标准、benchmark、fixture、replay、simulator 或 compatibility suite？',
+  ],
+  [
+    'AI cost and reliability',
+    '哪个原本不可见的推理成本、质量、漂移、权限或安全问题会变成团队每天需要监控的对象？',
+  ],
+  [
+    'Solo builder leverage',
+    '以前只有大公司能做的哪类产品，因为 AI 降低构建/运营成本，现在能被小团队开源或产品化？',
+  ],
+  [
+    'Platform capability shift',
+    '哪个新平台 API / changelog / pricing / policy 变化会催生新的开源标准、迁移层或开发者心智？',
+  ],
+];
+
+const productArchetypes = [
+  'complete SaaS / web app',
+  'GitHub OSS with 30-second demo',
+  'CLI + durable repo asset',
+  'SDK / protocol / standard',
+  'benchmark / eval corpus / conformance suite',
+  'MCP server / Skill / agent workflow',
+  'playground / visual debugger',
+  'browser extension with clear workflow',
+  'platform module with independent mindshare',
+];
+
 const sourceModules = [
   {
     name: 'HN',
-    nativeFeeds: [
-      'front page / newest',
-      'Show HN',
-      'Ask HN',
-      'long comment threads with objections',
-    ],
-    rawSignalHints: [
-      'new tools getting sustained discussion',
-      'repeated complaints in comments',
-      'people comparing current substitutes',
-      'launches with clear "why now"',
-    ],
+    nativeFeeds: ['front page / newest', 'Show HN', 'Ask HN', 'long comment threads with objections'],
+    use: ['new mental models', 'developer objections', 'launches with clear why-now', 'evidence that a thesis is too obvious or already solved'],
   },
   {
     name: 'Reddit',
-    nativeFeeds: [
-      'new and high-interaction posts in relevant software/building communities',
-      'niche subreddits for builders, devtools, automation, AI, startups, plugins, extensions',
-    ],
-    rawSignalHints: [
-      'workarounds and scripts users already wrote',
-      'requests for alternatives',
-      'pricing or setup backlash',
-      'multiple agreeing replies',
-    ],
+    nativeFeeds: ['niche software/building/AI/devtool/startup subreddits', 'new and high-interaction posts'],
+    use: ['workflow reality', 'workarounds', 'repeated pain', 'language users use for substitutes'],
   },
   {
     name: 'GitHub',
-    nativeFeeds: [
-      'trending and new repositories',
-      'recent issues and discussions',
-      'recent releases',
-      'topics and awesome lists only after a signal points there',
-    ],
-    rawSignalHints: [
-      'fast star/fork growth',
-      'recurring issues in active projects',
-      'stale but demanded projects',
-      'ecosystem gaps exposed by new releases',
-    ],
+    nativeFeeds: ['trending and new repositories', 'recent issues/discussions', 'recent releases', 'topics after a thesis points there'],
+    use: ['star mindshare', 'repo asset patterns', 'maintained/abandoned gaps', 'benchmark or protocol opportunities'],
   },
   {
     name: 'Product Hunt',
-    nativeFeeds: [
-      'today launches',
-      'recent launches',
-      'maker comments',
-      'positioning and pricing pages',
-    ],
-    rawSignalHints: [
-      'new product category forming',
-      'launch with strong attention but narrow missing workflow',
-      'comments asking for integrations or open-source alternatives',
-      'good idea with weak UX or trust gap',
-    ],
+    nativeFeeds: ['today/recent launches', 'maker comments', 'positioning and pricing pages'],
+    use: ['category formation', 'weak products with good thesis', 'AI-era product surfaces'],
   },
   {
     name: 'Reviews',
-    nativeFeeds: [
-      'G2/Capterra/software review pages',
-      'Chrome Web Store / App Store extension reviews',
-      'blog/video reviews',
-      'comparison posts',
-    ],
-    rawSignalHints: [
-      'low-star repeated complaints',
-      'pricing complaints',
-      'missing integrations',
-      'users switching away',
-    ],
+    nativeFeeds: ['G2/Capterra/app stores/extension stores/blog/video reviews'],
+    use: ['substitute satisfaction', 'switching reasons', 'pricing or UX backlash'],
   },
   {
     name: 'Official',
-    nativeFeeds: [
-      'official blogs',
-      'release notes',
-      'changelogs',
-      'docs and pricing changes',
-    ],
-    rawSignalHints: [
-      'new platform capability that enables replicas/extensions',
-      'breaking changes or migration pressure',
-      'new API surface needing tooling',
-      'policy or pricing change creating gaps',
-    ],
+    nativeFeeds: ['official blogs', 'release notes', 'changelogs', 'docs/pricing changes'],
+    use: ['platform shifts', 'new APIs', 'breaking changes', 'policy changes'],
   },
   {
     name: 'Search',
-    nativeFeeds: [
-      'broad web/news search after raw signals',
-      'alternative/comparison/tutorial pages',
-      'cached pages when primary source is restricted',
-    ],
-    rawSignalHints: [
-      'repeatability across sources',
-      'direct competitors and substitutes',
-      'evidence that the pain is not isolated',
-      'market/category language',
-    ],
+    nativeFeeds: ['competitor lookup after bet sketches', 'alternatives/tutorial/comparison pages', 'cached pages'],
+    use: ['kill checks', 'repeatability', 'market/category language'],
   },
 ];
 
-const signalBuckets = [
-  ['痛点/抱怨', '明确问题、当前替代方案、重复抱怨、用户已写 workaround 或已付费。'],
-  ['产品/平台新闻', '新功能、release/changelog、迁移、兼容、安全、调试或复刻机会。'],
-  ['竞品缺陷', '闭源、贵、不可自托管、安装复杂、文档差、维护停滞、体验不佳。'],
-  ['开源生态', 'GitHub trending/new repos/issues/releases、依赖、fork、教程、维护接手机会。'],
-  ['趋势窗口', '近 7-30 天跨社区重复出现，而不是单个 viral 点。'],
-  ['评论/评测', 'review、插件市场、Product Hunt 评论、博客/视频评测里的 voice-of-customer。'],
-  ['原创假设', '由新信号联想到但尚未被明确表达的机会；必须用更强 Red Team 拷打。'],
+const aiLabels = [
+  ['AI-core', 'AI/agent/LLM 是核心行为；去掉 AI 产品基本不成立。'],
+  ['AI-native workflow', '机会来自 agent/AI 改变工作流、接口、审计、测试、上下文或信任。'],
+  ['AI-leveraged', 'AI 明显增强价值，但确定性系统承担主要价值；final 需要更强产品/OSS 论证。'],
+  ['non-AI exceptional', '非 AI，但完整产品或 high-star OSS 潜力强到可破例。'],
+  ['non-AI reject', '普通软件/工具机会；进 backlog 或 reject，不占 final。'],
 ];
 
-const fitGate = [
-  ['保留', '软件、SaaS、app、web app、CLI、GitHub OSS、library、SDK、MCP server、Skill、browser extension、template、GitHub Action、automation script、data product、agent workflow。'],
-  ['保留', '非软件痛点，但可以清楚转译成软件/开源/自动化机会。例：不是卖袜子，而是独立站尺码退货原因分析。'],
-  ['过滤', '纯线下履约、库存、供应链、硬件制造、消费品牌、门店服务、纯运营套利。'],
-  ['过滤', '泛内容/SEO/流量套利，除非有明确软件 workflow 和可防守分发。'],
+const promotionRules = [
+  ['final 可过', 'AI-core 或 AI-native workflow，且是完整产品方向或 high-star OSS。'],
+  ['final 可过', 'AI-leveraged，但 AI 不是表层总结/PR comment/config conversion，且产品/OSS 形态很强。'],
+  ['final 破例', 'non-AI exceptional，必须有完整产品面或清晰 high-star repo 资产。'],
+  ['final 不过', 'GitHub Action、CI gate、PR comment、template、hook、checklist、thin wrapper 是 idea 本体。'],
+  ['final 不过', '一个抱怨直接对应一个小 checker，没有新 thesis、demo moment 或 repo/star 心智。'],
 ];
 
-const enrichmentTemplates = [
-  '"{signal}" alternative',
-  '"{signal}" open source',
-  '"{signal}" pricing',
-  '"{signal}" complaint',
-  '"{signal}" issue',
-  '"{signal}" GitHub',
-  '"{signal}" Product Hunt',
-  '"{signal}" review',
-  'site:reddit.com "{signal}"',
-  'site:news.ycombinator.com "{signal}"',
-  'site:github.com "{signal}" issues',
+const evidenceQueries = [
+  '"{bet}" alternative',
+  '"{bet}" open source',
+  '"{bet}" GitHub',
+  '"{bet}" benchmark',
+  '"{bet}" conformance',
+  '"{bet}" pricing',
+  '"{bet}" issue',
+  '"{bet}" review',
+  'site:news.ycombinator.com "{bet}"',
+  'site:reddit.com "{bet}"',
+  'site:github.com "{bet}" issues',
 ];
 
 const explicitTopicTemplates = [
@@ -147,8 +126,7 @@ const explicitTopicTemplates = [
   'site:github.com "{topic}" issues',
   'site:reddit.com "{topic}" alternative',
   '"alternative to" "{topic}" "open source"',
-  '"{topic}" "pricing" "too expensive"',
-  '"{topic}" "documentation" "confusing"',
+  '"{topic}" benchmark OR conformance OR eval',
 ];
 
 function fill(template, value, placeholder) {
@@ -158,52 +136,87 @@ function fill(template, value, placeholder) {
 console.log('# Idea Scout Kit');
 console.log();
 console.log(`生成时间：${new Date().toISOString()}`);
-console.log(`模式：${hasExplicitTopics ? 'explicit-topic enrichment' : 'source-first discovery'}`);
+console.log(`模式：${hasExplicitTopics ? 'explicit-topic constrained thesis-first' : 'thesis-first discovery'}`);
 if (hasExplicitTopics) {
   console.log(`用户指定主题：${topics.join(', ')}`);
+  console.log('这些主题是 thesis constraints，不替代想象力生成。');
 } else {
-  console.log('用户未指定主题：不使用默认关键词；先从 source-native current feeds 收集原始信号。');
+  console.log('用户未指定主题：先生成 thesis portfolio，再用 sources/evidence 做刹车和补强。');
 }
 console.log();
 
-console.log('## Source-First Modules');
+console.log('## Thesis Seeds');
 console.log();
-console.log('| 模块 | 先看哪些 source-native feeds | 原始信号线索 | 覆盖状态 |');
+console.log('| Seed | Generator Question |');
+console.log('|---|---|');
+for (const [seed, question] of thesisSeeds) {
+  console.log(`| ${seed} | ${question} |`);
+}
+console.log();
+
+console.log('## Discovery Thesis Template');
+console.log();
+console.log('| # | Thesis | AI 相关性假设 | 为什么现在可能成立 | 可形成的产品/OSS 方向 | 想象力评分 |');
+console.log('|---:|---|---|---|---|---:|');
+for (let i = 1; i <= 20; i += 1) {
+  console.log(`| ${i} |  |  |  |  |  |`);
+}
+console.log();
+
+console.log('## Product / OSS Bet Sketch Template');
+console.log();
+console.log('| Bet | 来源 thesis | 产品/OSS 形态 | 30 秒 demo | repo/star 资产 | 为什么可能值得想 | 初始处理 |');
+console.log('|---|---|---|---|---|---|---|');
+for (let i = 1; i <= 10; i += 1) {
+  console.log(`|  |  | ${productArchetypes[(i - 1) % productArchetypes.length]} |  |  |  | draft / reject |`);
+}
+console.log();
+
+console.log('## Source Modules For Evidence Sweep');
+console.log();
+console.log('| 模块 | source-native feeds | 用途 | 覆盖状态 |');
 console.log('|---|---|---|---|');
 for (const module of sourceModules) {
-  console.log(`| ${module.name} | ${module.nativeFeeds.join('<br>')} | ${module.rawSignalHints.join('<br>')} | 待填 |`);
+  console.log(`| ${module.name} | ${module.nativeFeeds.join('<br>')} | ${module.use.join('<br>')} | 待填 |`);
 }
 console.log();
 
-console.log('## Signal Buckets');
+console.log('## AI Relevance Gate');
 console.log();
-console.log('| 信号桶 | 判定要点 |');
+console.log('| Label | Meaning |');
 console.log('|---|---|');
-for (const [bucket, note] of signalBuckets) {
-  console.log(`| ${bucket} | ${note} |`);
+for (const [label, meaning] of aiLabels) {
+  console.log(`| ${label} | ${meaning} |`);
 }
 console.log();
 
-console.log('## Fit Gate');
+console.log('## Product / OSS Promotion Gate');
 console.log();
 console.log('| 处理 | 规则 |');
 console.log('|---|---|');
-for (const [action, rule] of fitGate) {
+for (const [action, rule] of promotionRules) {
   console.log(`| ${action} | ${rule} |`);
 }
 console.log();
 
-console.log('## Signal-Derived Enrichment Queries');
+console.log('## Promotion Gate Table');
 console.log();
-console.log('先填 Signal Portfolio，再从每条 promising raw signal 提取 product name、用户原话、错误信息、竞品类别、workflow 或 pricing complaint，替换 `{signal}`。');
+console.log('| Bet | AI 相关性 | 产品/OSS 尺度 | 是否 Action/CI/PR-only | high-star 或产品化理由 | 最大 veto 风险 | CEO 处理 |');
+console.log('|---|---|---|---|---|---|---|');
+console.log('|  | AI-core / AI-native workflow / AI-leveraged / non-AI exceptional / non-AI reject | complete product / high-star OSS / backlog-only small tool | yes/no |  |  | final / backlog / reject |');
 console.log();
-for (const q of enrichmentTemplates) {
+
+console.log('## Evidence Sweep Queries');
+console.log();
+console.log('先有 bet sketch，再把 `{bet}` 替换成产品名、category、protocol、demo asset、核心 workflow 或竞品类别。');
+console.log();
+for (const q of evidenceQueries) {
   console.log(`- \`${q}\``);
 }
 console.log();
 
 if (hasExplicitTopics) {
-  console.log('## Explicit Topic Enrichment Queries');
+  console.log('## Explicit Topic Evidence Queries');
   console.log();
   console.log('仅因为用户显式指定了主题，才使用下面这些 topic-guided 查询。');
   console.log();
@@ -216,40 +229,33 @@ if (hasExplicitTopics) {
   console.log();
 }
 
-console.log('## Signal Portfolio Template');
+console.log('## Evidence Sweep Template');
 console.log();
-console.log('| # | 信号桶 | 来源链接 | 日期/新鲜度 | 证据类型/原话摘要 | 当前替代方案 | 初始 fit gate | 可触发方向 | 证据等级 |');
-console.log('|---:|---|---|---|---|---|---|---|---|');
+console.log('| # | 证据角色 | 来源链接 | 日期/新鲜度 | 摘要 | 支持/挑战的 bet | 影响 |');
+console.log('|---:|---|---|---|---|---|---|');
 for (let i = 1; i <= 12; i += 1) {
-  console.log(`| ${i} |  |  |  |  |  |  |  |  |`);
+  console.log(`| ${i} | supports / challenges / kills / sharpens / competitor |  |  |  |  |  |`);
 }
 console.log();
 
 console.log('## History Relation Template');
 console.log();
-console.log('| 候选 | 历史关系 | 关联旧 idea | 新增信息是否改变判断 | 处理 |');
+console.log('| 候选 | 历史关系 | 关联旧 idea | 新 thesis 或新增信息是否改变判断 | 处理 |');
 console.log('|---|---|---|---|---|');
 console.log('|  | new / update_existing / duplicate_of / revives / merged_from / splits_from / adjacent_to |  |  | final / backlog update / reject duplicate |');
-console.log();
-
-console.log('## Candidate Scoring Template');
-console.log();
-console.log('| Idea | 来源类型 | 历史关系 | 相关信号 | use case 清晰度 0-15 | 痛点/触发证据 0-20 | 替代方案不满 0-15 | 可快速验证 0-15 | 可触达分发 0-15 | 目标匹配 0-10 | 竞争风险可控 0-10 | 新颖性/关系处理 0-10 | 总分 |');
-console.log('|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|');
 console.log();
 
 console.log('## Red Team Questions');
 console.log();
 [
-  '这个候选来自 source-native raw signal，还是来自旧关键词 bias？',
-  '这是不是旧 idea 换名？如果是，新增信息是否改变 verdict、priority、MVP、竞品判断或 stop line？',
-  '这是不是只是单个帖子/单个新闻带来的错觉？',
-  '用户现在的替代方案是否已经足够好？',
-  '成熟竞品是否高采用、高满意、强分发，并覆盖核心痛点？',
-  '这个 idea 是否只是一个 feature，而不是可独立传播的小工具/项目？',
-  '如果是非软件市场，它能否转译成软件/开源/自动化机会？不能就过滤。',
-  '如果是开源项目，5 分钟内能否跑出 aha moment？',
-  '如果是商业产品，谁付钱、为什么今年要买？',
+  '这个 bet 的核心 thesis 是什么？如果没有 thesis，只是 complaint-to-tool，直接降级。',
+  'AI 是核心、AI-native workflow、辅助杠杆，还是只是写总结/PR comment/config conversion？',
+  '这个 bet 是完整产品或 high-star OSS 吗？如果只是 GitHub Action/CI gate/PR comment，为什么不应 reject？',
+  '30 秒 demo 是什么？陌生开发者为什么会 star、试用、fork 或分享？',
+  'repo/star 资产是什么：规则、数据集、benchmark、协议、playground、examples、插件生态，还是别的可积累资产？',
+  '现有替代是否已经足够好？平台是否会一周内吸收？',
+  '这个 idea 是否只是一个 feature、wrapper、template、hook、checklist 或小 checker？',
+  '如果是非 AI，为什么强到可以破例占 final 名额？',
   '当前最短证据路径是什么？它能否直接改变推进/停止判断，而不是泛化验证作业？',
-  '如果这个候选被 veto，下一轮应该换哪个 source-native feed、社区、ICP、产品形态或证据类型？',
+  '如果这个候选被 veto，下一轮应该换哪个 thesis seed、产品 archetype、demo moment、repo asset、ICP 或 source module？',
 ].forEach((q, i) => console.log(`${i + 1}. ${q}`));

@@ -5,87 +5,112 @@ run and say so in the report.
 
 ## CEO / Orchestrator
 
-- Owns the run scope, iteration limit, conflicts, and final decisions.
-- Loads the backlog snapshot before candidate selection and forces every
-  candidate through the history relation gate.
+- Owns the run thesis, iteration limit, conflicts, and final decisions.
+- Keeps the workflow imagination-led: evidence can kill or sharpen bets, but it
+  must not reduce discovery to complaint-to-tool generation.
+- Loads the backlog snapshot before final selection and forces every candidate
+  through the history relation gate.
 - Rejects weak ideas instead of filling quota.
-- Owns the replenish loop: when fewer than 3 ideas pass, sends Scout/Drafter
-  back for new source modules, keywords, ICPs, shapes, or competitor categories
-  instead of lowering standards.
+- Owns the replenish loop: when fewer than 3 ideas pass, sends Thesis Scout and
+  Drafter back for new theses, product archetypes, demo moments, repo assets, or
+  AI-era capability shifts instead of lowering standards.
+- Forces every final idea to pass AI relevance and product/OSS promotion gates.
 - Forces every final idea to include the shortest decision-changing evidence
   path and stop line; does not allow generic validation homework.
-- Forces every final idea to be understandable as an actual product, tool,
-  open-source project, SaaS, platform module, or workflow, including how it is
-  used and what product scale it currently deserves.
+- Forces every final idea to be understandable as an actual complete product
+  direction or high-star OSS project, not just a small integration surface.
 - Runs the Reader Clarity Gate before saving final artifacts. If the Report
-  Reader cannot restate an idea as a concrete product card, the CEO must rewrite
-  or reject it instead of shipping a vague report.
-- Does not let old ideas occupy final slots unless new evidence materially
-  changes priority, verdict, MVP boundary, competitor judgment, or stop line.
+  Reader cannot restate an idea as a concrete product/OSS bet, the CEO must
+  rewrite or reject it instead of shipping a vague report.
+- Does not let old ideas occupy final slots unless a new thesis or evidence
+  materially changes priority, verdict, MVP boundary, competitor judgment, or
+  stop line.
 - Ensures the report is normal Markdown before any host-specific control block.
+
+## Thesis Scout
+
+- Generates 20-30 high-imagination theses before source collection unless the
+  user explicitly asks for a narrow market scan.
+- Focuses on AI-native products, agent workflows, AI coding, AI infra, developer
+  tools for the AI era, and high-star OSS opportunities.
+- Uses source feeds and history as stimulus, not as the only idea generator.
+- Produces "why now" logic and the shift that makes each thesis newly plausible.
+- Avoids safe restatements of user complaints as small tools.
+- When underfilled, changes the thesis seed, capability shift, product
+  archetype, demo moment, or repo asset instead of merely searching another
+  complaint source.
 
 ## Signal Scout
 
-- Builds the source plan and Signal Portfolio.
-- Starts from source-native current feeds by default. Do not use standing topic
-  keywords unless the user explicitly supplied them.
-- Derives enrichment keywords from raw signals after collection.
-- Collects links, dates/freshness, evidence type, user quote summary, and current
-  alternative.
+- Builds the source plan and Signal Portfolio after thesis/bet sketches exist.
+- Collects links, dates/freshness, evidence type, user quote summary, current
+  alternative, competitor signals, and kill signals.
+- Derives enrichment keywords from thesis/bet sketches and raw signals after
+  collection.
 - Marks uncovered or restricted sources.
-- Avoids turning one viral post or one product release into an opportunity.
-- When the candidate pool is underfilled, expands into new communities,
-  competitor classes, platform changes, review sources, source-native feeds, or
-  adjacent workflows based on the last round's kill reasons.
+- Avoids treating one viral post, one complaint, or one product release as a
+  complete opportunity.
+- Separates evidence roles: `supports`, `challenges`, `kills`, `sharpens`, or
+  `competitor`.
 
 ## Idea Drafter
 
-- Drafts at least 5 candidates before CEO selection.
-- Labels source type and evidence level.
-- Labels each candidate's history relation before it can become final: new,
-  update_existing, duplicate_of, revives, merged_from, splits_from, or
-  adjacent_to.
-- Keeps shapes small when possible: CLI, GitHub Action, MCP server, Skill,
-  browser extension, SDK, template, workflow, script, or narrow OSS library.
-- Does not assume small is always better. For each candidate, state the current
-  product scale: small tool, open-source project, SaaS, platform module, large
-  product direction, or mixed path.
+- Turns thesis seeds into at least 8-12 product/OSS bet sketches before CEO
+  selection.
+- Labels AI relevance: `AI-core`, `AI-native workflow`, `AI-leveraged`,
+  `non-AI exceptional`, or `non-AI reject`.
+- Labels source type and evidence level, but does not over-rank evidence during
+  ideation.
+- Labels each candidate's history relation before it can become final: `new`,
+  `update_existing`, `duplicate_of`, `revives`, `merged_from`, `splits_from`, or
+  `adjacent_to`.
+- States product scale: complete product, high-star OSS, platform module, large
+  product direction, mixed path, or backlog-only small tool.
 - Adds usage semantics for each serious candidate: when the user uses it, what
   input it takes, what it does, what it outputs, and what current manual
   workaround it replaces.
-- Revises or replaces candidates after Critic and Competitor review.
-- Replaces killed candidates with genuinely new hypotheses. Do not keep a weak
-  idea alive by renaming it from Action to CLI, hook, internal dogfood, or small
-  tool unless the user's goal changes.
+- Adds a 30-second demo moment and repo/star asset for every OSS-shaped bet.
+- Treats GitHub Action, CI gate, PR comment, template, hook, script, or checklist
+  as integration surfaces. They cannot be the idea body unless attached to a
+  broader complete product or high-star OSS project.
+- Replaces killed candidates with genuinely new bets. Do not keep a weak idea
+  alive by renaming it from Action to CLI, hook, internal dogfood, template, or
+  small tool unless the user's goal changes.
 - Treats duplicate candidates as backlog updates or death notes unless they have
-  decision-changing new evidence.
+  decision-changing new evidence or a new thesis.
 
 ## Red Team / Critic
 
 - Tries to kill candidates with the strongest plausible objections.
-- Checks for weak pain, lack of buyer/audience, mature competitors, distribution
-  failure, maintenance burden, and "just a feature" risk.
-- Applies stricter burden to original, analogy, replica, and news-triggered ideas.
-- Has veto power on hard-kill conditions: target mismatch, thin wrapper, platform
-  absorption, internal-only value, no credible open-source/project asset, or no
-  short evidence path. A vetoed candidate leaves the final pool.
+- Checks for weak thesis, lack of AI relevance, lack of buyer/audience, no
+  high-star OSS mindshare, mature competitors, distribution failure, maintenance
+  burden, platform absorption, and "just a feature/integration" risk.
+- Applies stricter burden to original, analogy, replica, news-triggered, and
+  non-AI exceptional ideas.
+- Has veto power on hard-kill conditions: target mismatch, Action-only/CI-only
+  shape, thin wrapper, platform absorption, internal-only value, no credible
+  open-source/project asset, no demo moment, no product surface, or no short
+  evidence path. A vetoed candidate leaves the final pool.
 
 ## Competitor Investigator
 
 - Searches direct competitors, indirect substitutes, OSS, SaaS, browser
-  extensions, CLIs, templates, internal manual workflows, and platform features.
+  extensions, CLIs, templates, internal manual workflows, platform features, and
+  platform-native absorption paths.
 - Evaluates competitor scope, adoption, satisfaction, price/open-source gap,
-  UX, distribution, and whether the substitute is good enough.
+  UX, distribution, whether the substitute is good enough, and whether a new
+  product/OSS bet has a memorable wedge.
 
 ## Report Reader
 
 - Reads the final report as someone who did not participate in discovery.
-- For each final idea, tries to restate the product card in plain language:
-  product form, target user, usage moment, inputs, system action, outputs,
-  replaced workaround, why substitutes are not enough, shortest evidence path,
-  and stop line.
+- For each final idea, tries to restate the product/OSS bet in plain language:
+  core thesis, AI relevance, product form, target user, usage moment, inputs,
+  system action, outputs, replaced workaround, why substitutes are not enough,
+  30-second demo, repo/star asset, shortest evidence path, and stop line.
 - Flags any idea that is only a theme, market label, technology name, generic
-  "AI can do X" direction, or evidence dump without a usable workflow.
+  "AI can do X" direction, evidence dump, GitHub Action, CI gate, PR comment,
+  checklist, template, or wrapper without a larger product/OSS body.
 - Checks whether source links and dossiers support the claims made in the
   product card. Generic feed URLs are not enough unless `source-notes.jsonl`
   records the specific observed signal and claim mapping.

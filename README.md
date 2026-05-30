@@ -2,11 +2,11 @@
 
 Automatic startup and open-source idea mining for agents.
 
-`idea-miner` helps an agent turn fresh public signals into startup and
-open-source project candidates. It scans places like Hacker News, Reddit,
-GitHub issues, Product Hunt, release notes, developer forums, review sites, and
-product news, then organizes the evidence into a small set of ideas with
-competitor context, risk notes, shortest evidence paths, and stop lines.
+`idea-miner` helps an agent turn high-imagination AI-era theses into startup and
+open-source product bets. It starts from thesis generation, sketches product/OSS
+bets, then scans places like Hacker News, Reddit, GitHub issues, Product Hunt,
+release notes, developer forums, review sites, and product news to kill,
+sharpen, or de-risk those bets.
 
 The repo contains two agent skills plus a few helper scripts. The skills define
 the research workflow, source policy, role contracts, pressure-test rubrics,
@@ -14,10 +14,10 @@ report format, and local evidence memory format.
 
 ## What It Produces
 
-- A **Signal Portfolio** grouped by pain points, product news, competitor gaps,
-  open-source ecosystem changes, reviews, and short-term trend windows.
-- Candidate startup and open-source ideas with target users, usage moments,
-  expected inputs and outputs, MVP shape, AI leverage, and shortest evidence
+- A **Discovery Thesis** portfolio for AI-native products, agent workflows, AI
+  coding, AI infra, and high-star OSS opportunities.
+- Product/OSS bet sketches with target users, usage moments, 30-second demo
+  moments, repo/star assets, AI relevance, MVP shape, and shortest evidence
   paths.
 - Competitor and substitute checks for serious candidates.
 - Red Team objections, dangerous assumptions, and CEO-style decisions:
@@ -35,10 +35,12 @@ report format, and local evidence memory format.
 ```text
 prepare_run
   -> load_history
-  -> collect_signals
+  -> generate_thesis_portfolio
+  -> sketch_product_oss_bets
+  -> collect_evidence
   -> normalize_signals
-  -> draft_candidates
-  -> fit_gate
+  -> ai_relevance_gate
+  -> product_oss_promotion_gate
   -> history_relation_gate
   -> hard_gate
   -> critic_review
@@ -50,20 +52,20 @@ prepare_run
   -> persist_run_artifacts
 ```
 
-The default run is rigorous and source-first. Unless the user explicitly gives
-topics, the scout starts from current source-native feeds instead of fixed
-standing keywords. Keywords are derived later from promising raw signals to
-enrich evidence, search competitors, and test repeatability. Weak candidates are
-killed before long write-ups, and fewer than three passing ideas triggers
-replenish rounds with new source-native feeds, communities, ICPs, product
-shapes, or evidence types. If the runtime provides real sub-agent or multi-agent
-tools, the same role contracts can be dispatched. If it does not, one agent can
-simulate the roles and label the report accordingly.
+The default run is rigorous and thesis-first. Unless the user explicitly asks
+for a narrow scan, the scout starts by generating AI-era theses and product/OSS
+bet sketches. Evidence comes later as a brake: it supports, challenges, kills,
+or sharpens bets; it is not the primary imagination source. Weak candidates are
+killed before long write-ups, and fewer than three passing bets triggers
+replenish rounds with new thesis seeds, product archetypes, demo moments,
+repo/star assets, ICPs, or source modules. If the runtime provides real
+sub-agent or multi-agent tools, the same role contracts can be dispatched. If it
+does not, one agent can simulate the roles and label the report accordingly.
 
-The useful output is the evidence-to-decision chain: where a signal came from,
-which idea it supports, whether it is new or related to prior ideas, what
-alternatives already exist, why the idea survived or failed review, and what
-shortest evidence path would actually change the decision.
+The useful output is the thesis-to-decision chain: what bet the run is making,
+why now, how it could become a product or high-star OSS project, what evidence
+supports or kills it, why it survived review, and what shortest evidence path
+would actually change the decision.
 
 Recurring runs also save per-idea dossiers. Handoff should be a packaging step:
 read the stored dossier, write a temporary handoff file, and avoid web refreshes
@@ -80,7 +82,7 @@ research or implementation unless requested.
 
 | Skill | Role |
 |---|---|
-| `idea-discovery-workflow` | Runs the research workflow: source plan, roles, Signal Portfolio, evidence memory, and report format |
+| `idea-discovery-workflow` | Runs the research workflow: thesis portfolio, product/OSS bets, source plan, roles, evidence memory, and report format |
 | `ai-founder-playbook` | Judges the ideas: pressure tests, competitor reasoning, commercial/open-source split, shortest evidence paths, and launch support |
 
 The split keeps orchestration and judgment separate. A scheduled run can use
@@ -92,6 +94,8 @@ decision-changing next action.
 
 | Bucket | Examples |
 |---|---|
+| AI / platform shifts | Model, agent, API, pricing, policy, protocol, and devtool changes |
+| OSS mindshare | GitHub trending/new repos, demos, benchmarks, standards, playgrounds, stars/forks |
 | Pain / complaints | Reddit and HN threads, GitHub issues, low reviews, workarounds, "I wish there was..." |
 | Product / platform news | Official blogs, release notes, changelogs, Show HN, Product Hunt, new agent/devtool features |
 | Competitor gaps | Closed source, no self-hosting, expensive pricing, poor docs, complex setup, slow issue response |
@@ -99,26 +103,30 @@ decision-changing next action.
 | Trend windows | Repeated signals across multiple communities in the last 7-30 days |
 | Reviews / evaluations | G2, Capterra, Chrome Web Store, App Store, Product Hunt comments, blog/video reviews |
 
-Default discovery should not begin with standing topic keywords. It should first
-sample current source feeds, then use a fit gate to keep software, OSS,
-automation, CLI, MCP, Skill, SDK, browser extension, SaaS, data-product, and
-agent-workflow opportunities. Physical goods, local services, inventory,
-hardware manufacturing, offline logistics, and pure operations plays are
-filtered unless they can be clearly reframed as software.
+Default discovery should not begin with standing topic keywords or complaint
+mining. It should first generate thesis seeds and product/OSS bet sketches, then
+use sources to support, challenge, kill, or sharpen those bets. Final ideas
+should be AI-core, AI-native workflow, or exceptional non-AI product/OSS bets.
+GitHub Actions, CI gates, PR comments, templates, hooks, checklists, and thin
+wrappers can be integration surfaces, but not the final idea body.
 
 ## Report Format
 
 The default report includes:
 
 - Today's verdict.
+- Discovery Thesis.
+- Product / OSS Bet Sketches.
+- Evidence Sweep.
 - Covered and uncovered sources.
-- Signal Portfolio.
 - Candidate pool and iteration history.
+- Promotion Gate: AI relevance, product/OSS scale, and Action/CI/PR-only veto.
 - History relation and novelty handling: new, update_existing, duplicate_of,
   revives, merged_from, splits_from, adjacent_to.
-- Final ideas with problem, target user, sources, current alternatives, MVP
-  shape, competitor table, AI leverage, objections, assumptions, priority, and
-  shortest evidence path.
+- Final product/OSS bets with core thesis, AI relevance, 30-second demo,
+  repo/star asset, target user, sources, alternatives, MVP shape, competitor
+  table, AI leverage, objections, assumptions, priority, and shortest evidence
+  path.
 - Rejected or paused candidates.
 - Role conflicts and CEO decisions.
 - Source appendix.
@@ -179,10 +187,11 @@ prompts/customization-block.md
 Customization examples:
 
 ```text
-主要关注主题：AI coding agents, MCP, developer tools
+主要关注 thesis：agent-readable software, AI coding aftershocks, high-star AI OSS
 排除方向：consumer apps, crypto, generic SEO
-偏好形态：CLI / GitHub OSS / MCP server / Skill / browser extension
-成功标准：GitHub stars / real installs / paid SaaS / mixed OSS-commercial
+偏好形态：complete product / high-star GitHub OSS / MCP server / Skill / SDK
+成功标准：AI-core product / AI-native workflow / GitHub stars / real installs / paid SaaS
+不算 final：GitHub Action-only / CI gate / PR comment / thin wrapper
 ```
 
 ## Helper Scripts
@@ -201,10 +210,11 @@ node scripts/install-local.mjs --skills-dir=/path/to/skills --data-dir=/path/to/
 
 `skills/idea-discovery-workflow/scripts/idea-scout-kit.mjs`
 
-Generates a source-first scouting plan, fit gate, Signal Portfolio template,
-history-relation table, candidate scoring table, and Red Team questions. With
-explicit topics it also generates topic-guided enrichment queries. It creates a
-structured search plan; it does not browse the web.
+Generates a thesis-first scouting plan, thesis seeds, product/OSS bet sketch
+template, AI relevance and promotion gates, evidence sweep template,
+history-relation table, and Red Team questions. With explicit topics it treats
+them as thesis constraints and adds topic-guided evidence queries. It creates a
+structured plan; it does not browse the web.
 
 ```bash
 node skills/idea-discovery-workflow/scripts/idea-scout-kit.mjs
@@ -222,8 +232,9 @@ node skills/idea-discovery-workflow/scripts/init-store.mjs
 `skills/idea-discovery-workflow/scripts/validate-run-artifacts.mjs`
 
 Checks a completed run for reader clarity and artifact completeness: report
-sections, per-idea dossiers, product cards, source notes, source-backed claims,
-competitor reasoning, MVP/non-goals, shortest evidence path, and stop lines.
+sections, per-idea dossiers, product/OSS cards, AI relevance, promotion gates,
+30-second demo, repo/star asset, source notes, source-backed claims, competitor
+reasoning, MVP/non-goals, shortest evidence path, and stop lines.
 
 ```bash
 node skills/idea-discovery-workflow/scripts/validate-run-artifacts.mjs ~/.idea-miner/runs/<run_id>
@@ -278,7 +289,8 @@ runs/<run_id>/
 The top-level JSONL files are indexes. The detailed context for each final or
 resumable paused idea belongs in `runs/<run_id>/ideas/<idea_id>.md`, with source
 links, source-to-claim mapping, competitor reasoning, Red Team records, CEO
-decisions, MVP boundaries, shortest evidence paths, and stop lines.
+decisions, core thesis, AI relevance, promotion-gate result, demo moment,
+repo/star assets, MVP boundaries, shortest evidence paths, and stop lines.
 
 `handoff-events.jsonl` records delivery events such as "idea X was handed off
 to Codex thread Y", so later follow-up questions do not have to depend on chat
