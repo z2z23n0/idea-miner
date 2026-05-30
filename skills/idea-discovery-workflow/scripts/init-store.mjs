@@ -38,6 +38,7 @@ const files = [
   'competitors.jsonl',
   'decisions.jsonl',
   'edges.jsonl',
+  'handoff-events.jsonl',
 ];
 
 fs.mkdirSync(root, { recursive: true });

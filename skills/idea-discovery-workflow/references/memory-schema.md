@@ -10,6 +10,7 @@ ${IDEA_MINER_HOME:-$HOME/.idea-miner}/
   competitors.jsonl
   decisions.jsonl
   edges.jsonl
+  handoff-events.jsonl
   runs/<run_id>/
     run-manifest.json
     report.md
@@ -74,8 +75,24 @@ referenced by `dossier_path` and `detail_path`.
 `edges.jsonl`
 
 ```json
-{"from":"sig_...","to":"idea_...","type":"supports|challenges|inspires|updates_existing|duplicate_of|revives|merged_from|splits_from|adjacent_to","run_id":"...","note":"..."}
+{"from":"sig_...","to":"idea_...","type":"supports|challenges|inspires|updates_existing|duplicate_of|revives|merged_from|splits_from|adjacent_to|handed_off_to_session","run_id":"...","note":"..."}
 ```
+
+For new-session handoffs, use the idea id as `from`, the Codex thread/session id
+as `to`, and `type = "handed_off_to_session"`.
+
+`handoff-events.jsonl`
+
+```json
+{"id":"handoff_...","idea_id":"idea_...","idea_name":"...","run_id":"...","thread_id":"019...","thread_title":"Idea handoff: ...","handoff_path":"/tmp/handoff-...md","session_prompt_path":"/tmp/idea-session-prompt-...md","delivery":"new_session|file_only","created_at":"...","source_thread_id":"...","status":"created|failed","error":null}
+```
+
+This file records handoff delivery events, not idea evidence. Append one record
+per destination session. When multiple ideas are handed off separately, write
+one event per idea/session pair. When multiple ideas are intentionally combined
+into one session, write one event per idea with the same `thread_id`, or one
+combined event with an `idea_ids` array if the runtime cannot identify a single
+primary idea.
 
 `runs/<run_id>/source-notes.jsonl`
 
@@ -167,6 +184,8 @@ directions so one-line handoff requests can resolve the right dossier.
 - If a candidate is related to a prior idea, persist both the compact
   `history_relation` fields in `ideas.jsonl` and explicit relationship edges in
   `edges.jsonl`.
+- If a stored idea is handed off to a new session, persist the session id in
+  `handoff-events.jsonl` and add a `handed_off_to_session` edge when possible.
 - Do not persist raw secrets, private user data, edit tokens, or unavailable
   page content.
 - Mark links as inaccessible instead of fabricating summaries.
@@ -186,6 +205,10 @@ When the user asks for a handoff of an idea from a prior run:
    claims could mislead. Label refreshed facts separately from stored context.
 5. If no dossier exists, reconstruct from available JSONL/report/chat artifacts
    and mark the output as `reconstructed; source detail may be incomplete`.
+
+When the user asks where an idea was handed off, read `handoff-events.jsonl`
+first, then follow any `handed_off_to_session` edges. Do not rely on chat
+history as the only session mapping.
 
 ## When to Upgrade to a Graph Database
 

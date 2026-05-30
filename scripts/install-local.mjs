@@ -39,6 +39,7 @@ const jsonlFiles = [
   'competitors.jsonl',
   'decisions.jsonl',
   'edges.jsonl',
+  'handoff-events.jsonl',
 ];
 
 function log(action, target) {

@@ -27,6 +27,8 @@ report format, and local evidence memory format.
   decisions, and evidence edges.
 - Handoff-ready idea dossiers so a later one-line handoff request can package
   the stored context without repeating source discovery.
+- Optional new-session handoffs in Codex: one idea can be sent to a fresh
+  session, and multiple ideas default to separate fresh sessions.
 
 ## How It Works
 
@@ -66,6 +68,13 @@ shortest evidence path would actually change the decision.
 Recurring runs also save per-idea dossiers. Handoff should be a packaging step:
 read the stored dossier, write a temporary handoff file, and avoid web refreshes
 unless the user explicitly asks for current status.
+
+When the host runtime exposes Codex thread/session tools, a handoff can also be
+delivered directly into new sessions. By default, multiple ideas are handed off
+to separate sessions; use an explicit "same session" or "combined" instruction
+when one shared session is desired. Plain new-session handoffs should only make
+the receiving session confirm the context and wait. They should not start
+research or implementation unless requested.
 
 ## Skills
 
@@ -213,10 +222,14 @@ node skills/idea-discovery-workflow/scripts/init-store.mjs
 `skills/idea-discovery-workflow/scripts/idea-handoff.mjs`
 
 Resolves a stored idea by name or alias and copies its handoff-ready dossier to
-a temporary handoff file. It does not browse the web.
+a temporary handoff file. With `--session-prompt`, it also writes a prompt that
+can be passed to a fresh Codex session. It does not browse the web or create
+sessions by itself.
 
 ```bash
 node skills/idea-discovery-workflow/scripts/idea-handoff.mjs "Tool-Call Compatibility"
+node skills/idea-discovery-workflow/scripts/idea-handoff.mjs --session-prompt --idea "Tool-Call Compatibility"
+node skills/idea-discovery-workflow/scripts/idea-handoff.mjs --session-prompt --idea "Idea A" --idea "Idea B"
 ```
 
 ## Runtime Data and Privacy
@@ -241,6 +254,7 @@ claims.jsonl
 competitors.jsonl
 decisions.jsonl
 edges.jsonl
+handoff-events.jsonl
 runs/<run_id>/
   run-manifest.json
   report.md
@@ -255,6 +269,10 @@ The top-level JSONL files are indexes. The detailed context for each final or
 resumable paused idea belongs in `runs/<run_id>/ideas/<idea_id>.md`, with source
 links, source-to-claim mapping, competitor reasoning, Red Team records, CEO
 decisions, MVP boundaries, shortest evidence paths, and stop lines.
+
+`handoff-events.jsonl` records delivery events such as "idea X was handed off
+to Codex thread Y", so later follow-up questions do not have to depend on chat
+history.
 
 Keep runtime data, automation configs, API keys, edit tokens, private source
 lists, private idea priorities, and private contact targets out of the

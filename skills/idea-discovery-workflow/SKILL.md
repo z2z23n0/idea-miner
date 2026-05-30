@@ -47,8 +47,11 @@ Check, CEO Decision, and Validation Plan. Do not duplicate its rubrics here.
 - `scripts/init-store.mjs` creates the local JSONL evidence store under
   `${IDEA_MINER_HOME:-$HOME/.idea-miner}`. It also honors the legacy
   `CODEX_IDEA_DISCOVERY_HOME` variable for existing installs.
-- `scripts/idea-handoff.mjs <idea name...>` resolves a stored idea dossier and
-  copies it into a temporary handoff file. It does not browse the web.
+- `scripts/idea-handoff.mjs [--session-prompt] <idea name...>` resolves one or
+  more stored idea dossiers, copies them into temporary handoff files, and can
+  write prompt files suitable for new Codex sessions. It does not browse the
+  web or create sessions by itself; the skill should call host session tools
+  when available.
 
 ## Execution Rules
 
