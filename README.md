@@ -219,6 +219,16 @@ Creates the local JSONL evidence store.
 node skills/idea-discovery-workflow/scripts/init-store.mjs
 ```
 
+`skills/idea-discovery-workflow/scripts/validate-run-artifacts.mjs`
+
+Checks a completed run for reader clarity and artifact completeness: report
+sections, per-idea dossiers, product cards, source notes, source-backed claims,
+competitor reasoning, MVP/non-goals, shortest evidence path, and stop lines.
+
+```bash
+node skills/idea-discovery-workflow/scripts/validate-run-artifacts.mjs ~/.idea-miner/runs/<run_id>
+```
+
 `skills/idea-discovery-workflow/scripts/idea-handoff.mjs`
 
 Resolves a stored idea by name or alias and copies its handoff-ready dossier to

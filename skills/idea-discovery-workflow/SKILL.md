@@ -52,6 +52,10 @@ Check, CEO Decision, and Validation Plan. Do not duplicate its rubrics here.
   write prompt files suitable for new Codex sessions. It does not browse the
   web or create sessions by itself; the skill should call host session tools
   when available.
+- `scripts/validate-run-artifacts.mjs <run_dir>` checks that a completed run has
+  a report, source notes, handoff index, per-idea JSON/Markdown dossiers, a
+  reader-readable product card, and source-backed claims. Run it after writing
+  artifacts whenever shell is available.
 
 ## Execution Rules
 
@@ -77,11 +81,17 @@ Check, CEO Decision, and Validation Plan. Do not duplicate its rubrics here.
   new or meaningfully changed ideas pass, treat it as an underfilled run and show
   the replenishment rounds and why coverage was exhausted.
 - Keep full reports as normal Markdown before any host-specific control block.
+- Before saving final artifacts, run the Reader Clarity Gate: a reader who did
+  not participate in discovery must be able to restate each final idea as a
+  concrete product card. Rewrite or reject ideas that remain abstract.
 - For every final idea, persist a handoff-ready dossier. Persist a paused dossier
   only for a strong idea that narrowly missed a known evidence gap; do not save
   vetoed, weak, internal-only, or "could be a small tool" ideas as handoff work.
   Later handoff requests should read the stored dossier first and should not
   repeat source discovery unless the user explicitly asks for a current refresh.
+- After persistence, run the artifact validator when shell is available. If it
+  fails, fix the files and rerun it; do not present a failed validation run as a
+  normal success.
 
 ## Automation Prompt Boundary
 

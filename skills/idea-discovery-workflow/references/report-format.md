@@ -59,9 +59,28 @@ Briefly separate:
 Only include ideas with verdict `推进` or strong `先验证` that match the user's
 goal and are either new or materially changed. Do not include `暂缓`,
 `不建议做`, internal-only tools, thin wrappers, pure duplicates, or minor backlog
-updates as final ideas. Each final idea must use the same sections:
+updates as final ideas. Each final idea must start with a plain-language product
+card before evidence and debate. The first screen should be understandable to a
+reader who did not watch the discovery process.
+
+Each final idea must use the same sections:
 
 ## Idea N：名称
+
+### 读者可懂产品卡片
+
+| 字段 | 内容 |
+|---|---|
+| 产品形态 | CLI / GitHub Action / SaaS / OSS library / Skill / SDK / browser extension / platform module / other |
+| 目标用户 | 具体到角色、团队或开源受众 |
+| 使用时刻 | 用户在什么触发场景下打开或运行它 |
+| 输入 | 用户提供什么文件、链接、事件、数据、配置、账号或上下文 |
+| 系统动作 | 系统具体分析、执行、生成、监控或校验什么 |
+| 输出 | 用户拿到什么结果、diff、报告、PR comment、命令、文件或决策证据 |
+| 替代的手工动作 | 今天不用它时用户怎么做，痛在哪里 |
+| 为什么现有替代不够 | 现有工具、平台功能、开源库或手工流程缺哪一块 |
+| 最短证据路径 | 当前最低成本、最能改变推进/停止判断的一步 |
+| 停止线 | 看到什么证据就停止或降级 |
 
 - 一句话结论：推进 / 先验证 / 转向 / 暂缓 / 不建议做；置信度：低/中/高
 - 历史关系：new / update_existing / duplicate_of / revives / merged_from /
@@ -89,7 +108,26 @@ updates as final ideas. Each final idea must use the same sections:
 - Red Team 拷打记录
 - 最危险假设
 - 最短证据路径：只写当前最短、最低成本、能改变推进/停止判断的动作；不要机械写找 N 个用户/issue/maintainer
+- 读者复述检查：用 3-5 句复述这个产品是什么、谁何时使用、输入输出、替代动作、为什么现有方案不够；如果复述不清，必须重写产品卡片和正文
 - 今日优先级：P0 / P1 / P2
+
+# Reader Clarity Gate
+
+After drafting the final ideas and before persistence, add a short gate result:
+
+| Idea | 能否被未参与发现的读者复述 | 缺口 | 处理 |
+|---|---|---|---|
+
+Pass only if every final idea can be restated from the report without reading
+the original chat or doing new searches. The gate should reject reports where:
+
+- the product form is an abstract theme instead of a usable artifact;
+- the usage moment, input, system action, or output is missing;
+- source links are only generic feed URLs without source-note support;
+- competitor reasoning says "there are competitors" but not why they do or do
+  not solve the core workflow;
+- shortest evidence path is generic homework rather than a decision-changing
+  next action.
 
 # 被拒绝或暂缓的候选
 
@@ -118,6 +156,9 @@ artifacts were saved:
 - `report.md`
 - `handoff-index.md`
 - per-idea dossiers under `ideas/<idea_id>.md`
+- artifact validator status: passed / failed / not run
 
 If persistence failed or the environment was read-only, state that explicitly.
-Do not leave the only detailed copy inside the chat transcript.
+If the artifact validator failed, include the failure summary and do not present
+the run as a normal success. Do not leave the only detailed copy inside the chat
+transcript.

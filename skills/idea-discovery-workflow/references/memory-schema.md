@@ -116,6 +116,18 @@ summaries and claim mappings, not raw copyrighted articles or private content.
   "verdict": "advance|validate|narrow|pause|reject",
   "confidence": "low|medium|high",
   "source_type": "...",
+  "product_card": {
+    "product_form": "...",
+    "target_user": "...",
+    "usage_moment": "...",
+    "inputs": "...",
+    "system_action": "...",
+    "outputs": "...",
+    "replaced_workaround": "...",
+    "why_substitutes_fall_short": "...",
+    "shortest_evidence_path": "...",
+    "stop_line": "..."
+  },
   "what_it_is": "...",
   "usage": {"when": "...", "input": "...", "does": "...", "output": "...", "replaces": "..."},
   "scale_path": "...",
@@ -151,6 +163,9 @@ artifacts, without repeating source discovery or competitor searches.
 Required sections:
 
 - Handoff purpose and current verdict.
+- Reader-readable product card: product form, target user, usage moment, inputs,
+  system action, outputs, replaced workaround, why substitutes fall short,
+  shortest evidence path, and stop line.
 - What this is and how it is used.
 - Origin in this workflow, including merged/duplicated prior ideas.
 - History relation: whether this is new, an update, a duplicate, a revival, a
@@ -189,6 +204,9 @@ directions so one-line handoff requests can resolve the right dossier.
 - Do not persist raw secrets, private user data, edit tokens, or unavailable
   page content.
 - Mark links as inaccessible instead of fabricating summaries.
+- Run `scripts/validate-run-artifacts.mjs <run_dir>` when shell is available.
+  If validation fails, fix the artifacts before considering the run complete; if
+  the runtime cannot run the validator, state that in the report.
 
 ## Handoff Reads
 

@@ -10,6 +10,8 @@
 
 必须同时保存 handoff-ready run artifacts：完整报告 `runs/<run_id>/report.md`、来源摘要 `runs/<run_id>/source-notes.jsonl`、每个 final idea 的 `runs/<run_id>/ideas/<idea_id>.json` 和 `runs/<run_id>/ideas/<idea_id>.md`、以及 `runs/<run_id>/handoff-index.md`。只有强但被明确证据缺口卡住的 paused idea 才保存 dossier；弱 idea、内部小工具、薄 wrapper、平台 hook 配方和被 veto 的方向只在报告里写 death note，不保存成后续工作。每个 idea dossier 要包含原始来源链接、来源支持了什么 claim、竞品/替代判断、Red Team 记录、CEO 裁决、MVP 边界、最短证据路径和停止线。以后用户要求 handoff 时，默认应读取这些 artifact，不重新做搜索；只有用户明确要求刷新当前状态时才联网补查。
 
+最终报告和每个 final idea dossier 必须通过 Reader Clarity Gate：一个没有参与挖掘的人只读报告也能说清楚产品形态、目标用户、使用时刻、输入、系统动作、输出、替代的手工动作、为什么现有替代不够、最短证据路径和停止线。如果说不清，先重写或降级该 idea，不要把抽象方向当成 final idea。若 shell 可用，artifact 落盘后运行 `node skills/idea-discovery-workflow/scripts/validate-run-artifacts.mjs <run_dir>`；失败就修 artifacts 并重跑，不能把 validator failed 的 run 当正常成功。
+
 必须联网或使用可用实时工具核验所有当前性、竞品、市场和来源判断。无法访问某信息源时，明确标注“未覆盖/受限”，不要编造。不要把热闹话题、viral 帖、单个抱怨、单个产品新闻或“AI 能做出来”直接当成机会。
 
 若当前环境提供真实 sub-agent / multi-agent 工具，就实际创建并调度；否则模拟角色并在报告里说明。

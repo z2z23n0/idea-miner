@@ -17,7 +17,9 @@ prepare_run
   -> replenish_if_underfilled
   -> persist_memory
   -> render_report
+  -> reader_clarity_gate
   -> persist_run_artifacts
+  -> artifact_quality_gate
 ```
 
 ## Nodes
@@ -38,11 +40,24 @@ prepare_run
 | replenish_if_underfilled | Orchestrator + Signal Scout + Drafter | final count, killed reasons, source coverage | new source plan, new candidates, or underfilled reason |
 | persist_memory | Orchestrator | signals, ideas, claims, decisions | JSONL records and graph-like edges |
 | render_report | Orchestrator | run artifacts | final Chinese Markdown report |
+| reader_clarity_gate | Report Reader + Orchestrator | rendered report, final ideas, dossiers | pass/rewrite decision based on reader comprehension |
 | persist_run_artifacts | Orchestrator | report, source notes, final/paused ideas | `runs/<run_id>/report.md`, `source-notes.jsonl`, per-idea JSON, per-idea Markdown dossiers, `handoff-index.md` |
+| artifact_quality_gate | Orchestrator | run artifact directory | validation result; explicit failure note or corrected artifacts |
 
 `persist_run_artifacts` is required, not best effort. If the runtime cannot
 write files, the final report must explicitly say that handoff artifacts were
 not saved.
+
+`artifact_quality_gate` should run after files are written whenever shell is
+available:
+
+```bash
+node skills/idea-discovery-workflow/scripts/validate-run-artifacts.mjs <run_dir>
+```
+
+If validation fails, fix the report, source notes, or dossiers and rerun the
+validator. If the runtime cannot run the validator, the final report must say
+that the artifact quality gate was not executed.
 
 ## Iteration Rules
 
@@ -71,6 +86,17 @@ not saved.
   the product is, when it is used, what it takes as input, what it returns as
   output, what manual workaround it replaces, and what product scale it
   currently deserves.
+- Before artifacts are considered complete, the report must pass the reader
+  clarity gate. A reader who did not participate in discovery must be able to
+  restate each final idea as a concrete product card: product form, target user,
+  trigger moment, inputs, work performed, outputs, replaced workaround, why
+  existing substitutes are not enough, shortest evidence path, and stop line. If
+  any answer is missing or only abstract, rewrite the idea before saving final
+  artifacts.
+- Prefer a real sub-agent for the Report Reader when available. If no sub-agent
+  is available, simulate the role explicitly. The reader does not invent new
+  ideas or browse by default; it only checks whether the written report is
+  understandable from the stored evidence.
 - Target up to 3 final ideas, but prioritize genuinely new or meaningfully
   changed ideas. If fewer than 3 survive, run replenish rounds instead of
   lowering standards or filling slots with old winners.

@@ -17,6 +17,9 @@ run and say so in the report.
 - Forces every final idea to be understandable as an actual product, tool,
   open-source project, SaaS, platform module, or workflow, including how it is
   used and what product scale it currently deserves.
+- Runs the Reader Clarity Gate before saving final artifacts. If the Report
+  Reader cannot restate an idea as a concrete product card, the CEO must rewrite
+  or reject it instead of shipping a vague report.
 - Does not let old ideas occupy final slots unless new evidence materially
   changes priority, verdict, MVP boundary, competitor judgment, or stop line.
 - Ensures the report is normal Markdown before any host-specific control block.
@@ -73,6 +76,23 @@ run and say so in the report.
   extensions, CLIs, templates, internal manual workflows, and platform features.
 - Evaluates competitor scope, adoption, satisfaction, price/open-source gap,
   UX, distribution, and whether the substitute is good enough.
+
+## Report Reader
+
+- Reads the final report as someone who did not participate in discovery.
+- For each final idea, tries to restate the product card in plain language:
+  product form, target user, usage moment, inputs, system action, outputs,
+  replaced workaround, why substitutes are not enough, shortest evidence path,
+  and stop line.
+- Flags any idea that is only a theme, market label, technology name, generic
+  "AI can do X" direction, or evidence dump without a usable workflow.
+- Checks whether source links and dossiers support the claims made in the
+  product card. Generic feed URLs are not enough unless `source-notes.jsonl`
+  records the specific observed signal and claim mapping.
+- Does not introduce new ideas, broaden the scope, or do fresh web research by
+  default. Its job is reader comprehension and artifact quality.
+- Can be a real sub-agent when the runtime supports one; otherwise the
+  Orchestrator must simulate this role and say so in the report.
 
 ## Skill Optimizer
 
