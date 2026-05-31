@@ -1,6 +1,6 @@
 # Source Map
 
-这个 skill 是方法论合成，不是原文摘要。不要在回答里大段引用来源；需要引用时只用短句，并优先转述。
+这个 skill 是方法论合成，不是原文摘要。不要在回答里大段引用来源；需要引用时只用短句，并尽量转述。
 
 ## 核心来源
 
@@ -9,14 +9,14 @@
 
 Playbook 的核心抽象：
 
-- 四阶段：Idea、MVP、Launch、Scale。
-- 主线：AI 压缩构建和运营周期，但验证、判断、信任和系统化更重要。
-- 关键风险：把构建当验证、过早扩张、确认偏误、AI 技术债、虚假 PMF、零摩擦 scope creep、安全/合规延后、创始人成为瓶颈。
+- 四阶段：Idea、Prototype、Launch、Scale。
+- 主线：AI 压缩构建和运营周期，但判断、信任和系统化更重要。
+- 关键风险：把构建当需求、过早扩张、确认偏误、AI 技术债、虚假 PMF、零摩擦 scope creep、安全/合规延后、创始人成为瓶颈。
 
 ## 外部融合来源
 
 - 已存在的同类 skill：`https://github.com/xiang-lee/ai-native-startup-founder-playbook`
-  - 参考点：把 playbook 做成 agent 可执行的阶段诊断、证据缺口、反方验证和下一 sprint 计划。
+  - 参考点：把 playbook 做成 agent 可执行的阶段诊断、证据缺口和反方判断。
   - 不要直接复制其正文；只沿用“可触发、可执行、可复盘”的 skill 结构思想。
 - YC Requests for Startups：`https://www.ycombinator.com/rfs`
   - 参考点：到 2026 年，AI 更像基础设施和重构机会，而不是单个 feature；看行业工作流如何被 AI 重做。
@@ -25,9 +25,7 @@ Playbook 的核心抽象：
 - Bessemer Venture Partners, The AI Pricing Playbook for Founders, 2026：`https://www.bvp.com/assets/uploads/2026/02/The_AI_pricing_playbook_for_founders_Bessemer_Venture_Partners_2026.pdf`
   - 参考点：AI 产品毛利、收费指标、copilot/agent/service 类型、混合定价、ROI 叙事和成本风险。
 - Kappaemme-git / `codex-startup-pressure-test-skill`：`https://github.com/Kappaemme-git/codex-startup-pressure-test-skill`
-  - 参考点：强/弱/转向 verdict、fatal flaws、problem validation、早期真实证据路径、2 周 MVP。
-- OpenClaw `solo-validate`：`https://playbooks.com/skills/openclaw/skills/solo-validate`
-  - 参考点：truth-first validation、S.E.E.D. niche check、Devil's Advocate inversion、go/kill/pivot、dead startup / competitor failure 搜索、单位经济压力测试。
+  - 参考点：强/弱/转向 verdict、fatal flaws、早期真实证据和产品边界。
 - OpenClaw `saas-idea-discovery`：`https://playbooks.com/skills/openclaw/skills/saas-idea-discovery`
   - 参考点：用 Reddit/HN 抱怨模式挖 micro-SaaS idea、0-100 评分、去重、每周机会流总结。
 - mvanhorn / `last30days-skill`：`https://github.com/mvanhorn/last30days-skill`
@@ -35,17 +33,17 @@ Playbook 的核心抽象：
 - MRRScout：`https://mrrscout.com/`
   - 参考点：把 Product Hunt、HN、GitHub Trending、新域名和早期产品作为 product/news feed，辅助发现 niche 与早期 traction。只借鉴“多源产品信号”模式，不把其评分当事实。
 - Affivora：`https://affivora.com/`
-  - 参考点：从 Reddit、G2、Capterra、HN、Product Hunt 等来源做 SaaS niche discovery 和验证。只借鉴评论/竞品/社区组合方法；实际结论仍要重新搜索核验。
+  - 参考点：从 Reddit、G2、Capterra、HN、Product Hunt 等来源做 SaaS niche discovery。只借鉴评论/竞品/社区组合方法；实际结论仍要重新搜索核验。
 - shawnpang / `startup-founder-skills`：`https://github.com/shawnpang/startup-founder-skills`
   - 参考点：competitive-analysis、review-mining、daily-product-digest 的竞品、评论、社区趋势扫描流程。
 - coreyhaines31 / `marketingskills`：`https://github.com/coreyhaines31/marketingskills`
-  - 参考点：launch、social、community-marketing、directory-submissions。融合为 Owned/Rented/Borrowed 渠道判断、社区优先、launch readiness、社交平台内容骨架。
+  - 参考点：launch、social、community-marketing、directory-submissions。融合为 Owned/Rented/Borrowed 渠道判断、社区语境、launch readiness、社交平台内容骨架。
 - shawnpang / `startup-founder-skills` launch 相关 skills：`https://github.com/shawnpang/startup-founder-skills`
   - 参考点：launch-strategy、community-discovery、founder-thought-leadership。融合为社区发现、推广容忍度分级、X/LinkedIn founder voice 和 launch sequence。
 - ognjengt / `founder-skills`：`https://github.com/ognjengt/founder-skills`
   - 参考点：product-hunt-launch-plan、marketing-ideas。融合为 Product Hunt 资产包、支持网络、发售准备度和营销 idea 评分。
 - michaelboeding / `skills` cmo-agent：`https://github.com/michaelboeding/skills`
-  - 参考点：跨 SEO、Reddit、HN、X 的 CMO agent 输出。融合为 Reddit 线程、HN post、tweet thread、7 天 calendar、竞品跟踪和 Effort/Impact/Risk 优先级。
+  - 参考点：跨 SEO、Reddit、HN、X 的 CMO agent 输出。融合为 Reddit 线程、HN post、tweet thread、7 天 calendar、竞品跟踪和 Effort/Impact/Risk 判断。
 - gooseworks-ai / `goose-skills`：`https://github.com/gooseworks-ai/goose-skills`
   - 参考点：hacker-news-scraper、product-hunt-scraper、reddit-post-finder、social-kit、feature-launch-playbook。融合为 HN/PH/Reddit 信号扫描、feature launch 文案包和 X/LinkedIn 社交变体。
 - aaronjmars / `aeon`：`https://github.com/aaronjmars/aeon`

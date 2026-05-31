@@ -41,7 +41,7 @@ Default routing:
 - Multiple ideas with an explicit "same session", "一个新 session", or "合并"
   instruction -> create one combined new session.
 
-Do not start implementation, browsing, outreach, or validation inside the new
+Do not start implementation, browsing, outreach, or new research inside the new
 session unless the user explicitly asks for that. A plain handoff should make
 the new session confirm receipt, summarize the context, and wait for the next
 instruction.
@@ -95,11 +95,9 @@ reading the original chat. Include:
 - origin and merged/renamed prior ideas;
 - source map with original URLs, access status, freshness, and supported claims;
 - current alternatives and competitor reasoning;
-- MVP scope, explicit non-goals, product form, and product-scale path;
+- first-version scope, explicit non-goals, product form, and product-scale path;
 - Red Team objections, responses, and CEO rulings;
-- dangerous assumptions, shortest evidence path, and stop line;
-- concrete first actions for the next thread.
+- dangerous assumptions.
 
-Do not include generic skill recommendations. Different users have different
-skill sets, so keep the handoff focused on idea context and executable next
-steps.
+Do not include generic skill suggestions. Different users have different
+skill sets, so keep the handoff focused on idea context.

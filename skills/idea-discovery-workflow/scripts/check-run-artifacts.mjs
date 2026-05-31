@@ -10,9 +10,9 @@ const runDir = args.find((arg) => arg !== '--json');
 function usage() {
   return [
     'Usage:',
-    '  validate-run-artifacts.mjs [--json] <run_dir>',
+    '  check-run-artifacts.mjs [--json] <run_dir>',
     '',
-    'Checks a completed idea-discovery run for reader clarity and artifact completeness.',
+    'Checks a completed idea-discovery run for readable reports and handoff completeness.',
   ].join('\n');
 }
 
@@ -93,49 +93,42 @@ function sourceMatchesIdea(source, idea) {
     || (Array.isArray(source.claims) && source.claims.length > 0);
 }
 
-function validateProductCard(idea, md, label, errors) {
-  const card = idea.product_card || {};
+function checkIdeaStory(idea, md, label, errors) {
+  const story = idea.idea_story || {};
   const required = [
-    ['core_thesis', '核心 thesis'],
-    ['ai_relevance', 'AI 相关性'],
-    ['product_form', '产品形态'],
-    ['why_final_slot', '为什么配占 final 名额'],
-    ['why_not_action_only', '为什么不是 Action/小工具'],
-    ['target_user', '目标用户'],
-    ['usage_moment', '使用时刻'],
-    ['inputs', '输入'],
-    ['system_action', '系统动作'],
-    ['outputs', '输出'],
-    ['replaced_workaround', '替代的手工动作'],
-    ['why_substitutes_fall_short', '为什么现有替代不够'],
-    ['demo_moment', '30 秒 demo'],
-    ['repo_star_asset', 'repo/star 资产'],
-    ['shortest_evidence_path', '最短证据路径'],
-    ['stop_line', '停止线'],
+    ['one_sentence', '一句话'],
+    ['user_scene', '具体使用场景'],
+    ['product', '产品到底是什么'],
+    ['current_workaround', '今天怎么解决'],
+    ['key_insight', '关键洞察'],
+    ['why_now', '为什么现在值得做'],
+    ['alternatives_gap', '现有替代与缺口'],
+    ['first_version', '第一个版本怎么切'],
+    ['long_term_asset', '如果做成会积累什么'],
+    ['risks', '最大风险'],
+    ['judgment', '我的判断'],
   ];
 
   const missingJsonFields = required
-    .filter(([field]) => !wordy(card[field]))
+    .filter(([field]) => !wordy(story[field]))
     .map(([, title]) => title);
 
-  const hasMarkdownCard = /读者可懂产品卡片|读者可懂产品\s*\/\s*OSS\s*卡片|Reader-readable product(?:\/OSS)? card/i.test(md)
-    && required.every(([, title]) => md.includes(title));
-
-  if (missingJsonFields.length > 0 && !hasMarkdownCard) {
-    errors.push(`${label}: missing reader-readable product card fields: ${missingJsonFields.join(', ')}`);
+  const hasMarkdownStory = required.every(([, title]) => md.includes(title));
+  if (missingJsonFields.length > 0 && !hasMarkdownStory) {
+    errors.push(`${label}: missing readable idea story fields: ${missingJsonFields.join(', ')}`);
   }
 }
 
-function validateSourceSupport(idea, md, sourceNotes, label, errors) {
-  const sourceSection = section(md, 'Source map') || section(md, '信息来源') || section(md, 'Source Map');
+function checkSourceSupport(idea, md, sourceNotes, label, errors) {
+  const sourceSection = section(md, 'Source map') || section(md, '信息来源') || section(md, 'Source Map') || section(md, '来源');
   if (!sourceSection) {
-    errors.push(`${label}: dossier is missing a Source map section`);
+    errors.push(`${label}: dossier is missing a source section`);
   } else {
     if (!/https?:\/\//.test(sourceSection)) {
-      errors.push(`${label}: Source map has no URL`);
+      errors.push(`${label}: source section has no URL`);
     }
     if (!hasAny(sourceSection, [/access/i, /freshness/i, /supports/i, /支持/, /新鲜度/, /observed/i, /fetched|summary-only|blocked|not-covered/i])) {
-      errors.push(`${label}: Source map must include access/freshness/support details, not only links`);
+      errors.push(`${label}: source section must include access/freshness/support details, not only links`);
     }
   }
 
@@ -176,7 +169,7 @@ function validateSourceSupport(idea, md, sourceNotes, label, errors) {
   }
 }
 
-function validateIdea(jsonFile, sourceNotes, errors) {
+function checkIdea(jsonFile, sourceNotes, errors) {
   const idea = readJson(jsonFile);
   const label = idea.id || path.basename(jsonFile);
   const mdFile = jsonFile.replace(/\.json$/, '.md');
@@ -187,8 +180,8 @@ function validateIdea(jsonFile, sourceNotes, errors) {
   }
 
   const md = readText(mdFile);
-  validateProductCard(idea, md, label, errors);
-  validateSourceSupport(idea, md, sourceNotes, label, errors);
+  checkIdeaStory(idea, md, label, errors);
+  checkSourceSupport(idea, md, sourceNotes, label, errors);
 
   const requiredShortJson = [
     ['name', 'name'],
@@ -206,7 +199,6 @@ function validateIdea(jsonFile, sourceNotes, errors) {
     ['target_user', 'target_user'],
     ['buyer_or_oss_audience', 'buyer_or_oss_audience'],
     ['why_still_worth_doing', 'why_still_worth_doing'],
-    ['stop_line', 'stop_line'],
   ];
 
   for (const [field, title] of requiredShortJson) {
@@ -228,7 +220,7 @@ function validateIdea(jsonFile, sourceNotes, errors) {
     errors.push(`${label}: invalid ai_relevance ${idea.ai_relevance}`);
   }
   if (idea.ai_relevance === 'non-AI reject') {
-    errors.push(`${label}: non-AI reject ideas must stay in report death notes, not ideas/ dossiers`);
+    errors.push(`${label}: non-AI reject ideas must stay in report notes, not ideas/ dossiers`);
   }
 
   const promotionGate = idea.promotion_gate || {};
@@ -236,9 +228,9 @@ function validateIdea(jsonFile, sourceNotes, errors) {
     errors.push(`${label}: promotion_gate.decision must be pass/backlog/reject`);
   }
   if (promotionGate.decision === 'reject') {
-    errors.push(`${label}: rejected ideas must stay in report death notes, not ideas/ dossiers`);
+    errors.push(`${label}: rejected ideas must stay in report notes, not ideas/ dossiers`);
   }
-  for (const field of ['product_or_oss_scale', 'why_final_slot', 'why_not_action_only', 'demo_moment', 'repo_star_asset']) {
+  for (const field of ['product_or_oss_scale', 'why_final_slot', 'demo_moment', 'repo_star_asset']) {
     if (!wordy(promotionGate[field])) errors.push(`${label}: missing promotion_gate.${field}`);
   }
 
@@ -247,39 +239,26 @@ function validateIdea(jsonFile, sourceNotes, errors) {
     if (!wordy(usage[field])) errors.push(`${label}: missing usage.${field}`);
   }
 
-  if (!nonEmptyArray(idea.shortest_evidence_path)) {
-    errors.push(`${label}: missing shortest_evidence_path`);
-  }
   if (!nonEmptyArray(idea.dangerous_assumptions)) {
     errors.push(`${label}: missing dangerous_assumptions`);
   }
   if (!nonEmptyArray(idea.red_team)) {
     errors.push(`${label}: missing red_team objections and CEO rulings`);
   }
-  if (!idea.mvp || !nonEmptyArray(idea.mvp.does) || !nonEmptyArray(idea.mvp.does_not_do)) {
-    errors.push(`${label}: missing MVP does / does_not_do`);
+  if (!idea.first_version || !nonEmptyArray(idea.first_version.does) || !nonEmptyArray(idea.first_version.does_not_do)) {
+    errors.push(`${label}: missing first_version does / does_not_do`);
   }
   if (!nonEmptyArray(idea.product_forms)) {
     errors.push(`${label}: missing product_forms`);
   }
-  const formsText = idea.product_forms.join(' ').toLowerCase();
-  if (/github action|ci gate|pr comment/.test(formsText) && !wordy(promotionGate.why_not_action_only)) {
-    errors.push(`${label}: Action/CI/PR forms must explain why the idea is not action-only`);
-  }
 
-  if (!hasAny(md, [/Current alternatives and competitor reasoning/i, /竞品判断/, /替代方案/])) {
+  if (!hasAny(md, [/Current alternatives and competitor reasoning/i, /竞品判断/, /替代方案/, /现有替代/])) {
     errors.push(`${label}: dossier must include competitor or alternative reasoning`);
   }
-  if (!hasAny(md, [/MVP does not do/i, /explicit non-goals/i, /不做/])) {
+  if (!hasAny(md, [/explicit non-goals/i, /不做/, /首版边界/])) {
     errors.push(`${label}: dossier must include explicit non-goals`);
   }
-  if (!hasAny(md, [/shortest evidence path/i, /最短证据路径/])) {
-    errors.push(`${label}: dossier must include shortest evidence path`);
-  }
-  if (!hasAny(md, [/stop line/i, /停止线/])) {
-    errors.push(`${label}: dossier must include stop line`);
-  }
-  if (!hasAny(md, [/core thesis/i, /核心 thesis/i, /核心 thesis/])) {
+  if (!hasAny(md, [/core thesis/i, /核心 thesis/i, /核心判断/])) {
     errors.push(`${label}: dossier must include core thesis`);
   }
   if (!hasAny(md, [/AI 相关性/i, /ai relevance/i])) {
@@ -288,11 +267,8 @@ function validateIdea(jsonFile, sourceNotes, errors) {
   if (!hasAny(md, [/30 秒 demo/i, /30-second demo/i])) {
     errors.push(`${label}: dossier must include 30-second demo`);
   }
-  if (!hasAny(md, [/repo\/star 资产/i, /star asset/i])) {
+  if (!hasAny(md, [/repo\/star 资产/i, /star asset/i, /长期资产/])) {
     errors.push(`${label}: dossier must include repo/star asset`);
-  }
-  if (!hasAny(md, [/为什么不是 Action/i, /not action-only/i, /Action\/小工具/])) {
-    errors.push(`${label}: dossier must explain why it is not action-only`);
   }
 }
 
@@ -318,34 +294,26 @@ let sourceNotes = [];
 if (fs.existsSync(path.join(absRunDir, 'report.md'))) {
   report = readText(path.join(absRunDir, 'report.md'));
   const reportSections = [
-    '今日 Verdict',
-    'Discovery Thesis',
-    'Product / OSS Bet Sketches',
-    'Evidence Sweep',
-    '历史关联与新颖性',
-    'Promotion Gate',
-    '候选池与迭代',
-    '最终 Product / OSS Bets',
-    'Reader Clarity Gate',
-    'Persistence Note',
+    '今天值得看的方向',
+    '最终 Ideas',
+    '被放弃的方向',
+    '来源附录',
+    '保存位置',
   ];
   for (const heading of reportSections) {
     if (!report.includes(heading)) errors.push(`report.md missing section: ${heading}`);
   }
-  if (!/读者可懂产品 \/ OSS 卡片/.test(report)) {
-    errors.push('report.md must include a reader-readable product/OSS card for final ideas');
+  if (!/一句话|具体使用场景|产品到底是什么/.test(report)) {
+    errors.push('report.md must introduce each idea as a readable story');
   }
   if (!/AI-core|AI-native workflow|AI-leveraged|non-AI exceptional/.test(report)) {
     errors.push('report.md must include AI relevance labels');
   }
-  if (!/Action\/CI\/PR-only|为什么不是 Action|GitHub Action/.test(report)) {
-    errors.push('report.md must include Action/CI/PR-only promotion gate language');
-  }
   if (!/30 秒 demo/.test(report)) {
     errors.push('report.md must include 30-second demo fields');
   }
-  if (!/repo\/star 资产/.test(report)) {
-    errors.push('report.md must include repo/star asset fields');
+  if (!/repo\/star 资产|长期资产/.test(report)) {
+    errors.push('report.md must include repo/star asset or long-term asset fields');
   }
 }
 
@@ -361,7 +329,7 @@ if (ideaJsonFiles.length === 0) {
 
 for (const jsonFile of ideaJsonFiles) {
   try {
-    validateIdea(jsonFile, sourceNotes, errors);
+    checkIdea(jsonFile, sourceNotes, errors);
   } catch (error) {
     errors.push(`${jsonFile}: ${error.message}`);
   }
@@ -383,7 +351,7 @@ if (jsonMode) {
   console.log(`OK: ${absRunDir}`);
   console.log(`Checked ${ideaJsonFiles.length} ideas and ${sourceNotes.length} source notes.`);
 } else {
-  console.error(`Artifact validation failed for ${absRunDir}:`);
+  console.error(`Artifact check failed for ${absRunDir}:`);
   for (const error of errors) console.error(`- ${error}`);
 }
 

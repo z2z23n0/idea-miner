@@ -256,6 +256,6 @@ console.log();
   '现有替代是否已经足够好？平台是否会一周内吸收？',
   '这个 idea 是否只是一个 feature、wrapper、template、hook、checklist 或小 checker？',
   '如果是非 AI，为什么强到可以破例占 final 名额？',
-  '当前最短证据路径是什么？它能否直接改变推进/停止判断，而不是泛化验证作业？',
+  '这个 bet 的产品画面是否足够具体？用户第一次打开、运行或安装时会看到什么？',
   '如果这个候选被 veto，下一轮应该换哪个 thesis seed、产品 archetype、demo moment、repo asset、ICP 或 source module？',
 ].forEach((q, i) => console.log(`${i + 1}. ${q}`));

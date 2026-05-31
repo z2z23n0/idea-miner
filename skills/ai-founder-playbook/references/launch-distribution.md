@@ -56,7 +56,7 @@
 2. **发布目标**：只选一个主目标：feedback、stars、installs、trial、waitlist、paid pilot、contributors、sales call。
 3. **受众和场景**：写清楚谁会在什么工作流里关心。
 4. **外部扫描**：如果要发 HN/Reddit/GitHub/Product Hunt/X/LinkedIn，先查相似发布、相关讨论、社区规则、竞品反应和近期热点。
-5. **渠道排序**：给 fit、风险、准备成本、预期指标，选 1-3 个主渠道。
+5. **渠道选择**：给 fit、风险、准备成本、预期指标，选 1-3 个主渠道。
 6. **叙事骨架**：一句话 angle，不同渠道改写，不能复制粘贴。
 7. **发帖包**：每个渠道输出发帖角度、社区规则、标题、正文、首评/补充评论、评论回复库、风险等级、人工发布 checklist。
 8. **去 AI 味 pass**：所有正文和回复都必须过“社区真人口吻”检查。
@@ -66,7 +66,7 @@
 
 ### Hacker News / Show HN
 
-适合商业产品里的技术 demo、开发者工具和开源项目。正文要短、清楚、可验证。
+适合商业产品里的技术 demo、开发者工具和开源项目。正文要短、清楚、可检查。
 
 - 标题：`Show HN: <name> - <plain description>` 或 `Show HN: I built <specific tool> for <specific workflow>`。
 - 角度：技术新意、反直觉发现、开源实现、真实限制、从用户痛点来的小工具。
@@ -77,7 +77,7 @@
 
 ### Reddit
 
-优先找 live thread 回复，其次才写 standalone post。每个 subreddit 都要读规则。
+先找 live thread 回复，其次才写 standalone post。每个 subreddit 都要读规则。
 
 - 先分类：`Promote`（允许展示）/ `Contribute-first`（先回答问题）/ `Listen-only`（只调研不发）。
 - 评论角度：先回答 OP 的问题，再给一个具体经验/数据/限制，链接放后面且可不放。

@@ -141,16 +141,16 @@ const ideas = readJsonl(path.join(root, 'ideas.jsonl'));
 
 function resolveIdea(query) {
   const normalizedQuery = normalize(query);
-  const ranked = ideas
+  const matchesByScore = ideas
     .map((idea) => ({ idea, score: ideaScore(idea, normalizedQuery) }))
     .filter((entry) => entry.score > 0)
     .sort((a, b) => b.score - a.score);
 
-  const match = ranked[0]?.idea || null;
+  const match = matchesByScore[0]?.idea || null;
   let dossier = resolvePath(match?.dossier_path);
 
   if (dossier && fs.existsSync(dossier)) {
-    return { ok: true, query, ranked, match, dossier };
+    return { ok: true, query, matchesByScore, match, dossier };
   }
 
   const candidates = walk(path.join(root, 'runs'))
@@ -184,7 +184,7 @@ function resolveIdea(query) {
       query,
       root,
       reason: 'No handoff-ready dossier found. Reconstruct from JSONL artifacts or run a current refresh if requested.',
-      matches: ranked.slice(0, 5).map(({ idea, score }) => ({
+      matches: matchesByScore.slice(0, 5).map(({ idea, score }) => ({
         id: idea.id,
         name: idea.name,
         score,
@@ -194,7 +194,7 @@ function resolveIdea(query) {
     };
   }
 
-  return { ok: true, query, ranked, match, dossier };
+  return { ok: true, query, matchesByScore, match, dossier };
 }
 
 function slugify(value) {
@@ -241,7 +241,7 @@ function buildSessionPrompt(items, { startNow }) {
     '',
     '- Use the dossier below as the source of truth for stored context.',
     '- Do not repeat source discovery, web search, or competitor checks unless the user explicitly asks for a refresh/current status.',
-    '- Treat links, claims, Red Team notes, CEO rulings, MVP boundaries, shortest evidence path, and stop lines as preserved context.',
+    '- Treat links, claims, Red Team notes, CEO rulings, first-version boundaries, and product reasoning as preserved context.',
     '- If information is missing, say what is missing instead of inventing it.',
     `- ${mode}`,
     plural ? '- This prompt contains multiple ideas; keep them separate unless the user asks to merge them.' : null,

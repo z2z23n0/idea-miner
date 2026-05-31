@@ -15,16 +15,15 @@ run and say so in the report.
   Drafter back for new theses, product archetypes, demo moments, repo assets, or
   AI-era capability shifts instead of lowering standards.
 - Forces every final idea to pass AI relevance and product/OSS promotion gates.
-- Forces every final idea to include the shortest decision-changing evidence
-  path and stop line; does not allow generic validation homework.
+- Forces every final idea to read like a real product or OSS project, not an
+  internal gate checklist.
 - Forces every final idea to be understandable as an actual complete product
   direction or high-star OSS project, not just a small integration surface.
 - Runs the Reader Clarity Gate before saving final artifacts. If the Report
   Reader cannot restate an idea as a concrete product/OSS bet, the CEO must
   rewrite or reject it instead of shipping a vague report.
 - Does not let old ideas occupy final slots unless a new thesis or evidence
-  materially changes priority, verdict, MVP boundary, competitor judgment, or
-  stop line.
+  materially changes verdict, product boundary, or competitor judgment.
 - Ensures the report is normal Markdown before any host-specific control block.
 
 ## Thesis Scout
@@ -59,7 +58,7 @@ run and say so in the report.
   selection.
 - Labels AI relevance: `AI-core`, `AI-native workflow`, `AI-leveraged`,
   `non-AI exceptional`, or `non-AI reject`.
-- Labels source type and evidence level, but does not over-rank evidence during
+- Labels source type and evidence level, but does not over-weight evidence during
   ideation.
 - Labels each candidate's history relation before it can become final: `new`,
   `update_existing`, `duplicate_of`, `revives`, `merged_from`, `splits_from`, or
@@ -89,8 +88,8 @@ run and say so in the report.
   non-AI exceptional ideas.
 - Has veto power on hard-kill conditions: target mismatch, Action-only/CI-only
   shape, thin wrapper, platform absorption, internal-only value, no credible
-  open-source/project asset, no demo moment, no product surface, or no short
-  evidence path. A vetoed candidate leaves the final pool.
+  open-source/project asset, no demo moment, or no product surface. A vetoed
+  candidate leaves the final pool.
 
 ## Competitor Investigator
 
@@ -105,9 +104,9 @@ run and say so in the report.
 
 - Reads the final report as someone who did not participate in discovery.
 - For each final idea, tries to restate the product/OSS bet in plain language:
-  core thesis, AI relevance, product form, target user, usage moment, inputs,
-  system action, outputs, replaced workaround, why substitutes are not enough,
-  30-second demo, repo/star asset, shortest evidence path, and stop line.
+  who it is for, when it appears, what the user sees, what current workaround it
+  replaces, what key insight makes it interesting, why now, what substitutes
+  miss, the first-version boundary, durable asset, and major risks.
 - Flags any idea that is only a theme, market label, technology name, generic
   "AI can do X" direction, evidence dump, GitHub Action, CI gate, PR comment,
   checklist, template, or wrapper without a larger product/OSS body.

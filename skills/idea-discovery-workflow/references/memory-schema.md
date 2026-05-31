@@ -46,7 +46,7 @@ it.
 `ideas.jsonl`
 
 ```json
-{"id":"idea_...","run_id":"...","name":"...","aliases":["..."],"core_thesis":"...","ai_relevance":"AI-core|AI-native workflow|AI-leveraged|non-AI exceptional|non-AI reject","promotion_gate":"pass|backlog|reject","shape":"complete_product|high_star_oss|SaaS|GitHub OSS|CLI|MCP|Skill|...","target_user":"...","status":"candidate|final|rejected|paused|revived|updated|duplicate","priority":"P0|P1|P2|null","history_relation":"new|update_existing|duplicate_of|revives|merged_from|splits_from|adjacent_to","related_ideas":["idea_..."],"dossier_path":"runs/<run_id>/ideas/<idea_id>.md","detail_path":"runs/<run_id>/ideas/<idea_id>.json"}
+{"id":"idea_...","run_id":"...","name":"...","aliases":["..."],"core_thesis":"...","ai_relevance":"AI-core|AI-native workflow|AI-leveraged|non-AI exceptional|non-AI reject","promotion_gate":"pass|backlog|reject","shape":"complete_product|high_star_oss|SaaS|GitHub OSS|CLI|MCP|Skill|...","target_user":"...","status":"candidate|final|rejected|paused|revived|updated|duplicate","history_relation":"new|update_existing|duplicate_of|revives|merged_from|splits_from|adjacent_to","related_ideas":["idea_..."],"dossier_path":"runs/<run_id>/ideas/<idea_id>.md","detail_path":"runs/<run_id>/ideas/<idea_id>.json"}
 ```
 
 Keep `ideas.jsonl` compact, but always include `aliases`, `history_relation`,
@@ -69,7 +69,7 @@ referenced by `dossier_path` and `detail_path`.
 `decisions.jsonl`
 
 ```json
-{"id":"dec_...","run_id":"...","idea_id":"...","decision":"advance|validate|narrow|pause|reject","reason":"...","dangerous_assumptions":["..."],"stop_line":"...","decided_at":"..."}
+{"id":"dec_...","run_id":"...","idea_id":"...","decision":"keep|narrow|pause|reject","reason":"...","dangerous_assumptions":["..."],"decided_at":"..."}
 ```
 
 `edges.jsonl`
@@ -114,7 +114,7 @@ private content.
   "aliases": ["..."],
   "history_relation": "new|update_existing|duplicate_of|revives|merged_from|splits_from|adjacent_to",
   "related_ideas": [{"id": "idea_...", "name": "...", "relationship": "merged_from", "note": "..."}],
-  "verdict": "advance|validate|narrow|pause|reject",
+  "verdict": "keep|narrow|pause|reject",
   "confidence": "low|medium|high",
   "core_thesis": "...",
   "ai_relevance": "AI-core|AI-native workflow|AI-leveraged|non-AI exceptional|non-AI reject",
@@ -122,28 +122,22 @@ private content.
     "decision": "pass|backlog|reject",
     "product_or_oss_scale": "complete product|high-star OSS|backlog-only small tool",
     "why_final_slot": "...",
-    "why_not_action_only": "...",
     "demo_moment": "...",
     "repo_star_asset": "..."
   },
   "source_type": "...",
-  "product_card": {
-    "core_thesis": "...",
-    "ai_relevance": "...",
-    "product_form": "...",
-    "why_final_slot": "...",
-    "why_not_action_only": "...",
-    "target_user": "...",
-    "usage_moment": "...",
-    "inputs": "...",
-    "system_action": "...",
-    "outputs": "...",
-    "replaced_workaround": "...",
-    "why_substitutes_fall_short": "...",
-    "demo_moment": "...",
-    "repo_star_asset": "...",
-    "shortest_evidence_path": "...",
-    "stop_line": "..."
+  "idea_story": {
+    "one_sentence": "...",
+    "user_scene": "...",
+    "product": "...",
+    "current_workaround": "...",
+    "key_insight": "...",
+    "why_now": "...",
+    "alternatives_gap": "...",
+    "first_version": "...",
+    "long_term_asset": "...",
+    "risks": "...",
+    "judgment": "..."
   },
   "what_it_is": "...",
   "usage": {"when": "...", "input": "...", "does": "...", "output": "...", "replaces": "..."},
@@ -153,22 +147,18 @@ private content.
   "buyer_or_oss_audience": "...",
   "sources": ["src_..."],
   "alternatives": ["..."],
-  "mvp": {"does": ["..."], "does_not_do": ["..."]},
+  "first_version": {"does": ["..."], "does_not_do": ["..."]},
   "product_forms": ["GitHub OSS", "CLI"],
   "competitors": ["comp_..."],
   "why_still_worth_doing": "...",
   "ai_leverage": "...",
   "red_team": [{"objection": "...", "response": "...", "ceo_ruling": "..."}],
   "dangerous_assumptions": ["..."],
-  "shortest_evidence_path": ["..."],
-  "stop_line": "...",
-  "next_actions": ["..."]
+  "long_term_asset": "..."
 }
 ```
 
-Legacy run artifacts may contain `validation_plan_7_14d` or
-`outreach_targets`; new runs should prefer `shortest_evidence_path` and only
-include contact targets when the user explicitly asks for distribution or
+Only include contact targets when the user explicitly asks for distribution or
 outreach prep.
 
 `runs/<run_id>/ideas/<idea_id>.md`
@@ -181,9 +171,9 @@ Required sections:
 
 - Handoff purpose and current verdict.
 - Core thesis, AI relevance, and promotion-gate result.
-- Reader-readable product/OSS card: product form, target user, usage moment,
-  inputs, system action, outputs, replaced workaround, why substitutes fall
-  short, 30-second demo, repo/star asset, shortest evidence path, and stop line.
+- Reader-readable idea story: one-sentence description, concrete user scene,
+  product surface, current workaround, key insight, why-now logic, substitutes,
+  first-version boundary, durable asset, risks, and judgment.
 - What this is and how it is used.
 - Origin in this workflow, including merged/duplicated prior ideas.
 - History relation: whether this is new, an update, a duplicate, a revival, a
@@ -191,14 +181,12 @@ Required sections:
 - Source map: original URLs, access status, observed freshness, and what each
   source supports.
 - Current alternatives and competitor reasoning.
-- Product form, MVP scope, explicit non-goals, product-scale path, and why this
-  is not merely a GitHub Action, CI gate, PR comment, checklist, or wrapper.
+- Product form, first-version scope, explicit non-goals, and product-scale path.
 - Red Team objections, responses, and CEO rulings.
-- Dangerous assumptions, shortest evidence path, and stop line.
+- Dangerous assumptions.
 - Distribution or contact targets only when explicitly requested for the run.
-- Next-thread first actions.
 
-Do not include generic skill recommendations.
+Do not include generic skill suggestions.
 
 `runs/<run_id>/handoff-index.md`
 
@@ -223,9 +211,9 @@ directions so one-line handoff requests can resolve the right dossier.
 - Do not persist raw secrets, private user data, edit tokens, or unavailable
   page content.
 - Mark links as inaccessible instead of fabricating summaries.
-- Run `scripts/validate-run-artifacts.mjs <run_dir>` when shell is available.
-  If validation fails, fix the artifacts before considering the run complete; if
-  the runtime cannot run the validator, state that in the report.
+- Run `scripts/check-run-artifacts.mjs <run_dir>` when shell is available.
+  If the check fails, fix the artifacts before considering the run complete; if
+  the runtime cannot run the checker, state that in the report.
 
 ## Handoff Reads
 

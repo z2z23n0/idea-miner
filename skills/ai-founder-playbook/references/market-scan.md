@@ -2,7 +2,7 @@
 
 用于三类任务：
 
-- **验证一个已有 idea**：查 Twitter/X、Hacker News、GitHub、Reddit、Product Hunt、评论站和 web，看竞品/替代品/开源项目是否存在，用户是否真的痛。
+- **评估一个已有 idea**：查 Twitter/X、Hacker News、GitHub、Reddit、Product Hunt、评论站和 web，看竞品/替代品/开源项目是否存在，用户是否真的痛。
 - **反向挖 idea**：从社区讨论、issue、评论、趋势和抱怨里找可形成商业产品或 GitHub 开源项目的需求。
 - **产品/平台新闻触发 idea**：从近期产品发布、模型/agent/开发者工具新功能、release notes、changelog、Show HN/Product Hunt、GitHub trending/releases、官方 blog 和社区评测里，找复刻、改窄、开源替代、兼容层、安全/调试/迁移工具、模板或 workflow 机会。
 
@@ -13,7 +13,7 @@
 如果某个平台无法直接访问：
 
 - X/Twitter：用 web search、帖子聚合页、搜索引擎缓存或可用浏览器登录态；无法访问时明确说明。
-- Reddit：优先 `site:reddit.com/r/<subreddit> <关键词>` 搜索；直接 API/页面失败时换搜索引擎。
+- Reddit：先用 `site:reddit.com/r/<subreddit> <关键词>` 搜索；直接 API/页面失败时换搜索引擎。
 - HN：用 Algolia/HN search、`site:news.ycombinator.com`、Show HN/Ask HN 查询。
 - GitHub：用 GitHub search、topics、stars、recent commits、issues/discussions、README、release notes。
 
@@ -27,7 +27,7 @@
 | **产品/平台新闻** | 官方 blog、release notes、changelog、Show HN、Product Hunt、launch thread、模型/agent 新功能 | 跨平台复刻、Codex/Claude/Cursor 互补工具、兼容层、模板、migration helper |
 | **竞品缺陷** | pricing backlash、复杂安装、文档差、停更、issue 积压、企业化过重、闭源/不可自托管 | developer-first 开源版、CLI-first 小工具、self-hosted 版本、UX repair |
 | **开源生态** | GitHub trending/topics/releases、stars/forks、recent commits、issue/PR 活跃度、依赖和教程 | 维护接手、插件、adapter、测试工具、conformance suite |
-| **趋势/参与度** | 近 7-30 天跨 Reddit/X/HN/GitHub/web 的重复讨论、搜索热度、多个社区同时出现 | 时机判断、细分 ICP、最短证据路径 |
+| **趋势/参与度** | 近 7-30 天跨 Reddit/X/HN/GitHub/web 的重复讨论、搜索热度、多个社区同时出现 | 时机判断、细分 ICP、产品边界 |
 | **评论/评测** | G2/Capterra/Chrome Web Store/App Store/Product Hunt 评论、博客评测、YouTube/TikTok demo 反馈 | 体验缺口、价格切口、缺失工作流、用户真正珍惜的价值 |
 
 内置扫描流程：
@@ -41,7 +41,7 @@
 
 如果这是定时或多轮 discovery，而不是一次性市场扫描，使用 `idea-discovery-workflow` 来生成 thesis portfolio、product/OSS bet sketches、Promotion Gate、证据记忆和报告。不要用本文件的抱怨/搜索模式替代 thesis-first 生成。
 
-## 验证已有 idea 的扫描顺序
+## 评估已有 idea 的扫描顺序
 
 1. **关键词展开**：从 idea 提炼 5-10 个关键词，包括用户语言、替代方案、竞品类别、英文同义词。
 2. **直接竞品**：搜索 `"<problem>" startup`, `"<category>" tool`, `alternative to <known tool>`, Product Hunt、GitHub topics。
@@ -77,11 +77,11 @@
 - **体验机会**：竞品功能有但安装、文档、速度、默认配置、UI、错误信息、集成体验差。
 - **低知名度机会**：已有项目 star 少、讨论少、release 弱，但少量用户强烈表达需求。可用更强定位、分发和文档抢占关键词。
 - **维护接手机会**：开源项目停更、issue 积压、PR 无人合并，但仍有人依赖或抱怨。
-- **需求弱警告**：竞品少且社区也不讨论，不能直接解读为空白市场；优先验证是否没人痛。
+- **需求弱警告**：竞品少且社区也不讨论，不能直接解读为空白市场；先判断是否没人痛。
 
 ## 反向挖 idea 的搜索模式
 
-优先找“明确痛点 + 当前替代 + 多人共鸣 + 可小步验证”的帖子。可用这些查询：
+先找“明确痛点 + 当前替代 + 多人共鸣 + 可形成产品边界”的帖子。可用这些查询：
 
 ```text
 "I wish there was" + tool
@@ -126,10 +126,10 @@ site:github.com "<tool>" "issues" "feature request"
 - 哪些证据只是“发布很热”，哪些证据说明用户真的想切换、复刻、补洞或自托管？
 - 如果大厂下周补齐这个缺口，项目还剩下什么开源/分发/工作流优势？
 
-## 来源优先级
+## 来源分工
 
 - **HN**：技术/开发者市场。重点看高质量长评论、反对意见、Show HN 反馈。
-- **GitHub**：开源和开发者需求。重点看 issue 重复度、PR 活跃度、maintainer 响应、fork/star 质量、release 节奏、停更项目、awesome lists 和 topic 排名。
+- **GitHub**：开源和开发者需求。重点看 issue 重复度、PR 活跃度、maintainer 响应、fork/star 质量、release 节奏、停更项目、awesome lists 和 topic 位置。
 - **Reddit**：真实抱怨和替代方案。重点看评论深度、多个用户附和、是否有人说愿意付费或已经付费。
 - **X/Twitter**：趋势、专家观点、早期产品发布、抱怨扩散。注意噪音高，单条 viral 不等于需求。
 - **Product Hunt / Indie Hackers**：看新产品、定位、启动策略和 maker 反馈；注意 upvote 可被运营放大。
@@ -140,14 +140,14 @@ site:github.com "<tool>" "issues" "feature request"
 - **明确单一 use case（0-15）**：一句话能说清“把 X 变成 Y / 帮 Z 跟踪 W / 让 A 少做 B”。
 - **痛点或触发证据（0-20）**：有真实帖子、issue、评论、访谈、付费/安装行为，或可信的产品/平台变化 + 社区反馈链；不能只有“新功能很火”。
 - **现有方案不满（0-15）**：用户明确说现有工具贵、臃肿、复杂、缺功能、停更或工作流不顺。
-- **可快速验证（0-15）**：2 周内能做 concierge、fake door、脚本、插件或很窄 MVP。
+- **产品边界清楚（0-15）**：能做出 concierge、fake door、脚本、插件或很窄的首版产品表面积。
 - **可触达分发（0-15）**：能列出具体社区、关键词、用户列表、issue 参与者、HN/Reddit 讨论者。
 - **目标匹配（0-10）**：商业产品看付费/预算路径；开源项目看 star/安装/fork/贡献/生态引用路径。
 - **竞争风险可控（0-10）**：没有明显大厂/强开源/垄断分发一键压死；或有明确细分楔子，如低知名度、体验差、付费闭源、停更、过度复杂、用户段错位。
 
 判读：
 
-- **70+**：值得进入最短证据路径，但仍要先跑外部扫描，确认能用真实行为改变推进/停止判断。
+- **70+**：值得继续想，但仍要先跑外部扫描，确认不是竞品或分发直接阻断。
 - **50-69**：有苗头，先缩窄 ICP 或换切入点。
 - **30-49**：多半是讨论热闹但需求弱，或竞品/分发/预算缺口大。
 - **<30**：不建议做，除非出现新的强证据。
@@ -180,10 +180,10 @@ site:github.com "<tool>" "issues" "feature request"
 - 可切入缝隙：低知名度 / 体验差 / 付费闭源 / 停更 / 过度复杂 / 用户段错位 / 分发弱
 - 差异化楔子：
 
-下一步：
-1. ...
-2. ...
-3. ...
+产品边界：
+- 第一版是什么：
+- 不做什么：
+- 最容易被误判的地方：
 ```
 
 ## 输出模板：从社区挖 idea
@@ -193,14 +193,14 @@ site:github.com "<tool>" "issues" "feature request"
 | Idea | 来源类型 | 来源信号 | 分数 | 为什么可能成立 | 最大风险 |
 |---|---|---|---:|---|---|
 
-Top pick：
+代表性方向：
 - 目标类型：
 - 用户：
 - 痛点：
 - 当前替代：
 - 最小产品/开源项目：
-- 最短证据路径：
-- 停止线：
+- 产品边界：
+- 最大风险：
 ```
 
 ## 证据纪律

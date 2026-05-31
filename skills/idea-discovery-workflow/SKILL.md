@@ -1,6 +1,6 @@
 ---
 name: idea-discovery-workflow
-description: Use when running or designing recurring product/open-source idea discovery, daily or scheduled idea mining, thesis-first product/OSS bet discovery, Promotion Gate workflows, multi-role Thesis Scout/Signal Scout/Critic/Competitor/CEO evaluation, evidence-to-decision pipelines, idea backlog memory, idea handoffs, handoff-ready idea dossiers, or automation prompts for finding AI-native products, high-star open-source projects, CLI, MCP, Skill, agent workflow, and developer-tool ideas. This skill orchestrates discovery and uses ai-founder-playbook for judgment, pressure testing, competitor analysis, and shortest evidence paths.
+description: Use when running or designing recurring product/open-source idea discovery, daily or scheduled idea mining, thesis-first product/OSS bet discovery, Promotion Gate workflows, multi-role Thesis Scout/Signal Scout/Critic/Competitor/CEO evaluation, evidence-to-decision pipelines, idea backlog memory, idea handoffs, handoff-ready idea dossiers, or automation prompts for finding AI-native products, high-star open-source projects, CLI, MCP, Skill, agent workflow, and developer-tool ideas. This skill orchestrates discovery and uses ai-founder-playbook for judgment, pressure testing, competitor analysis, and market reasoning.
 ---
 
 # Idea Discovery Workflow
@@ -15,8 +15,7 @@ This skill is intentionally separate from `ai-founder-playbook`:
 - `idea-discovery-workflow` owns workflow, roles, evidence memory, run artifacts,
   report shape, and automation integration.
 - `ai-founder-playbook` owns founder/open-source judgment: pressure tests,
-  market scans, competitor reasoning, scoring, shortest evidence paths, and
-  launch advice.
+  market scans, competitor reasoning, scoring, and launch advice.
 
 ## Core Run
 
@@ -37,7 +36,7 @@ For a normal run, load only the references needed for the task:
    hand off one or more stored ideas.
 
 Use `ai-founder-playbook` during Candidate Draft, Critic Review, Competitor
-Check, CEO Decision, and Validation Plan. Do not duplicate its rubrics here.
+Check, and CEO Decision. Do not duplicate its rubrics here.
 
 ## Built-In Scripts
 
@@ -55,9 +54,9 @@ Check, CEO Decision, and Validation Plan. Do not duplicate its rubrics here.
   write prompt files suitable for new Codex sessions. It does not browse the
   web or create sessions by itself; the skill should call host session tools
   when available.
-- `scripts/validate-run-artifacts.mjs <run_dir>` checks that a completed run has
+- `scripts/check-run-artifacts.mjs <run_dir>` checks that a completed run has
   a report, source notes, handoff index, per-idea JSON/Markdown dossiers, a
-  reader-readable product card, and source-backed claims. Run it after writing
+  reader-readable idea story, and source-backed claims. Run it after writing
   artifacts whenever shell is available.
 
 ## Execution Rules
@@ -99,12 +98,12 @@ Check, CEO Decision, and Validation Plan. Do not duplicate its rubrics here.
   concrete product/OSS bet with core thesis, AI relevance, demo moment, and
   repo/star asset. Rewrite or reject ideas that remain abstract or integration-only.
 - For every final idea, persist a handoff-ready dossier. Persist a paused dossier
-  only for a strong idea that narrowly missed a known evidence gap; do not save
+  only for a strong idea with one clearly named unresolved issue; do not save
   vetoed, weak, internal-only, or "could be a small tool" ideas as handoff work.
   Later handoff requests should read the stored dossier first and should not
   repeat source discovery unless the user explicitly asks for a current refresh.
-- After persistence, run the artifact validator when shell is available. If it
-  fails, fix the files and rerun it; do not present a failed validation run as a
+- After persistence, run the artifact checker when shell is available. If it
+  fails, fix the files and rerun it; do not present a failed artifact check as a
   normal success.
 
 ## Automation Prompt Boundary

@@ -19,9 +19,9 @@ prepare_run
   -> replenish_if_underfilled
   -> persist_memory
   -> render_report
-  -> reader_clarity_gate
+  -> reader_check
   -> persist_run_artifacts
-  -> artifact_quality_gate
+  -> artifact_quality_check
 ```
 
 ## Nodes
@@ -40,28 +40,28 @@ prepare_run
 | hard_gate | CEO + Red Team | candidates, user goal, evidence | keep/kill decisions before detailed write-up |
 | critic_review | Red Team | promoted candidates | objections, rejection/revision requests, kill reasons |
 | competitor_check | Competitor Investigator | promoted candidates | direct/indirect/open-source/platform competitors and absorption risks |
-| ceo_decision | CEO | revised candidates, objections, competitors | final product/OSS bets, priorities, rationale |
+| ceo_decision | CEO | revised candidates, objections, competitors | final product/OSS bets and rationale |
 | replenish_if_underfilled | Orchestrator + Thesis Scout + Drafter | final count, kill reasons | new theses, new bet sketches, or underfilled reason |
 | persist_memory | Orchestrator | theses, signals, ideas, claims, decisions | JSONL records and graph-like edges |
 | render_report | Orchestrator | run artifacts | final Chinese Markdown report |
-| reader_clarity_gate | Report Reader + Orchestrator | rendered report, final ideas, dossiers | pass/rewrite decision |
+| reader_check | Report Reader + Orchestrator | rendered report, final ideas, dossiers | pass/rewrite decision |
 | persist_run_artifacts | Orchestrator | report, source notes, final/paused ideas | `runs/<run_id>/report.md`, `source-notes.jsonl`, per-idea JSON/Markdown dossiers, `handoff-index.md` |
-| artifact_quality_gate | Orchestrator | run artifact directory | validation result; explicit failure note or corrected artifacts |
+| artifact_quality_check | Orchestrator | run artifact directory | check result; explicit failure note or corrected artifacts |
 
 `persist_run_artifacts` is required, not best effort. If the runtime cannot
 write files, the final report must explicitly say that handoff artifacts were
 not saved.
 
-`artifact_quality_gate` should run after files are written whenever shell is
+`artifact_quality_check` should run after files are written whenever shell is
 available:
 
 ```bash
-node skills/idea-discovery-workflow/scripts/validate-run-artifacts.mjs <run_dir>
+node skills/idea-discovery-workflow/scripts/check-run-artifacts.mjs <run_dir>
 ```
 
-If validation fails, fix the report, source notes, or dossiers and rerun the
-validator. If the runtime cannot run the validator, the final report must say
-that the artifact quality gate was not executed.
+If the check fails, fix the report, source notes, or dossiers and rerun the
+checker. If the runtime cannot run the checker, the final report must say that
+the artifact quality check was not executed.
 
 ## Iteration Rules
 
@@ -87,18 +87,18 @@ that the artifact quality gate was not executed.
 - The history relation gate is mandatory. A candidate cannot enter final until
   it is labelled as one of: `new`, `update_existing`, `duplicate_of`,
   `revives`, `merged_from`, `splits_from`, or `adjacent_to`.
-- A pure duplicate with no changed thesis, ICP, product scale, competitor
-  judgment, or stop line is rejected as `duplicate_of` and written as a backlog
-  note, not a final idea.
+- A pure duplicate with no changed thesis, ICP, product scale, or competitor
+  judgment is rejected as `duplicate_of` and written as a backlog note, not a
+  final idea.
 - `update_existing` candidates belong in the backlog-update section unless new
-  evidence or a new thesis materially changes verdict, priority, MVP boundary,
-  competitor judgment, or stop line.
+  evidence or a new thesis materially changes the verdict, product boundary, or
+  competitor judgment.
 - Hard gate happens before long write-ups. Kill candidates that are only thin
   wrappers, hook recipes, CI glue, internal dogfood, platform-feature aliases,
   generic workflow/eval meta-tools, Action-only integrations, or ideas that
   cannot plausibly reach the user's stated product/OSS goal.
-- Reader Clarity Gate remains required, but clarity is not enough. A candidate
-  can be clear and still fail because it is not imaginative, AI-relevant, or
+- Reader Check remains required, but clarity is not enough. A candidate can be
+  clear and still fail because it is not imaginative, AI-relevant, or
   product/OSS-complete.
 - Target up to 3 final product/OSS bets. If fewer than 3 survive, replenish with
   new theses or product archetypes, not just new complaint sources.
@@ -121,8 +121,9 @@ Classify each serious bet:
 - `non-AI exceptional`
 - `non-AI reject`
 
-Final slots prefer `AI-core` and `AI-native workflow`. `AI-leveraged` and
-`non-AI exceptional` must explicitly justify why they deserve a final slot.
+Final selections prefer `AI-core` and `AI-native workflow`. `AI-leveraged` and
+`non-AI exceptional` must explicitly justify why they belong in the selected
+set.
 
 ### Product / OSS Promotion Gate
 
@@ -132,13 +133,12 @@ A final idea must pass at least one:
   product surface, commercial or distribution path, and expansion path.
 - **High-star OSS**: 30-second demo, memorable repo asset, clear GitHub topic or
   ecosystem, contribution/extension path, and reason developers would star,
-  install, recommend, or depend on it.
+  install, share, or depend on it.
 
 Reject candidates that cannot answer:
 
-- Why does this deserve a final slot?
-- Why is this not just a GitHub Action, CI gate, PR comment, wrapper, checklist,
-  platform patch, or one-off script?
+- What actual product, app, repo, command, or workflow exists?
+- Who uses it and in what moment?
 - What is the demo moment?
 - What accumulates over time: rules, dataset, benchmark, protocol, examples,
   integrations, community plugins, eval corpus, or workflow memory?
@@ -147,8 +147,7 @@ Reject candidates that cannot answer:
 
 Build a compact backlog snapshot before final selection:
 
-- names, aliases, statuses, priorities, and dossier/detail paths from
-  `ideas.jsonl`;
+- names, aliases, statuses, and dossier/detail paths from `ideas.jsonl`;
 - prior final/paused/rejected summaries from recent `handoff-index.md` and
   `report.md` files;
 - known source URLs from top-level signals and run `source-notes.jsonl`;
@@ -158,8 +157,8 @@ Build a compact backlog snapshot before final selection:
 For each candidate, decide the strongest relationship:
 
 - `new`: new thesis/workflow/ICP/product form with no close stored idea.
-- `update_existing`: same idea, but a new thesis or evidence changes priority,
-  verdict, MVP, competitor judgment, or stop line.
+- `update_existing`: same idea, but a new thesis or evidence changes verdict,
+  product boundary, or competitor judgment.
 - `duplicate_of`: same idea with no decision-changing new information.
 - `revives`: previously paused/rejected idea now has a new reason to reconsider.
 - `merged_from`: combines two or more prior ideas into a clearer direction.
@@ -173,17 +172,12 @@ report must not present a duplicate as a new idea.
 
 ## Evidence Wording Rules
 
-- Do not use generic validation homework such as "find 10 users",
-  "ask 5 maintainers", or "collect N issues" unless that exact count follows
-  from the current channel, known audience, or concrete launch plan.
-- For weak ideas, write the direct kill reason and the evidence that would have
-  been needed. Do not attach a generic 7-14 day validation plan to make the idea
-  feel actionable.
-- For final bets, the next action must be the shortest decision-changing
-  evidence path, not a validation template. If there is no short evidence path,
-  the bet should not be final.
+- For weak ideas, write the direct kill reason and the evidence that changed the
+  decision. Do not attach homework to make the idea feel actionable.
 - Evidence should kill boring or false bets; it should not be used as the main
   imagination source.
+- Source notes should explain what a source changed in the judgment, not merely
+  list links.
 
 ## Parallelism Rules
 
@@ -197,7 +191,6 @@ Use parallelism where it improves breadth:
 Use debate only when:
 
 - support and opposition are both strong;
-- the candidate is likely P0/P1;
 - a decision would affect real build time or distribution effort;
 - CEO cannot resolve the dispute from first-pass evidence.
 
@@ -207,10 +200,10 @@ decision. Do not paste long transcripts unless explicitly requested.
 ## Handoff-Ready Artifact Rule
 
 Every final idea must be saved as a standalone dossier before the run is
-considered complete. A paused idea gets a dossier only when it is strong but
-blocked on one specific evidence gap; weak/vetoed ideas get only concise death
-notes in the report. The dossier should contain enough context for a future
-agent to continue the idea without browsing again:
+considered complete. A paused idea gets a dossier only when it is strong but has
+one specific unresolved issue; weak/vetoed ideas get only concise death notes in
+the report. The dossier should contain enough context for a future agent to
+continue the idea without browsing again:
 
 - core thesis and why-now logic;
 - AI relevance and promotion-gate result;
@@ -218,7 +211,7 @@ agent to continue the idea without browsing again:
 - what the product/OSS is, how it is used, what it replaces, and product scale;
 - demo moment, repo/star asset, competitor and alternative reasoning;
 - Red Team objections and CEO rulings;
-- dangerous assumptions, shortest evidence path, and stop line.
+- dangerous assumptions and first-version boundary.
 
 Future handoff requests should read these dossiers first and should not repeat
 source discovery unless the user asks for a current refresh.

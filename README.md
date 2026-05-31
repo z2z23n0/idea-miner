@@ -17,8 +17,7 @@ report format, and local evidence memory format.
 - A **Discovery Thesis** portfolio for AI-native products, agent workflows, AI
   coding, AI infra, and high-star OSS opportunities.
 - Product/OSS bet sketches with target users, usage moments, 30-second demo
-  moments, repo/star assets, AI relevance, MVP shape, and shortest evidence
-  paths.
+  moments, repo/star assets, AI relevance, and first-version shape.
 - Competitor and substitute checks for serious candidates.
 - Red Team objections, dangerous assumptions, and CEO-style decisions:
   advance, narrow, pause, or reject.
@@ -64,8 +63,7 @@ does not, one agent can simulate the roles and label the report accordingly.
 
 The useful output is the thesis-to-decision chain: what bet the run is making,
 why now, how it could become a product or high-star OSS project, what evidence
-supports or kills it, why it survived review, and what shortest evidence path
-would actually change the decision.
+supports or kills it, and why it survived review.
 
 Recurring runs also save per-idea dossiers. Handoff should be a packaging step:
 read the stored dossier, write a temporary handoff file, and avoid web refreshes
@@ -83,12 +81,12 @@ research or implementation unless requested.
 | Skill | Role |
 |---|---|
 | `idea-discovery-workflow` | Runs the research workflow: thesis portfolio, product/OSS bets, source plan, roles, evidence memory, and report format |
-| `ai-founder-playbook` | Judges the ideas: pressure tests, competitor reasoning, commercial/open-source split, shortest evidence paths, and launch support |
+| `ai-founder-playbook` | Judges the ideas: pressure tests, competitor reasoning, commercial/open-source split, and launch support |
 
 The split keeps orchestration and judgment separate. A scheduled run can use
 `idea-discovery-workflow` to gather and normalize evidence, then call on
-`ai-founder-playbook` when ideas need pressure testing, competitor checks, or a
-decision-changing next action.
+`ai-founder-playbook` when ideas need pressure testing, competitor checks, or
+market judgment.
 
 ## Signal Sources
 
@@ -114,21 +112,17 @@ wrappers can be integration surfaces, but not the final idea body.
 
 The default report includes:
 
-- Today's verdict.
-- Discovery Thesis.
-- Product / OSS Bet Sketches.
-- Evidence Sweep.
-- Covered and uncovered sources.
-- Candidate pool and iteration history.
-- Promotion Gate: AI relevance, product/OSS scale, and Action/CI/PR-only veto.
+- Today's selected directions, without ordering the selected ideas against one
+  another.
+- Discovery context and thesis pool.
+- Evidence notes that explain what each source changed in the judgment.
 - History relation and novelty handling: new, update_existing, duplicate_of,
   revives, merged_from, splits_from, adjacent_to.
-- Final product/OSS bets with core thesis, AI relevance, 30-second demo,
-  repo/star asset, target user, sources, alternatives, MVP shape, competitor
-  table, AI leverage, objections, assumptions, priority, and shortest evidence
-  path.
+- Final product/OSS ideas written as readable product memos: one sentence,
+  concrete usage scene, product surface, current workaround, key insight,
+  why-now logic, alternatives, first-version boundary, durable asset, risks, and
+  judgment.
 - Rejected or paused candidates.
-- Role conflicts and CEO decisions.
 - Source appendix.
 
 ## Quick Start
@@ -229,15 +223,15 @@ Creates the local JSONL evidence store.
 node skills/idea-discovery-workflow/scripts/init-store.mjs
 ```
 
-`skills/idea-discovery-workflow/scripts/validate-run-artifacts.mjs`
+`skills/idea-discovery-workflow/scripts/check-run-artifacts.mjs`
 
 Checks a completed run for reader clarity and artifact completeness: report
-sections, per-idea dossiers, product/OSS cards, AI relevance, promotion gates,
-30-second demo, repo/star asset, source notes, source-backed claims, competitor
-reasoning, MVP/non-goals, shortest evidence path, and stop lines.
+sections, per-idea dossiers, readable idea stories, AI relevance, promotion
+gates, 30-second demo, repo/star asset, source notes, source-backed claims,
+competitor reasoning, and first-version boundaries.
 
 ```bash
-node skills/idea-discovery-workflow/scripts/validate-run-artifacts.mjs ~/.idea-miner/runs/<run_id>
+node skills/idea-discovery-workflow/scripts/check-run-artifacts.mjs ~/.idea-miner/runs/<run_id>
 ```
 
 `skills/idea-discovery-workflow/scripts/idea-handoff.mjs`
@@ -290,14 +284,14 @@ The top-level JSONL files are indexes. The detailed context for each final or
 resumable paused idea belongs in `runs/<run_id>/ideas/<idea_id>.md`, with source
 links, source-to-claim mapping, competitor reasoning, Red Team records, CEO
 decisions, core thesis, AI relevance, promotion-gate result, demo moment,
-repo/star assets, MVP boundaries, shortest evidence paths, and stop lines.
+repo/star assets, and first-version boundaries.
 
 `handoff-events.jsonl` records delivery events such as "idea X was handed off
 to Codex thread Y", so later follow-up questions do not have to depend on chat
 history.
 
 Keep runtime data, automation configs, API keys, edit tokens, private source
-lists, private idea priorities, and private contact targets out of the
+lists, private idea notes, and private contact targets out of the
 repository.
 
 ## Repository Layout
