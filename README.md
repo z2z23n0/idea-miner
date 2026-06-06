@@ -3,10 +3,8 @@
 Automatic startup and open-source idea mining for agents.
 
 `idea-miner` helps an agent turn high-imagination AI-era theses into startup and
-open-source product bets. It starts from thesis generation, sketches product/OSS
-bets across developer/OSS, vertical B2B workflow products, and
-consumer/prosumer apps, then scans bucket-specific sources to kill, sharpen, or
-de-risk those bets.
+open-source product bets. It starts from thesis generation, sketches AI-focused
+product/OSS bets, then scans sources to kill, sharpen, or de-risk those bets.
 
 The repo contains two agent skills plus a few helper scripts. The skills define
 the research workflow, source policy, role contracts, pressure-test rubrics,
@@ -14,15 +12,20 @@ report format, and local evidence memory format.
 
 ## What It Produces
 
-- A **Discovery Thesis** portfolio across three final buckets: `dev_oss`,
-  `vertical_b2b`, and `consumer_prosumer`.
-- Product/OSS bet sketches with target users, usage moments, 30-second demo
-  moments or product moments, repo/star or product assets, AI relevance, bucket
-  fit, and first-version shape.
+- A **Discovery Thesis** portfolio across three AI-focused final buckets:
+  `ai_oss`, `ai_product`, and `ai_prosumer`.
+- Product/OSS bet sketches anchored in a clear **Idea Spine**: product/repo
+  form, target user and task, inputs or permissions, core object, output/state,
+  first-version boundary, and why it is a product or OSS project rather than a
+  prompt, wrapper, checker, or integration recipe.
 - Competitor and substitute checks for serious candidates.
 - Red Team objections, dangerous assumptions, and CEO-style decisions:
   advance, narrow, pause, or reject.
-- A Chinese report that can be read as a daily or weekly research memo.
+- A Chinese report that can be read as a daily or weekly research memo by
+  someone who did not participate in discovery.
+- An independent reader review artifact that checks whether each selected idea
+  can be explained as a concrete product or repo shape.
+- A candidate ledger that records replenish rounds when a bucket is underfilled.
 - Optional local JSONL memory for signals, ideas, competitors, claims,
   decisions, and evidence edges.
 - Handoff-ready idea dossiers so a later one-line handoff request can package
@@ -40,6 +43,7 @@ prepare_run
   -> collect_evidence
   -> normalize_signals
   -> ai_relevance_gate
+  -> product_shape_gate
   -> product_oss_promotion_gate
   -> history_relation_gate
   -> hard_gate
@@ -49,6 +53,7 @@ prepare_run
   -> replenish_if_underfilled
   -> persist_memory
   -> render_report
+  -> independent_reader_review
   -> persist_run_artifacts
 ```
 
@@ -57,17 +62,18 @@ for a narrow scan, the scout starts by generating AI-era theses and product/OSS
 bet sketches. Evidence comes later as a brake: it supports, challenges, kills,
 or sharpens bets; it is not the primary imagination source. Weak candidates are
 killed before long write-ups, and an underfilled bucket triggers replenish
-rounds with new thesis seeds, product archetypes, demo moments, repo/product
-assets, ICPs, or source modules. The default final set is grouped as up to 3
-`dev_oss`, up to 3 `vertical_b2b`, and up to 3 `consumer_prosumer`;
-underfilled buckets stay underfilled rather than being filled with extra
-developer ideas. If the runtime provides real sub-agent or multi-agent tools,
-the same role contracts can be dispatched. If it does not, one agent can
-simulate the roles and label the report accordingly.
+rounds with new thesis seeds, capability shifts, product archetypes, demo
+moments, repo/product assets, target users, or source modules. The default final
+set is grouped as up to 3 `ai_oss`, up to 3 `ai_product`, and up to 3
+`ai_prosumer`; underfilled buckets stay underfilled rather than being filled
+with lower-quality ideas. If the runtime provides real sub-agent or multi-agent
+tools, the same role contracts can be dispatched. The Report Reader should be a
+separate agent whenever the runtime supports it.
 
-The useful output is the thesis-to-decision chain: what bet the run is making,
-why now, how it could become a product or high-star OSS project, what evidence
-supports or kills it, and why it survived review.
+The useful output is the thesis-to-decision chain plus product shape: what bet
+the run is making, what artifact or product surface would exist, who uses it
+for which task, what input becomes what output, what the first version does and
+does not do, what evidence supports or kills it, and why it survived review.
 
 Recurring runs also save per-idea dossiers. Handoff should be a packaging step:
 read the stored dossier, write a temporary handoff file, and avoid web refreshes
@@ -104,16 +110,16 @@ market judgment.
 | Open-source ecosystem | GitHub topics, trending projects, releases, stars/forks, PRs, tutorials, dependencies |
 | Trend windows | Repeated signals across multiple communities in the last 7-30 days |
 | Reviews / evaluations | G2, Capterra, Chrome Web Store, App Store, Product Hunt comments, blog/video reviews |
-| Vertical workflow | G2/Capterra/TrustRadius, pricing pages, help centers, industry forums, trade publications, job posts, workflow templates, case studies, agency/manual-service substitutes |
-| Consumer/prosumer behavior | App Store, Google Play, Chrome Web Store, Product Hunt comments, YouTube/TikTok demos and comments, creator/student/parent/freelancer communities, niche Reddit, comparison pages |
+| AI product categories | Product Hunt, launch pages, pricing pages, docs, user communities, app stores, review sites, comparison pages |
+| AI prosumer behavior | creator/founder/researcher/student/indie-developer communities, app stores, extension stores, YouTube demos, Reddit/HN discussions, visible workflows |
 
 Default discovery should not begin with standing topic keywords or complaint
 mining. It should first generate thesis seeds and product/OSS bet sketches, then
 use sources to support, challenge, kill, or sharpen those bets. Source coverage
-should match the target bucket; extra developer sources should not substitute
-for vertical or consumer evidence unless the run is explicitly scoped that way.
-Final ideas should be AI-core, AI-native workflow, or exceptional non-AI
-product/OSS bets.
+should match the target bucket, but the default world stays AI-focused rather
+than drifting into unfamiliar vertical industries. Final ideas should be
+AI-core or AI-native workflow by default. Non-AI ideas belong in backlog unless
+the user explicitly asks to widen scope.
 GitHub Actions, CI gates, PR comments, templates, hooks, checklists, and thin
 wrappers can be integration surfaces, but not the final idea body.
 
@@ -122,15 +128,16 @@ wrappers can be integration surfaces, but not the final idea body.
 The default report includes:
 
 - Today's selected directions, without ordering the selected ideas against one
-  another, grouped by `dev_oss`, `vertical_b2b`, and `consumer_prosumer`.
+  another, grouped by `ai_oss`, `ai_product`, and `ai_prosumer`.
 - Discovery context and thesis pool.
 - Evidence notes that explain what each source changed in the judgment.
 - History relation and novelty handling: new, update_existing, duplicate_of,
   revives, merged_from, splits_from, adjacent_to.
-- Final product/OSS ideas written as readable product memos: final bucket,
-  bucket-fit reasoning, one sentence, concrete usage scene, product surface,
-  current workaround, key insight, why-now logic, alternatives, first-version
-  boundary, durable asset, risks, and judgment.
+- Final product/OSS ideas written as short product memos anchored on product
+  shape, not story scenes and not a field checklist.
+- An independent reader review that checks whether each selected idea can be
+  explained as a product/repo object with a target user, inputs, outputs,
+  core objects, first-version boundary, and product/OSS body.
 - Rejected or paused candidates.
 - Source appendix.
 
@@ -190,11 +197,11 @@ prompts/customization-block.md
 Customization examples:
 
 ```text
-主要关注 thesis：agent-readable software, vertical workflow compression, consumer delegation loop
-排除方向：consumer apps, crypto, generic SEO
-final bucket：dev_oss 最多 3 个 / vertical_b2b 最多 3 个 / consumer_prosumer 最多 3 个
-偏好形态：complete product / high-star GitHub OSS / vertical workflow SaaS / consumer app / MCP server / Skill / SDK
-成功标准：AI-core product / AI-native workflow / GitHub stars / real installs / paid SaaS / consumer retention
+主要关注 thesis：agent-readable software, AI coding aftershocks, AI workflow products
+排除方向：unfamiliar vertical SaaS, crypto, generic SEO
+final bucket：ai_oss 最多 3 个 / ai_product 最多 3 个 / ai_prosumer 最多 3 个
+偏好形态：complete AI product / high-star GitHub OSS / AI workflow app / MCP server / Skill / SDK
+成功标准：AI-core product / AI-native workflow / GitHub stars / real installs / paid SaaS / repeat usage
 不算 final：GitHub Action-only / CI gate / PR comment / thin wrapper
 ```
 
@@ -236,9 +243,9 @@ node skills/idea-discovery-workflow/scripts/init-store.mjs
 `skills/idea-discovery-workflow/scripts/check-run-artifacts.mjs`
 
 Checks a completed run for reader clarity and artifact completeness: report
-sections, per-idea dossiers, readable idea stories, AI relevance, promotion
-gates, 30-second demo, repo/star asset, source notes, source-backed claims,
-competitor reasoning, and first-version boundaries.
+sections, per-idea dossiers, product shape, independent reader review,
+candidate ledger when underfilled, AI relevance, promotion gates, source notes,
+source-backed claims, competitor reasoning, and first-version boundaries.
 
 ```bash
 node skills/idea-discovery-workflow/scripts/check-run-artifacts.mjs ~/.idea-miner/runs/<run_id>
@@ -283,6 +290,8 @@ handoff-events.jsonl
 runs/<run_id>/
   run-manifest.json
   report.md
+  reader-review.md
+  candidate-ledger.jsonl
   source-notes.jsonl
   signal-portfolio.jsonl
   ideas/<idea_id>.json

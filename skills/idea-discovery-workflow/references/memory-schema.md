@@ -14,6 +14,8 @@ ${IDEA_MINER_HOME:-$HOME/.idea-miner}/
   runs/<run_id>/
     run-manifest.json
     report.md
+    reader-review.md
+    candidate-ledger.jsonl
     signal-portfolio.jsonl
     source-notes.jsonl
     ideas/<idea_id>.json
@@ -40,24 +42,24 @@ it.
 `signals.jsonl`
 
 ```json
-{"id":"sig_...","run_id":"...","bucket":"ai_platform_shift|oss_mindshare|vertical_workflow|consumer_prosumer_behavior|pain|competitor|...","final_bucket":"dev_oss|vertical_b2b|consumer_prosumer|cross_bucket","evidence_role":"supports|challenges|kills|sharpens|competitor","source_url":"...","source":"HN","observed_at":"...","freshness":"...","summary":"...","quote_summary":"...","current_alternative":"...","evidence_grade":"low|medium|high"}
+{"id":"sig_...","run_id":"...","bucket":"ai_platform_shift|oss_mindshare|ai_product_category|ai_prosumer_behavior|pain|competitor|...","final_bucket":"ai_oss|ai_product|ai_prosumer|cross_bucket","evidence_role":"supports|challenges|kills|sharpens|competitor","source_url":"...","source":"HN","observed_at":"...","freshness":"...","summary":"...","quote_summary":"...","current_alternative":"...","evidence_grade":"low|medium|high"}
 ```
 
 `ideas.jsonl`
 
 ```json
-{"id":"idea_...","run_id":"...","name":"...","aliases":["..."],"final_bucket":"dev_oss|vertical_b2b|consumer_prosumer","bucket_fit":"...","core_thesis":"...","ai_relevance":"AI-core|AI-native workflow|AI-leveraged|non-AI exceptional|non-AI reject","promotion_gate":"pass|backlog|reject","shape":"complete_product|high_star_oss|SaaS|GitHub OSS|CLI|MCP|Skill|...","target_user":"...","status":"candidate|final|rejected|paused|revived|updated|duplicate","history_relation":"new|update_existing|duplicate_of|revives|merged_from|splits_from|adjacent_to","related_ideas":["idea_..."],"dossier_path":"runs/<run_id>/ideas/<idea_id>.md","detail_path":"runs/<run_id>/ideas/<idea_id>.json"}
+{"id":"idea_...","run_id":"...","name":"...","aliases":["..."],"final_bucket":"ai_oss|ai_product|ai_prosumer","core_thesis":"...","ai_relevance":"AI-core|AI-native workflow|AI-leveraged|non-AI exceptional|non-AI reject","promotion_gate":"pass|backlog|reject","shape":"complete_ai_product|high_star_oss|SaaS|GitHub OSS|CLI|MCP|Skill|...","target_user":"...","status":"candidate|final|rejected|paused|revived|updated|duplicate","history_relation":"new|update_existing|duplicate_of|revives|merged_from|splits_from|adjacent_to","related_ideas":["idea_..."],"product_shape_summary":"...","dossier_path":"runs/<run_id>/ideas/<idea_id>.md","detail_path":"runs/<run_id>/ideas/<idea_id>.json"}
 ```
 
 Keep `ideas.jsonl` compact, but always include `aliases`, `history_relation`,
-`related_ideas`, `dossier_path`, and `detail_path` when known. Put the full
-human-readable and machine-readable idea context into the run artifact paths
-referenced by `dossier_path` and `detail_path`.
+`related_ideas`, `product_shape_summary`, `dossier_path`, and `detail_path` when
+known. Put the full human-readable and machine-readable idea context into the
+run artifact paths referenced by `dossier_path` and `detail_path`.
 
 `claims.jsonl`
 
 ```json
-{"id":"claim_...","run_id":"...","idea_id":"...","role":"critic|drafter|competitor|ceo","stance":"supports|challenges|revises","claim":"...","evidence_urls":["..."],"confidence":"low|medium|high"}
+{"id":"claim_...","run_id":"...","idea_id":"...","role":"critic|drafter|competitor|ceo|reader","stance":"supports|challenges|revises","claim":"...","evidence_urls":["..."],"confidence":"low|medium|high"}
 ```
 
 `competitors.jsonl`
@@ -69,7 +71,7 @@ referenced by `dossier_path` and `detail_path`.
 `decisions.jsonl`
 
 ```json
-{"id":"dec_...","run_id":"...","idea_id":"...","decision":"keep|narrow|pause|reject","reason":"...","dangerous_assumptions":["..."],"decided_at":"..."}
+{"id":"dec_...","run_id":"...","idea_id":"...","decision":"keep|narrow|pause|reject|rewrite","reason":"...","dangerous_assumptions":["..."],"decided_at":"..."}
 ```
 
 `edges.jsonl`
@@ -94,10 +96,42 @@ into one session, write one event per idea with the same `thread_id`, or one
 combined event with an `idea_ids` array if the runtime cannot identify a single
 primary idea.
 
+`runs/<run_id>/candidate-ledger.jsonl`
+
+```json
+{"round":1,"bucket":"ai_oss","changed":["thesis_seed","source_module"],"query_or_source":"HN Show HN + GitHub topics","candidate":"...","product_shape_summary":"...","history_relation":"new","decision":"kill|backlog|promote","reason":"..."}
+```
+
+The ledger is required when any bucket is underfilled. It is proof of replenish
+work, not a raw search dump.
+
+`runs/<run_id>/reader-review.md`
+
+This file is written by the Report Reader after reading only `report.md`.
+Markdown is preferred because it is easy to inspect. JSON is allowed if the host
+needs structured output. Each selected idea must have a verdict and an actual
+reader restatement, not just `yes`.
+
+Required per-idea content:
+
+- reader's understanding of what the idea does;
+- product/repo form and target user;
+- core object;
+- inputs or permissions;
+- outputs or state;
+- user actions;
+- first-version boundary;
+- why it is not merely a prompt, checker, Action, wrapper, dashboard, or
+  platform hook recipe;
+- unclear parts, if any;
+- whether the explanation relies on jargon, field-filling, story theater, or
+  "not X, but Y";
+- verdict: `pass`, `rewrite`, or `reject`.
+
 `runs/<run_id>/source-notes.jsonl`
 
 ```json
-{"id":"src_...","run_id":"...","url":"...","platform":"GitHub","title":"...","final_bucket":"dev_oss|vertical_b2b|consumer_prosumer|cross_bucket","access_status":"fetched|summary-only|blocked|not-covered","observed_at":"...","freshness":"...","evidence_type":"issue|comment|docs|product_news|competitor","evidence_role":"supports|challenges|kills|sharpens|competitor","summary":"...","used_for":["idea_..."],"claims":["..."]}
+{"id":"src_...","run_id":"...","url":"...","platform":"GitHub","title":"...","final_bucket":"ai_oss|ai_product|ai_prosumer|cross_bucket","access_status":"fetched|summary-only|blocked|not-covered","observed_at":"...","freshness":"...","evidence_type":"issue|comment|docs|product_news|competitor","evidence_role":"supports|challenges|kills|sharpens|competitor","summary":"...","used_for":["idea_..."],"claims":["..."]}
 ```
 
 This file is the source-level cache for later handoffs. It should contain
@@ -112,8 +146,7 @@ private content.
   "run_id": "...",
   "name": "...",
   "aliases": ["..."],
-  "final_bucket": "dev_oss|vertical_b2b|consumer_prosumer",
-  "bucket_fit": "...",
+  "final_bucket": "ai_oss|ai_product|ai_prosumer",
   "history_relation": "new|update_existing|duplicate_of|revives|merged_from|splits_from|adjacent_to",
   "related_ideas": [{"id": "idea_...", "name": "...", "relationship": "merged_from", "note": "..."}],
   "verdict": "keep|narrow|pause|reject",
@@ -122,33 +155,27 @@ private content.
   "ai_relevance": "AI-core|AI-native workflow|AI-leveraged|non-AI exceptional|non-AI reject",
   "promotion_gate": {
     "decision": "pass|backlog|reject",
-    "complete_product_path": "pass|fail|not-applicable",
+    "complete_ai_product_path": "pass|fail|not-applicable",
     "high_star_oss_path": "pass|fail|not-applicable",
-    "product_or_oss_scale": "complete product|high-star OSS|backlog-only small tool",
+    "product_or_oss_scale": "complete AI product|high-star OSS|backlog-only small tool",
     "why_final_slot": "...",
     "demo_moment": "...",
-    "repo_star_asset": "..."
+    "durable_asset": "..."
+  },
+  "product_shape": {
+    "form": "SaaS|GitHub OSS|CLI|browser extension|desktop app|API|workflow surface",
+    "target_user": "...",
+    "task": "...",
+    "inputs_or_permissions": ["..."],
+    "core_objects": ["..."],
+    "outputs_or_state": ["..."],
+    "user_actions": ["..."],
+    "first_version": ["..."],
+    "non_goals": ["..."],
+    "why_product_or_oss": "..."
   },
   "source_type": "...",
-  "idea_story": {
-    "one_sentence": "...",
-    "user_scene": "...",
-    "product": "...",
-    "current_workaround": "...",
-    "key_insight": "...",
-    "why_now": "...",
-    "alternatives_gap": "...",
-    "first_version": "...",
-    "long_term_asset": "...",
-    "risks": "...",
-    "judgment": "..."
-  },
-  "what_it_is": "...",
-  "usage": {"when": "...", "input": "...", "does": "...", "output": "...", "replaces": "..."},
-  "scale_path": "...",
-  "problem": "...",
   "target_user": "...",
-  "buyer_or_oss_audience": "...",
   "sources": ["src_..."],
   "alternatives": ["..."],
   "first_version": {"does": ["..."], "does_not_do": ["..."]},
@@ -157,6 +184,7 @@ private content.
   "why_still_worth_doing": "...",
   "ai_leverage": "...",
   "red_team": [{"objection": "...", "response": "...", "ceo_ruling": "..."}],
+  "reader_review": {"verdict": "pass|rewrite|reject", "path": "runs/<run_id>/reader-review.md"},
   "dangerous_assumptions": ["..."],
   "long_term_asset": "..."
 }
@@ -174,12 +202,10 @@ artifacts, without repeating source discovery or competitor searches.
 Required sections:
 
 - Handoff purpose and current verdict.
-- Core thesis, final bucket, bucket-fit reasoning, AI relevance, and
-  promotion-gate result.
-- Reader-readable idea story: one-sentence description, concrete user scene,
-  product surface, current workaround, key insight, why-now logic, substitutes,
-  first-version boundary, durable asset, risks, and judgment.
-- What this is and how it is used.
+- Core thesis, final bucket, AI relevance, and promotion-gate result.
+- Product Shape / Idea Spine: product/repo form, target user and task, inputs or
+  permissions, core objects, outputs or state, user actions, first-version
+  boundary, explicit non-goals, and why this has product/OSS body.
 - Origin in this workflow, including merged/duplicated prior ideas.
 - History relation: whether this is new, an update, a duplicate, a revival, a
   merge, a split, or adjacent to stored ideas.
@@ -188,6 +214,7 @@ Required sections:
 - Current alternatives and competitor reasoning.
 - Product form, first-version scope, explicit non-goals, and product-scale path.
 - Red Team objections, responses, and CEO rulings.
+- Reader review verdict and link to `reader-review.md`.
 - Dangerous assumptions.
 - Distribution or contact targets only when explicitly requested for the run.
 
@@ -204,6 +231,10 @@ directions so one-line handoff requests can resolve the right dossier.
 - Persist all final ideas, rejected ideas, duplicate/update decisions, key
   signals, competitor findings, CEO decisions, and high-confidence claims.
 - Persist the full report as `runs/<run_id>/report.md`.
+- Persist independent reader review as `runs/<run_id>/reader-review.md` or
+  `reader-review.json`.
+- Persist `runs/<run_id>/candidate-ledger.jsonl` when any bucket is underfilled,
+  and preferably for every recurring run.
 - Persist a handoff-ready dossier for every final idea and every paused idea
   that may plausibly be resumed.
 - Persist a `handoff-index.md` before the run completes. If persistence fails,
@@ -227,7 +258,8 @@ When the user asks for a handoff of an idea from a prior run:
 1. Search `ideas.jsonl` and `runs/*/handoff-index.md` for the idea name and
    known aliases.
 2. Read the matching `runs/<run_id>/ideas/<idea_id>.md` dossier and adjacent
-   `report.md`, `source-notes.jsonl`, and JSON detail only if needed.
+   `report.md`, `reader-review.md`, `source-notes.jsonl`, and JSON detail only
+   if needed.
 3. Do not repeat web searches or competitor scans by default. The handoff should
    be a packaging task, not a new research run.
 4. Only refresh current facts when the user explicitly asks for latest/current

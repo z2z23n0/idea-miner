@@ -1,10 +1,10 @@
 可选定制：
 
 - 主要关注 thesis：<例如 agent-readable software, AI coding aftershocks, high-star AI OSS>
-- 排除方向：<例如 consumer apps, crypto, generic SEO>
-- final bucket：<默认 dev_oss 最多 3 个 / vertical_b2b 最多 3 个 / consumer_prosumer 最多 3 个>
-- 偏好形态：<complete product / high-star GitHub OSS / vertical workflow SaaS / consumer app / MCP server / Skill / SDK / browser extension>
-- 成功标准：<AI-core product / AI-native workflow / GitHub stars / real installs / paid SaaS / consumer retention / mixed OSS-commercial>
+- 排除方向：<例如 unfamiliar vertical SaaS, crypto, generic SEO>
+- final bucket：<默认 ai_oss 最多 3 个 / ai_product 最多 3 个 / ai_prosumer 最多 3 个>
+- 偏好形态：<complete AI product / high-star GitHub OSS / AI workflow app / MCP server / Skill / SDK / browser extension>
+- 成功标准：<AI-core product / AI-native workflow / GitHub stars / real installs / paid SaaS / repeat usage / mixed OSS-commercial>
 - 不算 final：<GitHub Action-only / CI gate / PR comment / thin wrapper / checklist automation>
 - 语言：中文
 - 每次运行最多输出：9 个最终 idea，且每个 bucket 最多 3 个；不要跨 bucket 补位

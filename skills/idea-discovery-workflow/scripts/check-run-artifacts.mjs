@@ -12,7 +12,8 @@ function usage() {
     'Usage:',
     '  check-run-artifacts.mjs [--json] <run_dir>',
     '',
-    'Checks a completed idea-discovery run for readable reports and handoff completeness.',
+    'Checks a completed idea-discovery run for Product Shape clarity,',
+    'independent reader review, replenish proof, sources, and handoff completeness.',
   ].join('\n');
 }
 
@@ -25,6 +26,7 @@ function readJson(file) {
 }
 
 function readJsonl(file, errors) {
+  if (!fs.existsSync(file)) return [];
   const text = readText(file).trim();
   if (!text) return [];
   return text.split(/\r?\n/).map((line, index) => {
@@ -59,8 +61,8 @@ function hasAny(text, patterns) {
   return patterns.some((pattern) => pattern.test(text));
 }
 
-function wordy(value) {
-  return typeof value === 'string' && value.trim().length >= 12;
+function wordy(value, min = 12) {
+  return typeof value === 'string' && value.trim().length >= min;
 }
 
 function nonBlank(value) {
@@ -71,11 +73,41 @@ function nonEmptyArray(value) {
   return Array.isArray(value) && value.length > 0;
 }
 
-const allowedFinalBuckets = new Set([
-  'dev_oss',
-  'vertical_b2b',
-  'consumer_prosumer',
-]);
+function normalizeId(value) {
+  return String(value || '').trim();
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function hasForbiddenContrast(text) {
+  return /不是[^。\n]{0,80}而是/.test(text);
+}
+
+function hasStoryTheater(text) {
+  return /(?:周[一二三四五六日天]|星期[一二三四五六日天]|早上|下午|晚上)[^。\n]{0,50}(?:发现|打开|点击|收到|准备)/.test(text)
+    || /(?:她|他|他们|某个|一位)[^。\n]{0,40}(?:点击|打开|发现)[^。\n]{0,80}(?:系统接管|AI 接管|agent 接管)/i.test(text);
+}
+
+function checkProductShapeCoverage(text, label, errors, context = 'text') {
+  const checks = [
+    ['product/repo form', [/产品形态/, /仓库形态/, /载体/, /Product Shape/i, /Idea Spine/i, /\bSaaS\b/i, /\bCLI\b/i, /\bAPI\b/i, /GitHub OSS/i, /浏览器插件/, /桌面 app/, /工作台/, /approval layer/i, /console/i]],
+    ['target user and task', [/给[^。\n]{1,80}用/, /目标用户/, /target user/i, /在[^。\n]{1,60}任务/, /工作流/, /负责人/, /团队/, /founder/i, /creator/i, /researcher/i, /developer/i]],
+    ['inputs or permissions', [/输入/, /权限/, /接入/, /连接/, /上传/, /导入/, /\binputs?\b/i, /\bpermissions?\b/i, /\bOAuth\b/i, /\brepo\b/i, /\bissue\b/i, /日志/, /邮件/, /文档/, /网页/, /聊天记录/, /数据/]],
+    ['core object', [/核心对象/, /核心物件/, /对象/, /\bAction Proposal\b/i, /\bAction Receipt\b/i, /\bdiff\b/i, /\btrace\b/i, /队列/, /证据包/, /任务/, /报告/, /patch/i, /brief/i]],
+    ['outputs or state', [/输出/, /状态/, /返回/, /生成/, /留下/, /写入/, /提醒/, /\boutputs?\b/i, /\bstate\b/i, /报告/, /队列/, /diff/i, /patch/i, /receipt/i, /artifact/i, /可执行/]],
+    ['user actions', [/用户.*(?:动作|可以|批准|退回|编辑|运行|安装|打开|上传|连接|输入|执行)/, /\buser actions?\b/i, /批准/, /退回/, /编辑/, /运行/, /安装/, /打开/, /上传/, /连接/, /\brun\b/i, /\bopen\b/i, /\bapprove\b/i, /\breject\b/i, /\bedit\b/i, /\bexport\b/i]],
+    ['first-version boundary', [/第一版/, /首版/, /边界/, /只做/, /不做/, /non-goal/i, /does not do/i]],
+    ['product/OSS body', [/完整产品/, /high-star OSS/i, /开源项目/, /repo/i, /薄包装/, /prompt/i, /checker/i, /wrapper/i, /dashboard/i, /Action-only/i, /平台 hook/]],
+  ];
+
+  for (const [name, patterns] of checks) {
+    if (!hasAny(text, patterns)) {
+      errors.push(`${label}: ${context} must make ${name} understandable`);
+    }
+  }
+}
 
 function isGenericFeedUrl(url) {
   return /reddit\.com\/r\/[^/]+\/(?:new|top|hot)?\/?$/i.test(url)
@@ -84,9 +116,25 @@ function isGenericFeedUrl(url) {
     || /github\.com\/trending(?:\?.*)?$/i.test(url);
 }
 
-function normalizeId(value) {
-  return String(value || '').trim();
-}
+const allowedFinalBuckets = new Set([
+  'ai_oss',
+  'ai_product',
+  'ai_prosumer',
+]);
+
+const oldFinalBuckets = [
+  'dev_oss',
+  'vertical_b2b',
+  'consumer_prosumer',
+];
+
+const allowedAiRelevance = new Set([
+  'AI-core',
+  'AI-native workflow',
+  'AI-leveraged',
+  'non-AI exceptional',
+  'non-AI reject',
+]);
 
 function sourceMatchesIdea(source, idea) {
   const usedFor = Array.isArray(source.used_for) ? source.used_for.map(normalizeId) : [];
@@ -99,29 +147,83 @@ function sourceMatchesIdea(source, idea) {
     || (Array.isArray(source.claims) && source.claims.length > 0);
 }
 
-function checkIdeaStory(idea, md, label, errors) {
-  const story = idea.idea_story || {};
-  const required = [
-    ['one_sentence', '一句话'],
-    ['user_scene', '具体使用场景'],
-    ['product', '产品到底是什么'],
-    ['current_workaround', '今天怎么解决'],
-    ['key_insight', '关键洞察'],
-    ['why_now', '为什么现在值得做'],
-    ['alternatives_gap', '现有替代与缺口'],
-    ['first_version', '第一个版本怎么切'],
-    ['long_term_asset', '如果做成会积累什么'],
-    ['risks', '最大风险'],
-    ['judgment', '我的判断'],
+function readerSectionForIdea(readerReviewText, idea) {
+  const keys = [
+    idea.name,
+    idea.id,
+    ...(Array.isArray(idea.aliases) ? idea.aliases : []),
+  ].map(normalizeId).filter(Boolean);
+
+  for (const key of keys) {
+    const heading = new RegExp(`^#{2,5}\\s+.*${escapeRegExp(key)}.*$`, 'mi');
+    const match = heading.exec(readerReviewText);
+    if (!match) continue;
+    const rest = readerReviewText.slice(match.index + match[0].length);
+    const next = rest.search(/^#{2,5}\s+/m);
+    return (next >= 0 ? rest.slice(0, next) : rest).trim();
+  }
+
+  for (const key of keys) {
+    const index = readerReviewText.indexOf(key);
+    if (index >= 0) return readerReviewText.slice(index, index + 1600);
+  }
+
+  return '';
+}
+
+function readerVerdict(reviewSection) {
+  const lines = reviewSection.split(/\r?\n/);
+  for (const line of lines) {
+    const normalized = line
+      .replace(/\*\*/g, '')
+      .replace(/`/g, '')
+      .trim();
+    const match = normalized.match(/(?:verdict|判断|结论)\s*[：:]\s*(pass|rewrite|reject|通过|重写|拒绝|不通过)\b/i);
+    if (match) {
+      const verdict = match[1].toLowerCase();
+      if (verdict === '通过') return 'pass';
+      if (verdict === '重写') return 'rewrite';
+      if (verdict === '拒绝' || verdict === '不通过') return 'reject';
+      return verdict;
+    }
+  }
+  return '';
+}
+
+function checkProductShape(idea, md, label, errors) {
+  if (Object.prototype.hasOwnProperty.call(idea, 'scenario_run')) {
+    errors.push(`${label}: obsolete scenario_run field must be replaced by product_shape`);
+  }
+
+  const shape = idea.product_shape || {};
+  if (!nonBlank(shape.form)) errors.push(`${label}: missing product_shape.form`);
+  if (!wordy(shape.target_user)) errors.push(`${label}: missing or too-short product_shape.target_user`);
+  if (!wordy(shape.task)) errors.push(`${label}: missing or too-short product_shape.task`);
+  if (!wordy(shape.why_product_or_oss)) errors.push(`${label}: missing or too-short product_shape.why_product_or_oss`);
+
+  const requiredArrays = [
+    ['inputs_or_permissions', 'product_shape.inputs_or_permissions'],
+    ['core_objects', 'product_shape.core_objects'],
+    ['outputs_or_state', 'product_shape.outputs_or_state'],
+    ['user_actions', 'product_shape.user_actions'],
+    ['first_version', 'product_shape.first_version'],
+    ['non_goals', 'product_shape.non_goals'],
   ];
 
-  const missingJsonFields = required
-    .filter(([field]) => !wordy(story[field]))
-    .map(([, title]) => title);
+  for (const [field, title] of requiredArrays) {
+    if (!nonEmptyArray(shape[field])) errors.push(`${label}: ${title} must name concrete items`);
+  }
 
-  const hasMarkdownStory = required.every(([, title]) => md.includes(title));
-  if (missingJsonFields.length > 0 && !hasMarkdownStory) {
-    errors.push(`${label}: missing readable idea story fields: ${missingJsonFields.join(', ')}`);
+  checkProductShapeCoverage(md, label, errors, 'dossier prose');
+
+  if (/Scenario Run|scenario_run|场景运行|可运行场景|系统接管/.test(md)) {
+    errors.push(`${label}: dossier still uses obsolete Scenario Run wording`);
+  }
+  if (hasForbiddenContrast(md)) {
+    errors.push(`${label}: dossier uses the forbidden core-explanation pattern "不是 X，而是 Y"`);
+  }
+  if (hasStoryTheater(md)) {
+    errors.push(`${label}: dossier reads like a story scene instead of a product-shape memo`);
   }
 }
 
@@ -175,38 +277,29 @@ function checkSourceSupport(idea, md, sourceNotes, label, errors) {
   }
 }
 
-function checkIdea(jsonFile, sourceNotes, errors) {
+function checkIdea(jsonFile, sourceNotes, readerReviewText, errors) {
   const idea = readJson(jsonFile);
   const label = idea.id || path.basename(jsonFile);
   const mdFile = jsonFile.replace(/\.json$/, '.md');
 
   if (!fs.existsSync(mdFile)) {
     errors.push(`${label}: missing Markdown dossier ${mdFile}`);
-    return;
+    return null;
   }
 
   const md = readText(mdFile);
-  checkIdeaStory(idea, md, label, errors);
+  checkProductShape(idea, md, label, errors);
   checkSourceSupport(idea, md, sourceNotes, label, errors);
 
   const requiredShortJson = [
     ['name', 'name'],
     ['final_bucket', 'final_bucket'],
-    ['bucket_fit', 'bucket_fit'],
     ['history_relation', 'history_relation'],
     ['verdict', 'verdict'],
     ['confidence', 'confidence'],
     ['core_thesis', 'core_thesis'],
     ['ai_relevance', 'ai_relevance'],
-  ];
-
-  const requiredLongJson = [
-    ['what_it_is', 'what_it_is'],
-    ['scale_path', 'scale_path'],
-    ['problem', 'problem'],
     ['target_user', 'target_user'],
-    ['buyer_or_oss_audience', 'buyer_or_oss_audience'],
-    ['why_still_worth_doing', 'why_still_worth_doing'],
   ];
 
   for (const [field, title] of requiredShortJson) {
@@ -217,17 +310,6 @@ function checkIdea(jsonFile, sourceNotes, errors) {
     errors.push(`${label}: invalid final_bucket ${idea.final_bucket}`);
   }
 
-  for (const [field, title] of requiredLongJson) {
-    if (!wordy(idea[field])) errors.push(`${label}: missing or too-short ${title}`);
-  }
-
-  const allowedAiRelevance = new Set([
-    'AI-core',
-    'AI-native workflow',
-    'AI-leveraged',
-    'non-AI exceptional',
-    'non-AI reject',
-  ]);
   if (nonBlank(idea.ai_relevance) && !allowedAiRelevance.has(idea.ai_relevance)) {
     errors.push(`${label}: invalid ai_relevance ${idea.ai_relevance}`);
   }
@@ -242,13 +324,14 @@ function checkIdea(jsonFile, sourceNotes, errors) {
   if (promotionGate.decision === 'reject') {
     errors.push(`${label}: rejected ideas must stay in report notes, not ideas/ dossiers`);
   }
-  for (const field of ['product_or_oss_scale', 'why_final_slot', 'demo_moment', 'repo_star_asset']) {
+  for (const field of ['product_or_oss_scale', 'why_final_slot', 'demo_moment', 'durable_asset']) {
     if (!wordy(promotionGate[field])) errors.push(`${label}: missing promotion_gate.${field}`);
   }
-
-  const usage = idea.usage || {};
-  for (const field of ['when', 'input', 'does', 'output', 'replaces']) {
-    if (!wordy(usage[field])) errors.push(`${label}: missing usage.${field}`);
+  if (!['pass', 'fail', 'not-applicable'].includes(promotionGate.complete_ai_product_path)) {
+    errors.push(`${label}: promotion_gate.complete_ai_product_path must be pass/fail/not-applicable`);
+  }
+  if (!['pass', 'fail', 'not-applicable'].includes(promotionGate.high_star_oss_path)) {
+    errors.push(`${label}: promotion_gate.high_star_oss_path must be pass/fail/not-applicable`);
   }
 
   if (!nonEmptyArray(idea.dangerous_assumptions)) {
@@ -263,6 +346,12 @@ function checkIdea(jsonFile, sourceNotes, errors) {
   if (!nonEmptyArray(idea.product_forms)) {
     errors.push(`${label}: missing product_forms`);
   }
+  if (!wordy(idea.why_still_worth_doing)) {
+    errors.push(`${label}: missing why_still_worth_doing`);
+  }
+  if (!wordy(idea.ai_leverage)) {
+    errors.push(`${label}: missing ai_leverage`);
+  }
 
   if (!hasAny(md, [/Current alternatives and competitor reasoning/i, /竞品判断/, /替代方案/, /现有替代/])) {
     errors.push(`${label}: dossier must include competitor or alternative reasoning`);
@@ -276,15 +365,71 @@ function checkIdea(jsonFile, sourceNotes, errors) {
   if (!hasAny(md, [/AI 相关性/i, /ai relevance/i])) {
     errors.push(`${label}: dossier must include AI relevance`);
   }
-  if (!hasAny(md, [/30 秒 demo/i, /30-second demo/i])) {
-    errors.push(`${label}: dossier must include 30-second demo`);
+  if (!hasAny(md, [/reader-review/i, /Reader Review/i, /读者检查/, /读者复述/])) {
+    errors.push(`${label}: dossier must link or summarize independent reader review`);
   }
-  if (!hasAny(md, [/repo\/star 资产/i, /star asset/i, /长期资产/])) {
-    errors.push(`${label}: dossier must include repo/star asset`);
+  if (!hasAny(md, [/分桶/i, /final bucket/i, /final_bucket/i, /ai_oss|ai_product|ai_prosumer/i])) {
+    errors.push(`${label}: dossier must include final bucket reasoning`);
   }
-  if (!hasAny(md, [/分桶/i, /final bucket/i, /final_bucket/i, /dev_oss|vertical_b2b|consumer_prosumer/i])) {
-    errors.push(`${label}: dossier must include final bucket and bucket-fit reasoning`);
+
+  const reviewKey = idea.name || idea.id || '';
+  const reviewSlice = readerSectionForIdea(readerReviewText, idea);
+  if (!reviewSlice) {
+    errors.push(`${label}: reader review must mention this idea by name`);
+  } else {
+    const verdict = readerVerdict(reviewSlice);
+    if (verdict !== 'pass') {
+      errors.push(`${label}: reader review must include pass verdict after revision`);
+    }
+    checkProductShapeCoverage(reviewSlice, label, errors, 'reader review');
+    if (/Scenario Run|scenario_run|场景运行|可运行场景|系统接管/.test(reviewSlice)) {
+      errors.push(`${label}: reader review still uses obsolete Scenario Run wording`);
+    }
   }
+
+  return idea;
+}
+
+function readReaderReview(absRunDir, errors) {
+  const mdPath = path.join(absRunDir, 'reader-review.md');
+  const jsonPath = path.join(absRunDir, 'reader-review.json');
+  if (fs.existsSync(mdPath)) return readText(mdPath);
+  if (fs.existsSync(jsonPath)) {
+    try {
+      return JSON.stringify(readJson(jsonPath), null, 2);
+    } catch (error) {
+      errors.push(`reader-review.json is not valid JSON: ${error.message}`);
+      return '';
+    }
+  }
+  errors.push(`missing ${mdPath} or ${jsonPath}`);
+  return '';
+}
+
+function checkCandidateLedger(rows, bucketCounts, report, errors) {
+  const underfilledBuckets = [...allowedFinalBuckets].filter((bucket) => bucketCounts[bucket] < 3);
+  const reportClaimsUnderfilled = /本轮不足 3 个|underfilled|不足 3/.test(report);
+  if ((underfilledBuckets.length > 0 || reportClaimsUnderfilled) && rows.length === 0) {
+    errors.push('candidate-ledger.jsonl is required when any bucket is underfilled');
+    return;
+  }
+
+  rows.forEach((row, index) => {
+    const label = `candidate-ledger.jsonl:${index + 1}`;
+    if (!Number.isInteger(row.round) || row.round < 1) errors.push(`${label}: round must be a positive integer`);
+    if (!allowedFinalBuckets.has(row.bucket)) errors.push(`${label}: invalid bucket ${row.bucket}`);
+    if (!nonEmptyArray(row.changed)) errors.push(`${label}: changed must list what search dimension changed`);
+    if (!wordy(row.query_or_source)) errors.push(`${label}: missing query_or_source`);
+    if (!wordy(row.candidate)) errors.push(`${label}: missing candidate`);
+    if (!wordy(row.product_shape_summary)) errors.push(`${label}: missing product_shape_summary`);
+    if (!['new', 'update_existing', 'duplicate_of', 'revives', 'merged_from', 'splits_from', 'adjacent_to'].includes(row.history_relation)) {
+      errors.push(`${label}: invalid history_relation`);
+    }
+    if (!['kill', 'backlog', 'promote', 'reject'].includes(row.decision)) {
+      errors.push(`${label}: decision must be kill/backlog/promote/reject`);
+    }
+    if (!wordy(row.reason)) errors.push(`${label}: missing reason`);
+  });
 }
 
 if (!runDir) {
@@ -305,43 +450,63 @@ if (!fs.existsSync(ideasDir)) errors.push(`missing ${ideasDir}`);
 
 let report = '';
 let sourceNotes = [];
+let readerReviewText = '';
+let candidateLedger = [];
 
 if (fs.existsSync(path.join(absRunDir, 'report.md'))) {
   report = readText(path.join(absRunDir, 'report.md'));
   const reportSections = [
     '今天值得看的方向',
+    'Discovery Context',
+    'Thesis Pool',
+    'Candidate Ledger Summary',
+    'Evidence Notes',
     '最终 Ideas',
-    'Bucket：dev_oss',
-    'Bucket：vertical_b2b',
-    'Bucket：consumer_prosumer',
+    'Bucket：ai_oss',
+    'Bucket：ai_product',
+    'Bucket：ai_prosumer',
     '被放弃的方向',
+    'Independent Reader Review',
     '来源附录',
     '保存位置',
   ];
   for (const heading of reportSections) {
     if (!report.includes(heading)) errors.push(`report.md missing section: ${heading}`);
   }
-  if (!/一句话|具体使用场景|产品到底是什么/.test(report)) {
-    errors.push('report.md must introduce each idea as a readable story');
+  for (const oldBucket of oldFinalBuckets) {
+    if (new RegExp(`Bucket：${oldBucket}|final_bucket["': ]+${oldBucket}|\\b${oldBucket}\\b`).test(report)) {
+      errors.push(`report.md still references old final bucket ${oldBucket}`);
+    }
   }
   if (!/AI-core|AI-native workflow|AI-leveraged|non-AI exceptional/.test(report)) {
     errors.push('report.md must include AI relevance labels');
   }
-  if (!/30 秒 demo/.test(report)) {
-    errors.push('report.md must include 30-second demo fields');
+  if (!/Product Shape|Idea Spine|产品形态|仓库形态|核心对象|输入|权限|输出|状态|第一版|首版/.test(report)) {
+    errors.push('report.md must explain selected ideas through Product Shape / Idea Spine');
   }
-  if (!/repo\/star 资产|长期资产/.test(report)) {
-    errors.push('report.md must include repo/star asset or long-term asset fields');
+  if (/Scenario Run|scenario_run|场景运行|可运行场景|系统接管/.test(report)) {
+    errors.push('report.md still uses obsolete Scenario Run wording');
   }
-  if (!/dev_oss/.test(report) || !/vertical_b2b/.test(report) || !/consumer_prosumer/.test(report)) {
-    errors.push('report.md must include the three final buckets: dev_oss, vertical_b2b, consumer_prosumer');
+  if (!/reader-review\.(md|json)/.test(report)) {
+    errors.push('report.md must point to reader-review.md or reader-review.json');
+  }
+  if (!/candidate-ledger\.jsonl/.test(report)) {
+    errors.push('report.md must point to candidate-ledger.jsonl');
+  }
+  if (hasForbiddenContrast(report)) {
+    errors.push('report.md uses the forbidden core-explanation pattern "不是 X，而是 Y"');
   }
 }
+
+readerReviewText = readReaderReview(absRunDir, errors);
 
 if (fs.existsSync(path.join(absRunDir, 'source-notes.jsonl'))) {
   sourceNotes = readJsonl(path.join(absRunDir, 'source-notes.jsonl'), errors);
   if (sourceNotes.length === 0) errors.push('source-notes.jsonl must not be empty');
 }
+
+const candidateLedgerPath = path.join(absRunDir, 'candidate-ledger.jsonl');
+candidateLedger = readJsonl(candidateLedgerPath, errors);
 
 const ideaJsonFiles = listFiles(ideasDir, '.json');
 if (ideaJsonFiles.length === 0) {
@@ -352,6 +517,7 @@ if (ideaJsonFiles.length > 9) {
 }
 
 const bucketCounts = Object.fromEntries([...allowedFinalBuckets].map((bucket) => [bucket, 0]));
+const ideas = [];
 for (const jsonFile of ideaJsonFiles) {
   try {
     const idea = readJson(jsonFile);
@@ -366,9 +532,12 @@ for (const [bucket, count] of Object.entries(bucketCounts)) {
   if (count > 3) errors.push(`${bucket}: contains ${count} ideas; each bucket may contain at most 3`);
 }
 
+checkCandidateLedger(candidateLedger, bucketCounts, report, errors);
+
 for (const jsonFile of ideaJsonFiles) {
   try {
-    checkIdea(jsonFile, sourceNotes, errors);
+    const idea = checkIdea(jsonFile, sourceNotes, readerReviewText, errors);
+    if (idea) ideas.push(idea);
   } catch (error) {
     errors.push(`${jsonFile}: ${error.message}`);
   }
@@ -380,6 +549,9 @@ const result = {
   checked: {
     idea_count: ideaJsonFiles.length,
     source_note_count: sourceNotes.length,
+    candidate_ledger_count: candidateLedger.length,
+    bucket_counts: bucketCounts,
+    reader_review: readerReviewText ? 'present' : 'missing',
   },
   errors,
 };
@@ -388,7 +560,7 @@ if (jsonMode) {
   console.log(JSON.stringify(result, null, 2));
 } else if (result.ok) {
   console.log(`OK: ${absRunDir}`);
-  console.log(`Checked ${ideaJsonFiles.length} ideas and ${sourceNotes.length} source notes.`);
+  console.log(`Checked ${ideaJsonFiles.length} ideas, ${sourceNotes.length} source notes, and ${candidateLedger.length} ledger rows.`);
 } else {
   console.error(`Artifact check failed for ${absRunDir}:`);
   for (const error of errors) console.error(`- ${error}`);

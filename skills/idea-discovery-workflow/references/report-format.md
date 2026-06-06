@@ -1,9 +1,25 @@
 # Report Format
 
 Final output must be Chinese Markdown. The report is a product memo for a
-reader, not an internal checklist. It should help the reader understand each
-idea as a real product or OSS project: who it is for, when it appears, what the
-user sees, why it might matter now, and why existing substitutes leave room.
+reader, not an internal checklist and not a story scene. It should let a reader
+explain what concrete AI product or OSS project would exist.
+
+The report should not become a table of fields. Use normal paragraphs. A good
+idea section makes the reader understand:
+
+```text
+what product/repo form this is
+who uses it and for which task
+what input or permission the user gives it
+what core object it creates or maintains
+what output or state the user gets
+what the first version does and does not do
+why it is a complete product or high-star OSS, not a prompt/checker/wrapper
+```
+
+Avoid using "不是 X，而是 Y" as the main explanation. If boundary clarification
+is needed, write the positive product/repo explanation first, then add one short
+boundary note.
 
 # 今天值得看的方向
 
@@ -13,24 +29,23 @@ ordering badge.
 
 Use these buckets by default:
 
-- `dev_oss`：开发者/agent/AI infra/high-star OSS。
-- `vertical_b2b`：垂直 B2B workflow product。
-- `consumer_prosumer`：consumer/prosumer/app product。
+- `ai_oss`：AI agent / devtool / infra / eval / security / OSS.
+- `ai_product`：complete AI workflow products for teams or professional users.
+- `ai_prosumer`：AI products for founders, creators, researchers, students,
+  independent developers, or other understandable prosumer users.
 
 Each bucket may contain up to 3 ideas. If a bucket is underfilled, say
-`本轮不足 3 个，不降标补位` and give the concise reason.
+`本轮不足 3 个，不降标补位` and summarize the replenish proof from
+`candidate-ledger.jsonl`.
 
-For each selected idea, write 2-4 plain Chinese sentences:
-
-- what it is;
-- who would care;
-- what concrete moment makes it useful;
-- why it belongs in today's selected set.
+For each selected idea, write 3-6 plain Chinese sentences. The opening should
+already be understandable; do not make the reader wait for a later checklist.
 
 # Discovery Context
 
-Keep this short. Explain the run boundary, topic, major source buckets, and any
-uncovered source class. Do not make this the main body.
+Keep this short. Explain the run boundary, topic, major source buckets, real
+sub-agent usage, and any uncovered source class. Do not make this the main
+body.
 
 # Thesis Pool
 
@@ -40,6 +55,15 @@ Summarize the strongest thesis directions that shaped the run:
 |---|---|---|---|---|
 
 `Fate` can be `selected`, `merged`, `rejected`, or `backlog`.
+
+# Candidate Ledger Summary
+
+Summarize replenish attempts. Do not claim a bucket was exhausted unless
+`candidate-ledger.jsonl` records the rounds, changed search dimensions,
+candidates, and kill reasons.
+
+| Round | Bucket | What changed | Candidate | Decision | Reason |
+|---:|---|---|---|---|---|
 
 # Evidence Notes
 
@@ -53,94 +77,48 @@ Roles: `supports`, `challenges`, `kills`, `sharpens`, `competitor`.
 
 # 最终 Ideas
 
-Include up to 9 selected ideas, grouped as up to 3 `dev_oss`, up to 3
-`vertical_b2b`, and up to 3 `consumer_prosumer`. Keep ideas as bucketed sets,
-not a global ranked list. Each idea should use this shape.
+Include up to 9 selected ideas, grouped as up to 3 `ai_oss`, up to 3
+`ai_product`, and up to 3 `ai_prosumer`. Keep ideas as bucketed sets, not a
+global ranked list.
 
-## Bucket：dev_oss
+## Bucket：ai_oss
 
-Use this bucket for developer/agent infrastructure, high-star OSS, protocol,
-benchmark, SDK, CLI, MCP, Skill, workflow, or tooling ideas.
+Use this bucket for AI agent/developer infrastructure, high-star OSS, protocol,
+benchmark, dataset, SDK, CLI, MCP, Skill, workflow, security, or tooling ideas.
 
-## Bucket：vertical_b2b
+## Bucket：ai_product
 
-Use this bucket for complete products aimed at a specific business or
-professional workflow.
+Use this bucket for complete AI workflow products aimed at teams or
+professional users. The workflow itself must be AI-native or agentic; do not
+default to unfamiliar vertical SaaS.
 
-## Bucket：consumer_prosumer
+## Bucket：ai_prosumer
 
-Use this bucket for consumer, prosumer, creator, student, parent, freelancer, or
-personal app workflows.
+Use this bucket for AI products that a founder, creator, researcher, student,
+independent developer, or similar prosumer can understand and reuse.
 
 ## Idea：名称
 
-### 分桶
+Start with a compact product-shape memo in natural Chinese. A useful shape is:
 
-One of `dev_oss`, `vertical_b2b`, or `consumer_prosumer`. Explain in one short
-Chinese sentence why it belongs there.
+- first paragraph: what product/repo form it is, who uses it, and for which
+  task;
+- second paragraph: what input or permission it receives, what core object it
+  creates or maintains, and what output/state appears;
+- third paragraph: what the first version only does, what it explicitly does
+  not do, and why it has product/OSS body beyond a thin wrapper.
 
-### 一句话
+Then add concise judgment context:
 
-One plain Chinese sentence. It should mention the audience, the moment, and the
-thing being built.
+- why now / source-backed timing;
+- current alternatives and the gap;
+- first-version boundary and durable asset;
+- biggest risk;
+- verdict: `值得继续想`, `作为备选`, `暂缓`, or `不建议做`.
 
-### 具体使用场景
-
-Tell the reader what is happening before the product appears. Name the user,
-their current task, what goes wrong today, and why they care.
-
-### 产品到底是什么
-
-Describe the product surface. What does the user open, run, install, or visit?
-What is the first interaction? What does the system return? Avoid abstract
-labels unless immediately grounded in what the user sees.
-
-For `vertical_b2b`, name the buyer/user, operating workflow, budget or
-operational pressure, and likely product surface. For `consumer_prosumer`, name
-the retention loop, substitute behavior, and why this is not just a one-off AI
-chat. For `dev_oss`, name the repo asset, demo, ecosystem, and install/share
-reason.
-
-### 今天怎么解决
-
-Describe the current workaround as a short narrative. Explain why it is painful
-or incomplete.
-
-### 关键洞察
-
-Explain the new product or OSS insight. This is the reason the idea is not just
-a feature list.
-
-### 为什么现在值得做
-
-Use the smallest useful amount of source-backed reasoning. Connect each source
-or trend to the idea's timing.
-
-### 现有替代与缺口
-
-Discuss the most important substitutes. For each, explain what it solves and
-what gap remains.
-
-### 第一个版本怎么切
-
-Describe a credible first version: the narrow user, the narrow workflow, what it
-does, and what it intentionally does not do. This section is about product
-shape, not homework for the reader.
-
-### 如果做成会积累什么
-
-Name the durable asset: dataset, benchmark, protocol, examples, plugin
-ecosystem, workflow memory, community, or distribution surface.
-
-### 最大风险
-
-List the 2-3 facts that would most likely make the idea unattractive.
-
-### 我的判断
-
-Use a short verdict such as `值得继续想`, `作为备选`, `暂缓`, or `不建议做`.
-Explain the judgment in 1-2 sentences. Do not order selected ideas against each
-other.
+Do not repeat the same section titles for every idea if the prose already makes
+the idea clear. The reader should understand the thing before seeing any
+judgment label.
 
 # 被放弃的方向
 
@@ -148,25 +126,32 @@ List rejected or paused candidates briefly. Say why each did not become one of
 today's selected ideas. Do not expand them into full ideas. Group rejections by
 bucket when that helps explain underfilled categories.
 
-# Reader Check
+# Independent Reader Review
 
-Before saving artifacts, check whether a reader can retell every selected idea
-without reading the original chat:
+The report must point to the independent reader review artifact:
 
-| Idea | Can a reader retell it? | If not, what was rewritten? |
-|---|---|---|
+- `reader-review.md` or `reader-review.json`
 
-Reject or rewrite idea sections where:
+The reader review is not an author-written yes/no table. It must be written by a
+Report Reader that only saw the rendered report, not the internal source notes
+or chat. For every selected idea it must include:
 
-- the reader cannot tell what product or repo would exist;
-- the report explains an internal gate instead of the idea;
-- the first interaction is missing;
-- the idea is mostly a market label, technology name, wrapper, template, or
-  platform patch;
-- sources are dumped without explaining what they changed.
-- the bucket label is cosmetic and the idea still reads like a developer tool,
-  generic market label, or one-off AI wrapper instead of a complete product or
-  high-star OSS bet.
+- what the reader thinks the idea is doing;
+- product/repo form and target user;
+- core object;
+- inputs or permissions;
+- outputs or state;
+- user actions;
+- first-version boundary;
+- why it is not merely a prompt, checker, Action, wrapper, dashboard, or
+  platform hook recipe;
+- what remains unclear, if anything;
+- whether the idea relies on vague jargon, field filling, story theater, or
+  "not X, but Y";
+- verdict: `pass`, `rewrite`, or `reject`.
+
+Any selected idea with `rewrite` or `reject` must be revised or removed before
+the final artifacts are considered complete.
 
 # 来源附录
 
@@ -177,6 +162,9 @@ Deduplicate links and group them by source bucket.
 End scheduled or recurring runs with artifact paths:
 
 - `report.md`
+- `reader-review.md` or `reader-review.json`
+- `candidate-ledger.jsonl`
+- `source-notes.jsonl`
 - `handoff-index.md`
 - per-idea dossiers under `ideas/<idea_id>.md`
 - artifact check status: passed / failed / not run

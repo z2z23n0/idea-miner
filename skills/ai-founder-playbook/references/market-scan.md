@@ -43,19 +43,20 @@
 
 ## Bucketed Source Modules
 
-`idea-discovery-workflow` 默认会把 final ideas 分成 `dev_oss`、
-`vertical_b2b`、`consumer_prosumer`。做市场扫描或竞品核验时，按 bucket
-选择来源：
+`idea-discovery-workflow` 默认会把 final ideas 分成 `ai_oss`、
+`ai_product`、`ai_prosumer`。做市场扫描或竞品核验时，按 bucket 选择来源：
 
 | Bucket | 优先来源 | 主要判断 |
 |---|---|---|
-| `dev_oss` | HN、GitHub、developer Reddit、issue/discussion、release notes、docs、npm/PyPI/Homebrew/Docker、awesome lists | repo/star 心智、安装依赖、开发者传播、开源维护和平台吸收 |
-| `vertical_b2b` | G2、Capterra、TrustRadius、定价页、help center、行业论坛、垂直 subreddit、trade publication、job description、workflow template、case study、agency/manual service | buyer/user、预算或运营压力、当前替代、工作流频率、软件缺口和扩张路径 |
-| `consumer_prosumer` | App Store、Google Play、Chrome Web Store、Product Hunt 评论、YouTube/TikTok demo 和评论、creator/student/parent/freelancer 社区、niche Reddit、comparison pages | 反复使用场景、留存 loop、替代行为、情绪/实用价值和足够广的用户面 |
+| `ai_oss` | HN、GitHub、developer Reddit、issue/discussion、release notes、docs、npm/PyPI/Homebrew/Docker、awesome lists、benchmarks/evals/protocols | repo/star 心智、安装依赖、开发者传播、开源维护、30 秒 demo 和平台吸收 |
+| `ai_product` | AI 产品 launch、Product Hunt、定价页、help center、official docs/changelog、review site、comparison page、用户社区、平台公告 | AI-native workflow、当前替代、产品表面、付费/分发路径、竞品吸收风险 |
+| `ai_prosumer` | App Store、Google Play、Chrome Web Store、Product Hunt 评论、YouTube demo 和评论、creator/founder/researcher/student/indie developer 社区、niche Reddit/HN、comparison pages | 反复使用场景、可见 workaround、留存 loop、具体 UX、足够广的可触达用户面 |
 
 如果某个 bucket 的来源不可访问，明确标注 `未覆盖/受限`。不要用更多
-GitHub/HN 结果替代 `vertical_b2b` 或 `consumer_prosumer` 证据，除非用户
-明确把任务限定为 developer tool / OSS。
+GitHub/HN 结果替代 `ai_product` 或 `ai_prosumer` 证据，除非用户明确把任务
+限定为 developer tool / OSS。默认不要漂到陌生垂直行业；只有用户显式要求
+才把 healthcare、insurance、construction、compliance-heavy vertical 等当作
+final 领域。
 
 ## 评估已有 idea 的扫描顺序
 

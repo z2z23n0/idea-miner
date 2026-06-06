@@ -1,6 +1,6 @@
 ---
 name: idea-discovery-workflow
-description: Use when running or designing recurring product/open-source idea discovery, daily or scheduled idea mining, thesis-first product/OSS bet discovery, 3-bucket final selection across developer/OSS, vertical B2B workflow products, and consumer/prosumer apps, Promotion Gate workflows, multi-role Thesis Scout/Signal Scout/Critic/Competitor/CEO evaluation, evidence-to-decision pipelines, idea backlog memory, idea handoffs, handoff-ready idea dossiers, or automation prompts for finding AI-native products, high-star open-source projects, complete SaaS/app directions, CLI, MCP, Skill, agent workflow, and developer-tool ideas. This skill orchestrates discovery and uses ai-founder-playbook for judgment, pressure testing, competitor analysis, and market reasoning.
+description: Use when running or designing recurring product/open-source idea discovery, daily or scheduled idea mining, thesis-first AI product/OSS bet discovery, 3-bucket final selection across ai_oss, ai_product, and ai_prosumer, Product Shape gates, independent Report Reader checks, candidate-ledger replenish proof, Promotion Gate workflows, multi-role Thesis Scout/Signal Scout/Critic/Competitor/CEO evaluation, evidence-to-decision pipelines, idea backlog memory, idea handoffs, handoff-ready idea dossiers, or automation prompts for finding AI-native products, high-star open-source projects, complete AI product directions, CLI, MCP, Skill, agent workflow, and developer-tool ideas. This skill orchestrates discovery and uses ai-founder-playbook for judgment, pressure testing, competitor analysis, and market reasoning.
 ---
 
 # Idea Discovery Workflow
@@ -41,11 +41,12 @@ Check, and CEO Decision. Do not duplicate its rubrics here.
 ## Built-In Scripts
 
 - `scripts/idea-scout-kit.mjs [topic...]` generates a thesis-first discovery
-  plan, thesis seeds, product/OSS bet templates, AI relevance and promotion
-  gates, source modules for evidence sweep, history-relation tables, and Red
-  Team questions. When topics are provided explicitly, it treats them as thesis
-  constraints and also generates topic-guided evidence queries. It does not
-  fetch the web; use it to plan and normalize searches.
+  plan, thesis seeds, Product Shape templates, AI relevance and promotion gates,
+  source modules for evidence sweep, candidate-ledger templates, independent
+  reader-review prompts, history-relation tables, and Red Team questions. When
+  topics are provided explicitly, it treats them as thesis constraints and also
+  generates topic-guided evidence queries. It does not fetch the web; use it to
+  plan and normalize searches.
 - `scripts/init-store.mjs` creates the local JSONL evidence store under
   `${IDEA_MINER_HOME:-$HOME/.idea-miner}`. It also honors the legacy
   `CODEX_IDEA_DISCOVERY_HOME` variable for existing installs.
@@ -55,9 +56,10 @@ Check, and CEO Decision. Do not duplicate its rubrics here.
   web or create sessions by itself; the skill should call host session tools
   when available.
 - `scripts/check-run-artifacts.mjs <run_dir>` checks that a completed run has
-  a report, source notes, handoff index, per-idea JSON/Markdown dossiers, a
-  reader-readable idea story, and source-backed claims. Run it after writing
-  artifacts whenever shell is available.
+  a report, source notes, handoff index, independent reader review,
+  candidate-ledger proof when needed, per-idea JSON/Markdown dossiers, Product
+  Shape, and source-backed claims. Run it after writing artifacts whenever
+  shell is available.
 
 ## Execution Rules
 
@@ -73,11 +75,11 @@ Check, and CEO Decision. Do not duplicate its rubrics here.
 - Use fit gates to exclude unrelated raw opportunities such as physical goods,
   local services, inventory, hardware manufacturing, or pure operations plays
   unless they can be reframed as a complete product or high-star OSS opportunity.
-- Default final selection is bucketed: up to 3 `dev_oss`, up to 3
-  `vertical_b2b`, and up to 3 `consumer_prosumer`. Each final idea should still
-  be AI-core or AI-native workflow by default; AI-leveraged and non-AI ideas can
-  enter final only when they pass the bucket-specific product/OSS promotion gate
-  strongly.
+- Default final selection is bucketed: up to 3 `ai_oss`, up to 3
+  `ai_product`, and up to 3 `ai_prosumer`. Each final idea should be AI-core or
+  AI-native workflow by default; AI-leveraged ideas need unusually strong
+  product/OSS proof, and non-AI ideas stay out unless the user explicitly widens
+  scope.
 - GitHub Actions, CI gates, PR comments, templates, hooks, checklists, and thin
   wrappers are integration surfaces only. They cannot be the body of a final
   idea unless attached to a broader complete product or high-star OSS project.
@@ -92,13 +94,19 @@ Check, and CEO Decision. Do not duplicate its rubrics here.
   most 3 per final bucket. Do not lower the bar to fill any bucket. Existing
   ideas with only incremental evidence should be reported as backlog updates,
   not counted as new final ideas. If a bucket has fewer than 3 new or
-  meaningfully changed bets, treat that bucket as underfilled and show the
-  thesis/source replenish rounds and why coverage was exhausted.
+  meaningfully changed bets, treat that bucket as underfilled and write
+  `candidate-ledger.jsonl` rows showing the thesis/source replenish rounds and
+  why coverage was exhausted.
 - Keep full reports as normal Markdown before any host-specific control block.
-- Before saving final artifacts, run the Reader Clarity Gate: a reader who did
-  not participate in discovery must be able to restate each final idea as a
-  concrete product/OSS bet with core thesis, AI relevance, demo moment, and
-  repo/star asset. Rewrite or reject ideas that remain abstract or integration-only.
+- Before saving final artifacts, run the Product Shape Gate and independent
+  Report Reader check. A reader who did not participate in discovery must be
+  able to explain each final idea as: product/repo form, target user and task,
+  inputs or permissions, core objects, outputs or state, user actions,
+  first-version boundary, and why it has product/OSS body beyond a prompt,
+  checker, Action, wrapper, dashboard, or platform hook recipe. Save that review
+  as `reader-review.md` or `reader-review.json`. Rewrite or reject ideas that
+  remain abstract, jargon-heavy, field-filled, story-theater, or
+  integration-only.
 - For every final idea, persist a handoff-ready dossier. Persist a paused dossier
   only for a strong idea with one clearly named unresolved issue; do not save
   vetoed, weak, internal-only, or "could be a small tool" ideas as handoff work.

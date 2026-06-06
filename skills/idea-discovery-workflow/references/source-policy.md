@@ -2,33 +2,30 @@
 
 The discovery run is thesis-first and imagination-led. Evidence is useful, but
 it is not the idea generator. Use evidence to kill, sharpen, or de-risk bold
-product bets after the run has generated a thesis portfolio.
+AI-era product bets after the run has generated a thesis portfolio.
 
-Default thesis:
+Default scope:
 
-- Generate across three final buckets by default, not only AI coding or
-  developer tooling:
-  - `dev_oss`: developer/agent infrastructure, high-star OSS, protocol,
-    benchmark, SDK, CLI, MCP, Skill, or workflow projects.
-  - `vertical_b2b`: complete workflow products for specific professional,
-    operational, back-office, compliance, support, sales, finance, legal,
-    healthcare admin, education admin, ecommerce, recruiting, real-estate, or
-    local-service teams.
-  - `consumer_prosumer`: consumer, prosumer, creator, student, parent,
-    freelancer, personal productivity, wellness, learning, travel, home,
-    finance, or lifestyle apps where AI changes a recurring user workflow.
+- Stay inside the AI / agent / AI-workflow world unless the user explicitly
+  asks to widen the search. Do not make unfamiliar vertical SaaS the default.
+- Generate across three final buckets:
+  - `ai_oss`: AI agent, developer, infrastructure, eval, security, protocol,
+    SDK, CLI, MCP, Skill, benchmark, dataset, or high-star OSS opportunities.
+  - `ai_product`: complete AI products for teams or professional users where
+    the main workflow is AI-native, agentic, evaluative, context-heavy,
+    reliability-heavy, or model/platform-shift-driven.
+  - `ai_prosumer`: AI products for founders, creators, researchers, students,
+    independent developers, operators, or other users the report reader can
+    plausibly understand without a domain primer.
 - Aim for up to 9 final ideas: at most 3 per bucket. If a bucket has fewer than
-  3 strong ideas, leave it underfilled and explain why. Do not let `dev_oss`
-  fill empty `vertical_b2b` or `consumer_prosumer` slots.
-- Final ideas must be either complete product directions or GitHub OSS projects
-  with plausible high-star mindshare. `dev_oss` may satisfy the high-star OSS
-  path; `vertical_b2b` and `consumer_prosumer` should normally satisfy the
-  complete-product path.
-- Non-AI ideas may enter final only as exceptional product/OSS bets. A
-  reasonable small tool is not enough.
-- GitHub Actions, CI gates, PR comments, templates, hook recipes, and checklist
-  automation can be integration surfaces, but they are not final idea bodies by
-  themselves.
+  3 strong ideas, leave it underfilled and prove the replenish attempts in
+  `candidate-ledger.jsonl`. Do not lower standards or cross-fill with weak bets.
+- Final ideas should be `AI-core` or `AI-native workflow` by default.
+  `AI-leveraged` needs unusually strong product/OSS completeness. Non-AI ideas
+  belong in backlog unless the user explicitly asks to widen scope.
+- GitHub Actions, CI gates, PR comments, templates, hook recipes, checklist
+  automation, wrappers, and platform-changelog patches can be integration
+  surfaces, but they are not final idea bodies by themselves.
 
 ## Discovery Order
 
@@ -37,42 +34,85 @@ into a small tool. Use this order instead:
 
 1. **Discovery Thesis**: generate 20-30 high-imagination theses about what AI,
    agents, open-source distribution, platform shifts, developer behavior,
-   professional work, and everyday user behavior will make newly possible.
+   context, memory, evaluation, reliability, and AI-native work make newly
+   possible.
 2. **Bet Sketches**: turn the strongest theses into product/OSS bets with a
-   product form, target user, 30-second demo moment, repo/star asset, and why-now
-   logic.
+   product shape, why-now logic, and a durable asset.
 3. **Evidence Sweep**: inspect current sources to find supporting or killing
    signals, competitors, substitutes, and platform absorption risks.
-4. **Promotion Gate**: promote only bets that pass AI relevance and
-   product/OSS-completeness gates. Everything else becomes backlog or death
-   notes.
+4. **Product Shape Gate**: reject or rewrite bets that cannot be explained by
+   a reader as a concrete product or repo.
+5. **Promotion Gate**: promote only bets that pass AI relevance and product/OSS
+   completeness gates. Everything else becomes backlog or death notes.
+6. **Independent Reader Review**: a Report Reader who did not participate in
+   discovery reads only the rendered report and records whether each idea can be
+   understood.
+
+## Product Shape Standard
+
+An idea is understandable only when a reader can explain what product or repo
+would exist:
+
+```text
+This is a product/repo with a clear form.
+It is for a specific user doing a specific task.
+The user gives it specific inputs or permissions.
+It creates or maintains named core objects.
+It returns outputs or state the user can inspect or act on.
+The first version has a narrow boundary and explicit non-goals.
+It has product/OSS body beyond a prompt, checker, Action, wrapper, dashboard,
+or platform hook recipe.
+```
+
+This is not a field checklist for the report. It is the standard for whether
+the idea exists clearly enough to be selected. The report should use natural
+Chinese prose and concrete product/repo objects rather than headings that make
+the idea look filled-in but still vague. Usage context is welcome, but do not
+turn the explanation into a story scene where someone clicks through a day.
+
+Reject or rewrite candidates where:
+
+- the explanation is mostly a product name, market label, or abstract noun;
+- the reader cannot say what product/repo form exists;
+- the reader cannot name the target user, input, output/state, and core object;
+- it depends on unfamiliar vertical jargon without a short, concrete primer;
+- the idea can only be explained as "not X, but Y";
+- the idea is really a prompt, checker, dashboard, GitHub Action, wrapper,
+  script, or platform patch with no larger product/OSS body;
+- the shape contains no concrete object such as a command, repo, issue,
+  workspace, file, page, queue, trace, browser session, dataset, benchmark, or
+  user-visible result.
+
+The phrase pattern "不是 X，而是 Y" should not be used as the core explanation.
+If boundary clarification is needed, first explain the positive product/repo
+shape, then add a short boundary note only when it prevents a likely
+misunderstanding.
 
 ## Thesis Seeds
 
 Use these as generators, not as fixed keywords:
 
-- Which old workflows become newly cheap, reliable, or autonomous because of
-  agents?
-- Which human-facing UI should become an agent-readable protocol, state file,
-  test, policy, memory, or benchmark?
-- Which repos would get stars because they demonstrate an intelligent behavior
-  in 30 seconds?
-- Which data, eval, context, permission, cost, or identity layer becomes more
-  important when agents write or operate software?
-- Which product category was previously too expensive for a solo builder but is
-  now plausible because AI changed the cost structure?
-- Which platform change creates a new open-source standard, conformance suite,
-  playground, dataset, or interoperability layer?
-- Which existing tool will feel wrong when the primary user is an AI agent
+- Which AI agent workflows now need a protocol, fixture, policy, benchmark,
+  state file, replay log, permission layer, or compatibility surface?
+- Which AI coding aftershocks create new pain around review, debugging, tests,
+  deployment, rollback, ownership, context, cost, or trust?
+- Which repo could show a memorable intelligent behavior in 30 seconds and earn
+  stars because the demo is obvious?
+- Which context, memory, provenance, permission, identity, eval, or reputation
+  layer becomes infrastructure when agents participate in long-running work?
+- Which team AI workflow is currently a pile of prompts, docs, Slack threads,
+  spreadsheets, screenshots, and manual review that can become a repeatable
+  product?
+- Which AI product category has a strong thesis but bad current UX, pricing,
+  trust, observability, self-hosting, or workflow fit?
+- Which creator, researcher, founder, student, or independent developer task can
+  become a repeated AI workflow rather than a one-off chat?
+- Which platform capability shift creates a new open-source standard, migration
+  layer, conformance suite, playground, dataset, or interoperability layer?
+- Which old product category becomes small-team-buildable because AI changed
+  the cost of operations, data interpretation, follow-through, or support?
+- Which existing tool will feel wrong when the primary worker is an AI agent
   rather than a human clicking a UI?
-- Which professional service, admin, compliance, support, sales, recruiting,
-  education, healthcare, ecommerce, or local-service workflow was too bespoke or
-  labor-heavy before AI?
-- Which consumer or prosumer activity changes when the user can delegate
-  interpretation, memory, planning, coaching, comparison, drafting, or
-  follow-through to AI?
-- Which neglected user group has painful software because the market was too
-  small for traditional SaaS but plausible for a small AI-native product now?
 
 ## Evidence Role
 
@@ -85,35 +125,35 @@ Evidence is the brake and sharpening tool:
 - Do not require direct complaint evidence before a thesis can be considered.
 - Do not reward a candidate merely because one user complained and a small
   checker can be built.
+- Do not let evidence wording replace product shape. A source can support a bet,
+  but the report still has to explain what product or repo would exist.
 
 Evidence weight should be low during generation and higher during Red Team:
-roughly 40% imagination/new thesis, 20% AI relevance, 20% product/OSS
-completeness, 10% feasibility, 10% evidence.
+roughly 40% imagination/new thesis, 20% AI relevance, 20% product/OSS clarity,
+10% feasibility, 10% evidence.
 
 ## Source Modules
 
 After thesis generation, use source modules as independent lenses. Record
-coverage and limitations.
+coverage and limitations. Default modules:
 
-Use the source plan by bucket:
-
-- `dev_oss`: HN, GitHub, developer Reddit, Discord/forum search, npm/PyPI/
+- `ai_oss`: HN, GitHub, developer Reddit, Discord/forum search, npm/PyPI/
   Homebrew/Docker package surfaces, changelogs, release notes, docs, issues,
   discussions, benchmarks, standards, examples, and abandoned-but-loved repos.
-- `vertical_b2b`: G2, Capterra, TrustRadius, vendor reviews, pricing pages,
-  industry forums, trade publications, vertical subreddits, professional Slack/
-  Discord/forum posts, job descriptions, workflow templates, help centers,
-  case studies, compliance/news changes, and manual-service substitutes.
-- `consumer_prosumer`: App Store, Google Play, Chrome Web Store, Product Hunt,
-  TikTok/YouTube demos and comments, creator communities, student/parent/
-  freelancer forums, niche Reddit, comparison pages, low-star reviews,
-  social-search discussions, and visible workaround content.
+- `ai_product`: Product Hunt, official product launches, pricing pages, help
+  centers, changelogs, docs, user communities, G2/Capterra when relevant,
+  review posts, comparison pages, customer stories, platform announcements, and
+  AI workflow category pages.
+- `ai_prosumer`: App Store, Google Play, Chrome Web Store, Product Hunt,
+  YouTube demos, creator/founder/researcher/student/indie-developer communities,
+  niche Reddit/HN threads, social-search discussions, review posts, visible
+  workaround content, and comparison pages.
 - Cross-bucket search: direct competitors, indirect substitutes, "alternative
   to", pricing, review backlash, support docs, tutorials, comparison pages,
   forum complaints, and current platform changes.
 
 If a source class cannot be accessed, mark it as `未覆盖/受限`. Do not replace
-consumer or vertical coverage with more developer sources unless the run is
+AI product or AI prosumer coverage with more developer sources unless the run is
 explicitly scoped to developer tooling.
 
 ## Source Buckets
@@ -122,13 +162,12 @@ explicitly scoped to developer tooling.
 |---|---|---|
 | AI/platform shift | new agent/model/devtool capability, API, protocol, pricing, limits | create or sharpen theses |
 | OSS mindshare | fast-star repos, demos, benchmarks, standards, playgrounds | judge high-star potential |
-| Product category | new launches, pricing pages, positioning, comments | find category formation or gaps |
+| AI product category | launches, pricing, docs, positioning, comments | find category formation, gaps, and product surfaces |
+| AI prosumer behavior | repeated creator/founder/researcher/student/indie workflows | find repeated usage moments and product wedges |
 | Pain/complaints | repeated workflow pain, current workaround, switching language | support or kill a bet |
 | Competitor gaps | closed source, expensive, hard to self-host, weak docs, poor UX | locate wedge or reject crowded ideas |
 | Reviews/evals | low-star complaints, praise patterns, why people switch | test substitutes and distribution |
 | Trend window | repeated signals across 7-30 days | timing check, not proof by itself |
-| Vertical workflow | professional forums, review sites, job posts, templates, help centers | identify buyer, workflow, budget, and manual substitute |
-| Consumer/prosumer behavior | app reviews, creator demos, social comments, forum workarounds | identify recurring personal workflow and UX gaps |
 
 ## Promotion Fit
 
@@ -136,23 +175,22 @@ Raw signals may surface any market. A candidate can enter serious review only if
 it can plausibly become one of:
 
 - an AI-core or AI-native workflow product;
-- a complete SaaS/app/platform direction;
+- a complete AI SaaS/app/platform direction;
 - a GitHub OSS project with a clear demo, repo asset, star mindshare, and
   contribution/extension path;
-- a non-AI exceptional product/OSS bet that is stronger than typical AI
-  candidates.
+- an AI prosumer workflow with repeat use and visible user value.
 
-Every promoted candidate must declare a `final_bucket`: `dev_oss`,
-`vertical_b2b`, or `consumer_prosumer`. Bucket fit is not cosmetic:
+Every promoted candidate must declare a `final_bucket`: `ai_oss`, `ai_product`,
+or `ai_prosumer`. Bucket fit is not cosmetic:
 
-- `dev_oss` must explain the repo asset, demo, ecosystem, and why developers
+- `ai_oss` must explain the repo asset, demo, ecosystem, and why developers
   would star, install, contribute, or depend on it.
-- `vertical_b2b` must explain the buyer/user, recurring workflow, budget or
-  operational pressure, current manual/software substitute, product surface,
-  and expansion path.
-- `consumer_prosumer` must explain the recurring personal use moment, retention
-  loop, emotional/utility value, current app/manual substitute, product surface,
-  and why a broad-enough audience would keep using it.
+- `ai_product` must explain the AI-native workflow, team/professional user,
+  current substitute, product surface, and expansion path without drifting into
+  unfamiliar vertical jargon.
+- `ai_prosumer` must explain the repeated personal/professional use moment,
+  visible substitute behavior, retention loop, product surface, and why the
+  target user can understand and keep using it.
 
 Quarantine or reject candidates that are only:
 
@@ -161,6 +199,8 @@ Quarantine or reject candidates that are only:
 - a platform changelog patch likely to be absorbed quickly;
 - a complaint-to-small-tool response with no new thesis or product shape;
 - a one-off script that cannot become a memorable product or repo;
+- unfamiliar vertical SaaS that requires domain taste the user has not asked to
+  develop;
 - physical products, inventory, local services, hardware manufacturing, offline
   logistics, consumer brands, or pure operations arbitrage;
 - generic content/SEO plays without a defensible workflow.
@@ -175,8 +215,8 @@ Label every serious candidate:
   is done, audited, tested, distributed, or trusted.
 - `AI-leveraged`: AI meaningfully improves the product, but deterministic
   systems still carry the main value.
-- `non-AI exceptional`: not AI, but strong enough as a complete product or
-  high-star OSS project to be considered.
+- `non-AI exceptional`: not AI, but only allowed when the user explicitly widens
+  scope or the bet is clearly stronger than the AI candidates.
 - `non-AI reject`: ordinary software/tooling opportunity; backlog or reject.
 
 AI that only summarizes release notes, writes PR comments, explains diffs, or
@@ -186,6 +226,8 @@ converts CSV/text into config is not enough for `AI-core` or
 ## Query Planning
 
 Run `scripts/idea-scout-kit.mjs` when useful. With no arguments, it creates a
-thesis-first plan, bet sketch templates, source modules, and promotion gates.
-With explicit topics, it treats them as thesis constraints, not as a replacement
-for imagination. It does not browse or verify realtime facts.
+thesis-first plan, bet sketch templates, source modules, Product Shape gate,
+replenish ledger template, independent reader review instructions, and
+promotion gates. With explicit topics, it treats them as thesis constraints,
+not as a replacement for imagination. It does not browse or verify realtime
+facts.
