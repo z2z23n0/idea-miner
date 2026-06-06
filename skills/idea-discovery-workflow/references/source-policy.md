@@ -6,10 +6,24 @@ product bets after the run has generated a thesis portfolio.
 
 Default thesis:
 
-- Prefer AI-native products, agent workflows, AI coding, AI infra, LLM/agent
-  developer tools, and AI-era open-source projects.
+- Generate across three final buckets by default, not only AI coding or
+  developer tooling:
+  - `dev_oss`: developer/agent infrastructure, high-star OSS, protocol,
+    benchmark, SDK, CLI, MCP, Skill, or workflow projects.
+  - `vertical_b2b`: complete workflow products for specific professional,
+    operational, back-office, compliance, support, sales, finance, legal,
+    healthcare admin, education admin, ecommerce, recruiting, real-estate, or
+    local-service teams.
+  - `consumer_prosumer`: consumer, prosumer, creator, student, parent,
+    freelancer, personal productivity, wellness, learning, travel, home,
+    finance, or lifestyle apps where AI changes a recurring user workflow.
+- Aim for up to 9 final ideas: at most 3 per bucket. If a bucket has fewer than
+  3 strong ideas, leave it underfilled and explain why. Do not let `dev_oss`
+  fill empty `vertical_b2b` or `consumer_prosumer` slots.
 - Final ideas must be either complete product directions or GitHub OSS projects
-  with plausible high-star mindshare.
+  with plausible high-star mindshare. `dev_oss` may satisfy the high-star OSS
+  path; `vertical_b2b` and `consumer_prosumer` should normally satisfy the
+  complete-product path.
 - Non-AI ideas may enter final only as exceptional product/OSS bets. A
   reasonable small tool is not enough.
 - GitHub Actions, CI gates, PR comments, templates, hook recipes, and checklist
@@ -22,8 +36,8 @@ Do not begin a normal recurring run by mining complaints and turning each one
 into a small tool. Use this order instead:
 
 1. **Discovery Thesis**: generate 20-30 high-imagination theses about what AI,
-   agents, open-source distribution, platform shifts, and developer behavior
-   will make newly possible.
+   agents, open-source distribution, platform shifts, developer behavior,
+   professional work, and everyday user behavior will make newly possible.
 2. **Bet Sketches**: turn the strongest theses into product/OSS bets with a
    product form, target user, 30-second demo moment, repo/star asset, and why-now
    logic.
@@ -51,6 +65,14 @@ Use these as generators, not as fixed keywords:
   playground, dataset, or interoperability layer?
 - Which existing tool will feel wrong when the primary user is an AI agent
   rather than a human clicking a UI?
+- Which professional service, admin, compliance, support, sales, recruiting,
+  education, healthcare, ecommerce, or local-service workflow was too bespoke or
+  labor-heavy before AI?
+- Which consumer or prosumer activity changes when the user can delegate
+  interpretation, memory, planning, coaching, comparison, drafting, or
+  follow-through to AI?
+- Which neglected user group has painful software because the market was too
+  small for traditional SaaS but plausible for a small AI-native product now?
 
 ## Evidence Role
 
@@ -73,20 +95,26 @@ completeness, 10% feasibility, 10% evidence.
 After thesis generation, use source modules as independent lenses. Record
 coverage and limitations.
 
-- HN: front page, newest, Ask HN, Show HN, long comments, objections, new
-  mental models.
-- Reddit: niche subreddits for builders, devtools, AI, startups, self-hosting,
-  plugins, extensions, workarounds, and repeated pain.
-- GitHub: trending, new repos, topics, recent issues, discussions, PRs,
-  releases, stars/forks, examples, benchmarks, and abandoned but loved projects.
-- Product Hunt: today/recent launches, product category formation, maker
-  comments, positioning, and weak UX/trust gaps.
-- Reviews: review sites, app stores, extension stores, blog/video reviews, and
-  low-star complaints.
-- Official: recent docs, pricing pages, release notes, changelogs, official
-  blogs, new platform APIs, and breaking changes.
-- Search: competitor lookup, existing OSS, tutorials, comparison pages, cached
-  pages, and repeatability checks.
+Use the source plan by bucket:
+
+- `dev_oss`: HN, GitHub, developer Reddit, Discord/forum search, npm/PyPI/
+  Homebrew/Docker package surfaces, changelogs, release notes, docs, issues,
+  discussions, benchmarks, standards, examples, and abandoned-but-loved repos.
+- `vertical_b2b`: G2, Capterra, TrustRadius, vendor reviews, pricing pages,
+  industry forums, trade publications, vertical subreddits, professional Slack/
+  Discord/forum posts, job descriptions, workflow templates, help centers,
+  case studies, compliance/news changes, and manual-service substitutes.
+- `consumer_prosumer`: App Store, Google Play, Chrome Web Store, Product Hunt,
+  TikTok/YouTube demos and comments, creator communities, student/parent/
+  freelancer forums, niche Reddit, comparison pages, low-star reviews,
+  social-search discussions, and visible workaround content.
+- Cross-bucket search: direct competitors, indirect substitutes, "alternative
+  to", pricing, review backlash, support docs, tutorials, comparison pages,
+  forum complaints, and current platform changes.
+
+If a source class cannot be accessed, mark it as `未覆盖/受限`. Do not replace
+consumer or vertical coverage with more developer sources unless the run is
+explicitly scoped to developer tooling.
 
 ## Source Buckets
 
@@ -99,6 +127,8 @@ coverage and limitations.
 | Competitor gaps | closed source, expensive, hard to self-host, weak docs, poor UX | locate wedge or reject crowded ideas |
 | Reviews/evals | low-star complaints, praise patterns, why people switch | test substitutes and distribution |
 | Trend window | repeated signals across 7-30 days | timing check, not proof by itself |
+| Vertical workflow | professional forums, review sites, job posts, templates, help centers | identify buyer, workflow, budget, and manual substitute |
+| Consumer/prosumer behavior | app reviews, creator demos, social comments, forum workarounds | identify recurring personal workflow and UX gaps |
 
 ## Promotion Fit
 
@@ -111,6 +141,18 @@ it can plausibly become one of:
   contribution/extension path;
 - a non-AI exceptional product/OSS bet that is stronger than typical AI
   candidates.
+
+Every promoted candidate must declare a `final_bucket`: `dev_oss`,
+`vertical_b2b`, or `consumer_prosumer`. Bucket fit is not cosmetic:
+
+- `dev_oss` must explain the repo asset, demo, ecosystem, and why developers
+  would star, install, contribute, or depend on it.
+- `vertical_b2b` must explain the buyer/user, recurring workflow, budget or
+  operational pressure, current manual/software substitute, product surface,
+  and expansion path.
+- `consumer_prosumer` must explain the recurring personal use moment, retention
+  loop, emotional/utility value, current app/manual substitute, product surface,
+  and why a broad-enough audience would keep using it.
 
 Quarantine or reject candidates that are only:
 

@@ -1,6 +1,6 @@
 ---
 name: idea-discovery-workflow
-description: Use when running or designing recurring product/open-source idea discovery, daily or scheduled idea mining, thesis-first product/OSS bet discovery, Promotion Gate workflows, multi-role Thesis Scout/Signal Scout/Critic/Competitor/CEO evaluation, evidence-to-decision pipelines, idea backlog memory, idea handoffs, handoff-ready idea dossiers, or automation prompts for finding AI-native products, high-star open-source projects, CLI, MCP, Skill, agent workflow, and developer-tool ideas. This skill orchestrates discovery and uses ai-founder-playbook for judgment, pressure testing, competitor analysis, and market reasoning.
+description: Use when running or designing recurring product/open-source idea discovery, daily or scheduled idea mining, thesis-first product/OSS bet discovery, 3-bucket final selection across developer/OSS, vertical B2B workflow products, and consumer/prosumer apps, Promotion Gate workflows, multi-role Thesis Scout/Signal Scout/Critic/Competitor/CEO evaluation, evidence-to-decision pipelines, idea backlog memory, idea handoffs, handoff-ready idea dossiers, or automation prompts for finding AI-native products, high-star open-source projects, complete SaaS/app directions, CLI, MCP, Skill, agent workflow, and developer-tool ideas. This skill orchestrates discovery and uses ai-founder-playbook for judgment, pressure testing, competitor analysis, and market reasoning.
 ---
 
 # Idea Discovery Workflow
@@ -73,9 +73,11 @@ Check, and CEO Decision. Do not duplicate its rubrics here.
 - Use fit gates to exclude unrelated raw opportunities such as physical goods,
   local services, inventory, hardware manufacturing, or pure operations plays
   unless they can be reframed as a complete product or high-star OSS opportunity.
-- Default final ideas should be AI-core or AI-native workflow bets. AI-leveraged
-  and non-AI ideas can enter final only when they pass the product/OSS promotion
-  gate strongly.
+- Default final selection is bucketed: up to 3 `dev_oss`, up to 3
+  `vertical_b2b`, and up to 3 `consumer_prosumer`. Each final idea should still
+  be AI-core or AI-native workflow by default; AI-leveraged and non-AI ideas can
+  enter final only when they pass the bucket-specific product/OSS promotion gate
+  strongly.
 - GitHub Actions, CI gates, PR comments, templates, hooks, checklists, and thin
   wrappers are integration surfaces only. They cannot be the body of a final
   idea unless attached to a broader complete product or high-star OSS project.
@@ -86,12 +88,12 @@ Check, and CEO Decision. Do not duplicate its rubrics here.
   tools when they help cover more sources, run independent critique, or refill
   the candidate pool after vetoes; otherwise simulate roles and state that.
 - Use expensive debate only for high-disagreement or high-value candidates.
-- Aim to return up to 3 product/OSS bets that pass the current standard. Do not
-  lower the bar to fill three slots. Existing ideas with only incremental
-  evidence should be reported as backlog updates, not counted as new final
-  ideas. If fewer than 3 new or meaningfully changed bets pass, treat it as an
-  underfilled run and show the thesis replenish rounds and why coverage was
-  exhausted.
+- Aim to return up to 9 product/OSS bets that pass the current standard: at
+  most 3 per final bucket. Do not lower the bar to fill any bucket. Existing
+  ideas with only incremental evidence should be reported as backlog updates,
+  not counted as new final ideas. If a bucket has fewer than 3 new or
+  meaningfully changed bets, treat that bucket as underfilled and show the
+  thesis/source replenish rounds and why coverage was exhausted.
 - Keep full reports as normal Markdown before any host-specific control block.
 - Before saving final artifacts, run the Reader Clarity Gate: a reader who did
   not participate in discovery must be able to restate each final idea as a
@@ -108,6 +110,7 @@ Check, and CEO Decision. Do not duplicate its rubrics here.
 
 ## Automation Prompt Boundary
 
-Automations should stay thin: schedule, destination, language, display rule, and
-the instruction to run this skill using `ai-founder-playbook`. The detailed
-workflow should live in this skill, not inside the automation prompt.
+Automations should stay thin: schedule, destination, language, display rule,
+final bucket target, and the instruction to run this skill using
+`ai-founder-playbook`. The detailed workflow should live in this skill, not
+inside the automation prompt.

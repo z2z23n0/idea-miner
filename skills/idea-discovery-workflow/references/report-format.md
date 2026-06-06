@@ -7,8 +7,18 @@ user sees, why it might matter now, and why existing substitutes leave room.
 
 # 今天值得看的方向
 
-Open with the selected ideas only. Do not order them against each other. Do not
-assign P-labels or any other ordering badge.
+Open with selected ideas only, grouped by final bucket. Do not order ideas
+against each other inside a bucket. Do not assign P-labels or any other
+ordering badge.
+
+Use these buckets by default:
+
+- `dev_oss`：开发者/agent/AI infra/high-star OSS。
+- `vertical_b2b`：垂直 B2B workflow product。
+- `consumer_prosumer`：consumer/prosumer/app product。
+
+Each bucket may contain up to 3 ideas. If a bucket is underfilled, say
+`本轮不足 3 个，不降标补位` and give the concise reason.
 
 For each selected idea, write 2-4 plain Chinese sentences:
 
@@ -26,8 +36,8 @@ uncovered source class. Do not make this the main body.
 
 Summarize the strongest thesis directions that shaped the run:
 
-| Thesis | Why now | Possible product / OSS shape | Fate |
-|---|---|---|---|
+| Bucket | Thesis | Why now | Possible product / OSS shape | Fate |
+|---|---|---|---|---|
 
 `Fate` can be `selected`, `merged`, `rejected`, or `backlog`.
 
@@ -43,10 +53,31 @@ Roles: `supports`, `challenges`, `kills`, `sharpens`, `competitor`.
 
 # 最终 Ideas
 
-Include up to 3 selected ideas. Keep them as a set. Each idea should use this
-shape.
+Include up to 9 selected ideas, grouped as up to 3 `dev_oss`, up to 3
+`vertical_b2b`, and up to 3 `consumer_prosumer`. Keep ideas as bucketed sets,
+not a global ranked list. Each idea should use this shape.
+
+## Bucket：dev_oss
+
+Use this bucket for developer/agent infrastructure, high-star OSS, protocol,
+benchmark, SDK, CLI, MCP, Skill, workflow, or tooling ideas.
+
+## Bucket：vertical_b2b
+
+Use this bucket for complete products aimed at a specific business or
+professional workflow.
+
+## Bucket：consumer_prosumer
+
+Use this bucket for consumer, prosumer, creator, student, parent, freelancer, or
+personal app workflows.
 
 ## Idea：名称
+
+### 分桶
+
+One of `dev_oss`, `vertical_b2b`, or `consumer_prosumer`. Explain in one short
+Chinese sentence why it belongs there.
 
 ### 一句话
 
@@ -63,6 +94,12 @@ their current task, what goes wrong today, and why they care.
 Describe the product surface. What does the user open, run, install, or visit?
 What is the first interaction? What does the system return? Avoid abstract
 labels unless immediately grounded in what the user sees.
+
+For `vertical_b2b`, name the buyer/user, operating workflow, budget or
+operational pressure, and likely product surface. For `consumer_prosumer`, name
+the retention loop, substitute behavior, and why this is not just a one-off AI
+chat. For `dev_oss`, name the repo asset, demo, ecosystem, and install/share
+reason.
 
 ### 今天怎么解决
 
@@ -108,7 +145,8 @@ other.
 # 被放弃的方向
 
 List rejected or paused candidates briefly. Say why each did not become one of
-today's selected ideas. Do not expand them into full ideas.
+today's selected ideas. Do not expand them into full ideas. Group rejections by
+bucket when that helps explain underfilled categories.
 
 # Reader Check
 
@@ -126,6 +164,9 @@ Reject or rewrite idea sections where:
 - the idea is mostly a market label, technology name, wrapper, template, or
   platform patch;
 - sources are dumped without explaining what they changed.
+- the bucket label is cosmetic and the idea still reads like a developer tool,
+  generic market label, or one-off AI wrapper instead of a complete product or
+  high-star OSS bet.
 
 # 来源附录
 

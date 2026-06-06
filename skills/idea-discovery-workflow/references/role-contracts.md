@@ -11,10 +11,19 @@ run and say so in the report.
 - Loads the backlog snapshot before final selection and forces every candidate
   through the history relation gate.
 - Rejects weak ideas instead of filling quota.
-- Owns the replenish loop: when fewer than 3 ideas pass, sends Thesis Scout and
-  Drafter back for new theses, product archetypes, demo moments, repo assets, or
+- Owns the replenish loop: when any requested bucket has fewer than 3 passing
+  ideas, sends Thesis Scout and Drafter back for bucket-specific theses,
+  product archetypes, demo moments, repo assets, source modules, ICPs, or
   AI-era capability shifts instead of lowering standards.
+- Owns the 3-bucket final shape: up to 3 `dev_oss`, up to 3 `vertical_b2b`,
+  and up to 3 `consumer_prosumer`. Does not let developer/OSS ideas fill empty
+  vertical or consumer slots.
+- Forces every serious candidate through a bucket fit check before promotion:
+  `dev_oss`, `vertical_b2b`, or `consumer_prosumer`.
 - Forces every final idea to pass AI relevance and product/OSS promotion gates.
+- Applies complete-product and high-star-OSS gates separately. `dev_oss` can
+  pass through high-star OSS; vertical B2B and consumer/prosumer normally need
+  complete product proof.
 - Forces every final idea to read like a real product or OSS project, not an
   internal gate checklist.
 - Forces every final idea to be understandable as an actual complete product
@@ -30,8 +39,13 @@ run and say so in the report.
 
 - Generates 20-30 high-imagination theses before source collection unless the
   user explicitly asks for a narrow market scan.
-- Focuses on AI-native products, agent workflows, AI coding, AI infra, developer
-  tools for the AI era, and high-star OSS opportunities.
+- Generates across `dev_oss`, `vertical_b2b`, and `consumer_prosumer` by
+  default. AI-native products, agent workflows, AI coding, AI infra, developer
+  tools, and high-star OSS are one bucket, not the whole search space.
+- For vertical B2B, names the professional workflow, buyer/user, operational
+  pressure, current substitute, and why AI changes feasibility.
+- For consumer/prosumer, names the recurring personal use moment, substitute
+  behavior, retention loop, and why AI changes the experience beyond a chatbot.
 - Uses source feeds and history as stimulus, not as the only idea generator.
 - Produces "why now" logic and the shift that makes each thesis newly plausible.
 - Avoids safe restatements of user complaints as small tools.
@@ -42,8 +56,16 @@ run and say so in the report.
 ## Signal Scout
 
 - Builds the source plan and Signal Portfolio after thesis/bet sketches exist.
+- Builds a bucketed source plan. Do not replace missing vertical or consumer
+  coverage with extra developer sources unless the user explicitly scopes the
+  run to developer tooling.
 - Collects links, dates/freshness, evidence type, user quote summary, current
   alternative, competitor signals, and kill signals.
+- Covers non-developer source classes when relevant: G2/Capterra/TrustRadius,
+  App Store/Google Play/Chrome Web Store, Product Hunt comments, YouTube/TikTok
+  demo comments, creator/student/parent/freelancer forums, vertical subreddits,
+  trade publications, help centers, pricing pages, job posts, templates, and
+  manual-service substitutes.
 - Derives enrichment keywords from thesis/bet sketches and raw signals after
   collection.
 - Marks uncovered or restricted sources.
@@ -58,6 +80,7 @@ run and say so in the report.
   selection.
 - Labels AI relevance: `AI-core`, `AI-native workflow`, `AI-leveraged`,
   `non-AI exceptional`, or `non-AI reject`.
+- Labels final bucket: `dev_oss`, `vertical_b2b`, or `consumer_prosumer`.
 - Labels source type and evidence level, but does not over-weight evidence during
   ideation.
 - Labels each candidate's history relation before it can become final: `new`,
@@ -65,6 +88,12 @@ run and say so in the report.
   `adjacent_to`.
 - States product scale: complete product, high-star OSS, platform module, large
   product direction, mixed path, or backlog-only small tool.
+- For `vertical_b2b`, includes buyer/user, workflow, budget or operational
+  pressure, product surface, expansion path, and current manual/software
+  substitute.
+- For `consumer_prosumer`, includes recurring use moment, retention loop,
+  emotional or utility value, product surface, substitute behavior, and why a
+  broad-enough audience would keep using it.
 - Adds usage semantics for each serious candidate: when the user uses it, what
   input it takes, what it does, what it outputs, and what current manual
   workaround it replaces.
@@ -84,6 +113,9 @@ run and say so in the report.
 - Checks for weak thesis, lack of AI relevance, lack of buyer/audience, no
   high-star OSS mindshare, mature competitors, distribution failure, maintenance
   burden, platform absorption, and "just a feature/integration" risk.
+- Checks bucket drift: developer tools disguised as vertical/consumer products,
+  broad market labels without a product surface, one-off AI chat wrappers, and
+  consumer ideas without a retention loop.
 - Applies stricter burden to original, analogy, replica, news-triggered, and
   non-AI exceptional ideas.
 - Has veto power on hard-kill conditions: target mismatch, Action-only/CI-only
@@ -96,6 +128,10 @@ run and say so in the report.
 - Searches direct competitors, indirect substitutes, OSS, SaaS, browser
   extensions, CLIs, templates, internal manual workflows, platform features, and
   platform-native absorption paths.
+- For vertical B2B, includes review sites, pricing pages, help centers, job
+  descriptions, templates, agencies/manual services, and industry forums. For
+  consumer/prosumer, includes app stores, extension stores, Product Hunt, social
+  demos/comments, comparison pages, and forum workarounds.
 - Evaluates competitor scope, adoption, satisfaction, price/open-source gap,
   UX, distribution, whether the substitute is good enough, and whether a new
   product/OSS bet has a memorable wedge.
@@ -107,6 +143,10 @@ run and say so in the report.
   who it is for, when it appears, what the user sees, what current workaround it
   replaces, what key insight makes it interesting, why now, what substitutes
   miss, the first-version boundary, durable asset, and major risks.
+- Verifies that each final idea's bucket is substantive. A `vertical_b2b` idea
+  must read like a product in a business workflow; a `consumer_prosumer` idea
+  must read like a recurring app/workflow; a `dev_oss` idea must read like a
+  repo or developer product with a durable asset.
 - Flags any idea that is only a theme, market label, technology name, generic
   "AI can do X" direction, evidence dump, GitHub Action, CI gate, PR comment,
   checklist, template, or wrapper without a larger product/OSS body.

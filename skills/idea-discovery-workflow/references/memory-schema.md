@@ -40,13 +40,13 @@ it.
 `signals.jsonl`
 
 ```json
-{"id":"sig_...","run_id":"...","bucket":"ai_platform_shift|oss_mindshare|pain|competitor|...","evidence_role":"supports|challenges|kills|sharpens|competitor","source_url":"...","source":"HN","observed_at":"...","freshness":"...","summary":"...","quote_summary":"...","current_alternative":"...","evidence_grade":"low|medium|high"}
+{"id":"sig_...","run_id":"...","bucket":"ai_platform_shift|oss_mindshare|vertical_workflow|consumer_prosumer_behavior|pain|competitor|...","final_bucket":"dev_oss|vertical_b2b|consumer_prosumer|cross_bucket","evidence_role":"supports|challenges|kills|sharpens|competitor","source_url":"...","source":"HN","observed_at":"...","freshness":"...","summary":"...","quote_summary":"...","current_alternative":"...","evidence_grade":"low|medium|high"}
 ```
 
 `ideas.jsonl`
 
 ```json
-{"id":"idea_...","run_id":"...","name":"...","aliases":["..."],"core_thesis":"...","ai_relevance":"AI-core|AI-native workflow|AI-leveraged|non-AI exceptional|non-AI reject","promotion_gate":"pass|backlog|reject","shape":"complete_product|high_star_oss|SaaS|GitHub OSS|CLI|MCP|Skill|...","target_user":"...","status":"candidate|final|rejected|paused|revived|updated|duplicate","history_relation":"new|update_existing|duplicate_of|revives|merged_from|splits_from|adjacent_to","related_ideas":["idea_..."],"dossier_path":"runs/<run_id>/ideas/<idea_id>.md","detail_path":"runs/<run_id>/ideas/<idea_id>.json"}
+{"id":"idea_...","run_id":"...","name":"...","aliases":["..."],"final_bucket":"dev_oss|vertical_b2b|consumer_prosumer","bucket_fit":"...","core_thesis":"...","ai_relevance":"AI-core|AI-native workflow|AI-leveraged|non-AI exceptional|non-AI reject","promotion_gate":"pass|backlog|reject","shape":"complete_product|high_star_oss|SaaS|GitHub OSS|CLI|MCP|Skill|...","target_user":"...","status":"candidate|final|rejected|paused|revived|updated|duplicate","history_relation":"new|update_existing|duplicate_of|revives|merged_from|splits_from|adjacent_to","related_ideas":["idea_..."],"dossier_path":"runs/<run_id>/ideas/<idea_id>.md","detail_path":"runs/<run_id>/ideas/<idea_id>.json"}
 ```
 
 Keep `ideas.jsonl` compact, but always include `aliases`, `history_relation`,
@@ -97,7 +97,7 @@ primary idea.
 `runs/<run_id>/source-notes.jsonl`
 
 ```json
-{"id":"src_...","run_id":"...","url":"...","platform":"GitHub","title":"...","access_status":"fetched|summary-only|blocked|not-covered","observed_at":"...","freshness":"...","evidence_type":"issue|comment|docs|product_news|competitor","evidence_role":"supports|challenges|kills|sharpens|competitor","summary":"...","used_for":["idea_..."],"claims":["..."]}
+{"id":"src_...","run_id":"...","url":"...","platform":"GitHub","title":"...","final_bucket":"dev_oss|vertical_b2b|consumer_prosumer|cross_bucket","access_status":"fetched|summary-only|blocked|not-covered","observed_at":"...","freshness":"...","evidence_type":"issue|comment|docs|product_news|competitor","evidence_role":"supports|challenges|kills|sharpens|competitor","summary":"...","used_for":["idea_..."],"claims":["..."]}
 ```
 
 This file is the source-level cache for later handoffs. It should contain
@@ -112,6 +112,8 @@ private content.
   "run_id": "...",
   "name": "...",
   "aliases": ["..."],
+  "final_bucket": "dev_oss|vertical_b2b|consumer_prosumer",
+  "bucket_fit": "...",
   "history_relation": "new|update_existing|duplicate_of|revives|merged_from|splits_from|adjacent_to",
   "related_ideas": [{"id": "idea_...", "name": "...", "relationship": "merged_from", "note": "..."}],
   "verdict": "keep|narrow|pause|reject",
@@ -120,6 +122,8 @@ private content.
   "ai_relevance": "AI-core|AI-native workflow|AI-leveraged|non-AI exceptional|non-AI reject",
   "promotion_gate": {
     "decision": "pass|backlog|reject",
+    "complete_product_path": "pass|fail|not-applicable",
+    "high_star_oss_path": "pass|fail|not-applicable",
     "product_or_oss_scale": "complete product|high-star OSS|backlog-only small tool",
     "why_final_slot": "...",
     "demo_moment": "...",
@@ -170,7 +174,8 @@ artifacts, without repeating source discovery or competitor searches.
 Required sections:
 
 - Handoff purpose and current verdict.
-- Core thesis, AI relevance, and promotion-gate result.
+- Core thesis, final bucket, bucket-fit reasoning, AI relevance, and
+  promotion-gate result.
 - Reader-readable idea story: one-sentence description, concrete user scene,
   product surface, current workaround, key insight, why-now logic, substitutes,
   first-version boundary, durable asset, risks, and judgment.

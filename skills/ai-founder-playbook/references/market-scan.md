@@ -33,13 +33,29 @@
 内置扫描流程：
 
 1. **Trend Window**：先看近 7-30 天跨平台重复信号和参与度，不急着生成 idea。
-2. **Source Modules**：把 HN、Product Hunt、Reddit、GitHub、review site、official blog/release notes 当作可替换来源模块；每个模块都要记录覆盖/未覆盖边界。
+2. **Source Modules**：把 HN、Product Hunt、Reddit、GitHub、review site、official blog/release notes 当作可替换来源模块；每个模块都要记录覆盖/未覆盖边界。若是 `idea-discovery-workflow` 的 recurring run，source modules 要按 final bucket 覆盖，不要只用开发者来源。
 3. **Review Mining**：从低分评论、pricing backlash、复杂安装、停更、issue 积压、文档差里找体验缺口。
 4. **Product Feed**：把新产品、平台新功能、release/changelog、早期 traction 作为触发器，但不要把“有人发布了产品”直接当成需求证据。
 5. **Opportunity Scoring**：把痛点、替代方案、可付费/可安装信号、开源传播路径、可触达渠道和竞争风险放进同一张表。
 6. **Adversarial Pass**：每个候选必须找反证：是否只是 feature、是否已有好方案、是否没人愿意换、是否只是新闻热度。
 
 如果这是定时或多轮 discovery，而不是一次性市场扫描，使用 `idea-discovery-workflow` 来生成 thesis portfolio、product/OSS bet sketches、Promotion Gate、证据记忆和报告。不要用本文件的抱怨/搜索模式替代 thesis-first 生成。
+
+## Bucketed Source Modules
+
+`idea-discovery-workflow` 默认会把 final ideas 分成 `dev_oss`、
+`vertical_b2b`、`consumer_prosumer`。做市场扫描或竞品核验时，按 bucket
+选择来源：
+
+| Bucket | 优先来源 | 主要判断 |
+|---|---|---|
+| `dev_oss` | HN、GitHub、developer Reddit、issue/discussion、release notes、docs、npm/PyPI/Homebrew/Docker、awesome lists | repo/star 心智、安装依赖、开发者传播、开源维护和平台吸收 |
+| `vertical_b2b` | G2、Capterra、TrustRadius、定价页、help center、行业论坛、垂直 subreddit、trade publication、job description、workflow template、case study、agency/manual service | buyer/user、预算或运营压力、当前替代、工作流频率、软件缺口和扩张路径 |
+| `consumer_prosumer` | App Store、Google Play、Chrome Web Store、Product Hunt 评论、YouTube/TikTok demo 和评论、creator/student/parent/freelancer 社区、niche Reddit、comparison pages | 反复使用场景、留存 loop、替代行为、情绪/实用价值和足够广的用户面 |
+
+如果某个 bucket 的来源不可访问，明确标注 `未覆盖/受限`。不要用更多
+GitHub/HN 结果替代 `vertical_b2b` 或 `consumer_prosumer` 证据，除非用户
+明确把任务限定为 developer tool / OSS。
 
 ## 评估已有 idea 的扫描顺序
 

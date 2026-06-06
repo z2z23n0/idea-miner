@@ -4,9 +4,9 @@ Automatic startup and open-source idea mining for agents.
 
 `idea-miner` helps an agent turn high-imagination AI-era theses into startup and
 open-source product bets. It starts from thesis generation, sketches product/OSS
-bets, then scans places like Hacker News, Reddit, GitHub issues, Product Hunt,
-release notes, developer forums, review sites, and product news to kill,
-sharpen, or de-risk those bets.
+bets across developer/OSS, vertical B2B workflow products, and
+consumer/prosumer apps, then scans bucket-specific sources to kill, sharpen, or
+de-risk those bets.
 
 The repo contains two agent skills plus a few helper scripts. The skills define
 the research workflow, source policy, role contracts, pressure-test rubrics,
@@ -14,10 +14,11 @@ report format, and local evidence memory format.
 
 ## What It Produces
 
-- A **Discovery Thesis** portfolio for AI-native products, agent workflows, AI
-  coding, AI infra, and high-star OSS opportunities.
+- A **Discovery Thesis** portfolio across three final buckets: `dev_oss`,
+  `vertical_b2b`, and `consumer_prosumer`.
 - Product/OSS bet sketches with target users, usage moments, 30-second demo
-  moments, repo/star assets, AI relevance, and first-version shape.
+  moments or product moments, repo/star or product assets, AI relevance, bucket
+  fit, and first-version shape.
 - Competitor and substitute checks for serious candidates.
 - Red Team objections, dangerous assumptions, and CEO-style decisions:
   advance, narrow, pause, or reject.
@@ -55,11 +56,14 @@ The default run is rigorous and thesis-first. Unless the user explicitly asks
 for a narrow scan, the scout starts by generating AI-era theses and product/OSS
 bet sketches. Evidence comes later as a brake: it supports, challenges, kills,
 or sharpens bets; it is not the primary imagination source. Weak candidates are
-killed before long write-ups, and fewer than three passing bets triggers
-replenish rounds with new thesis seeds, product archetypes, demo moments,
-repo/star assets, ICPs, or source modules. If the runtime provides real
-sub-agent or multi-agent tools, the same role contracts can be dispatched. If it
-does not, one agent can simulate the roles and label the report accordingly.
+killed before long write-ups, and an underfilled bucket triggers replenish
+rounds with new thesis seeds, product archetypes, demo moments, repo/product
+assets, ICPs, or source modules. The default final set is grouped as up to 3
+`dev_oss`, up to 3 `vertical_b2b`, and up to 3 `consumer_prosumer`;
+underfilled buckets stay underfilled rather than being filled with extra
+developer ideas. If the runtime provides real sub-agent or multi-agent tools,
+the same role contracts can be dispatched. If it does not, one agent can
+simulate the roles and label the report accordingly.
 
 The useful output is the thesis-to-decision chain: what bet the run is making,
 why now, how it could become a product or high-star OSS project, what evidence
@@ -100,11 +104,16 @@ market judgment.
 | Open-source ecosystem | GitHub topics, trending projects, releases, stars/forks, PRs, tutorials, dependencies |
 | Trend windows | Repeated signals across multiple communities in the last 7-30 days |
 | Reviews / evaluations | G2, Capterra, Chrome Web Store, App Store, Product Hunt comments, blog/video reviews |
+| Vertical workflow | G2/Capterra/TrustRadius, pricing pages, help centers, industry forums, trade publications, job posts, workflow templates, case studies, agency/manual-service substitutes |
+| Consumer/prosumer behavior | App Store, Google Play, Chrome Web Store, Product Hunt comments, YouTube/TikTok demos and comments, creator/student/parent/freelancer communities, niche Reddit, comparison pages |
 
 Default discovery should not begin with standing topic keywords or complaint
 mining. It should first generate thesis seeds and product/OSS bet sketches, then
-use sources to support, challenge, kill, or sharpen those bets. Final ideas
-should be AI-core, AI-native workflow, or exceptional non-AI product/OSS bets.
+use sources to support, challenge, kill, or sharpen those bets. Source coverage
+should match the target bucket; extra developer sources should not substitute
+for vertical or consumer evidence unless the run is explicitly scoped that way.
+Final ideas should be AI-core, AI-native workflow, or exceptional non-AI
+product/OSS bets.
 GitHub Actions, CI gates, PR comments, templates, hooks, checklists, and thin
 wrappers can be integration surfaces, but not the final idea body.
 
@@ -113,15 +122,15 @@ wrappers can be integration surfaces, but not the final idea body.
 The default report includes:
 
 - Today's selected directions, without ordering the selected ideas against one
-  another.
+  another, grouped by `dev_oss`, `vertical_b2b`, and `consumer_prosumer`.
 - Discovery context and thesis pool.
 - Evidence notes that explain what each source changed in the judgment.
 - History relation and novelty handling: new, update_existing, duplicate_of,
   revives, merged_from, splits_from, adjacent_to.
-- Final product/OSS ideas written as readable product memos: one sentence,
-  concrete usage scene, product surface, current workaround, key insight,
-  why-now logic, alternatives, first-version boundary, durable asset, risks, and
-  judgment.
+- Final product/OSS ideas written as readable product memos: final bucket,
+  bucket-fit reasoning, one sentence, concrete usage scene, product surface,
+  current workaround, key insight, why-now logic, alternatives, first-version
+  boundary, durable asset, risks, and judgment.
 - Rejected or paused candidates.
 - Source appendix.
 
@@ -181,10 +190,11 @@ prompts/customization-block.md
 Customization examples:
 
 ```text
-主要关注 thesis：agent-readable software, AI coding aftershocks, high-star AI OSS
+主要关注 thesis：agent-readable software, vertical workflow compression, consumer delegation loop
 排除方向：consumer apps, crypto, generic SEO
-偏好形态：complete product / high-star GitHub OSS / MCP server / Skill / SDK
-成功标准：AI-core product / AI-native workflow / GitHub stars / real installs / paid SaaS
+final bucket：dev_oss 最多 3 个 / vertical_b2b 最多 3 个 / consumer_prosumer 最多 3 个
+偏好形态：complete product / high-star GitHub OSS / vertical workflow SaaS / consumer app / MCP server / Skill / SDK
+成功标准：AI-core product / AI-native workflow / GitHub stars / real installs / paid SaaS / consumer retention
 不算 final：GitHub Action-only / CI gate / PR comment / thin wrapper
 ```
 

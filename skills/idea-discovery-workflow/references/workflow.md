@@ -10,6 +10,7 @@ prepare_run
   -> collect_evidence
   -> normalize_signals
   -> ai_relevance_gate
+  -> bucket_fit_gate
   -> product_oss_promotion_gate
   -> history_relation_gate
   -> hard_gate
@@ -35,7 +36,8 @@ prepare_run
 | collect_evidence | Signal Scout | bet sketches and source modules | current signals, competitors, kill evidence, supporting links |
 | normalize_signals | Signal Scout | raw signals | Signal Portfolio with buckets and evidence role |
 | ai_relevance_gate | CEO + Red Team | bet sketches, user goal | AI-core / AI-native workflow / AI-leveraged / non-AI exceptional / non-AI reject labels |
-| product_oss_promotion_gate | CEO + Report Reader | serious bets | pass/fail on complete-product or high-star-OSS criteria |
+| bucket_fit_gate | CEO + Report Reader | serious bets | `dev_oss` / `vertical_b2b` / `consumer_prosumer` fit and gap notes |
+| product_oss_promotion_gate | CEO + Report Reader | serious bets | separate pass/fail on complete-product and high-star-OSS criteria |
 | history_relation_gate | CEO + Orchestrator | candidates, backlog snapshot | new/update_existing/duplicate_of/revives/merged_from/splits_from/adjacent_to labels |
 | hard_gate | CEO + Red Team | candidates, user goal, evidence | keep/kill decisions before detailed write-up |
 | critic_review | Red Team | promoted candidates | objections, rejection/revision requests, kill reasons |
@@ -71,16 +73,22 @@ the artifact quality check was not executed.
 - Evidence is used after bet sketches exist. It can sharpen, support, or kill a
   bet, but it should not reduce the run to "one complaint -> one small tool".
 - Every final candidate must pass:
-  `ai_relevance_gate -> product_oss_promotion_gate -> history_relation_gate -> hard_gate -> critic_review -> competitor_check -> ceo_decision`.
+  `ai_relevance_gate -> bucket_fit_gate -> product_oss_promotion_gate -> history_relation_gate -> hard_gate -> critic_review -> competitor_check -> ceo_decision`.
 - Default final preference is `AI-core` or `AI-native workflow`. `AI-leveraged`
   candidates need strong product/OSS completeness. `non-AI exceptional`
   candidates need exceptional product or high-star OSS potential. `non-AI
   reject` never enters final.
 - AI is not core when it only summarizes release notes, writes PR comments,
   explains diffs, or converts text/CSV into config.
-- The product/OSS promotion gate is mandatory. A final idea must be either a
-  complete product direction or a GitHub OSS project with a clear 30-second demo
-  moment, repo/star mindshare, and accumulation asset.
+- The bucket fit gate is mandatory. Every final idea must declare one of
+  `dev_oss`, `vertical_b2b`, or `consumer_prosumer`, and the report must keep
+  the final set grouped by bucket.
+- The product/OSS promotion gate is mandatory and split into two independent
+  paths. A final idea must pass the complete-product path or the high-star-OSS
+  path. `dev_oss` can pass through high-star OSS; `vertical_b2b` and
+  `consumer_prosumer` should normally pass through complete product. A consumer
+  or vertical idea cannot rely on repo/star assets as the main proof unless the
+  user explicitly asked for OSS in that bucket.
 - GitHub Action, CI gate, PR comment, checklist automation, template, config
   package, hook recipe, or thin wrapper is an integration surface only. If that
   is the idea body, reject or backlog it.
@@ -100,14 +108,18 @@ the artifact quality check was not executed.
 - Reader Check remains required, but clarity is not enough. A candidate can be
   clear and still fail because it is not imaginative, AI-relevant, or
   product/OSS-complete.
-- Target up to 3 final product/OSS bets. If fewer than 3 survive, replenish with
-  new theses or product archetypes, not just new complaint sources.
+- Target up to 9 final product/OSS bets: up to 3 `dev_oss`, up to 3
+  `vertical_b2b`, and up to 3 `consumer_prosumer`. If any bucket has fewer than
+  3 survivors, replenish for that bucket with new theses or product archetypes,
+  not just new complaint sources. Do not fill an empty bucket with extra
+  developer/OSS ideas.
 - A replenish round must change at least two of: thesis seed, AI-era capability
   shift, product archetype, demo moment, repo asset, ICP, platform shift,
   competitor category, or source module.
-- Default to at least 3 total rounds when fewer than 3 ideas pass. Continue up
-  to 5 rounds when new theses are still producing promising bets. Stop
-  underfilled only when additional rounds would lower the bar.
+- Default to at least 3 total rounds when any requested bucket is underfilled.
+  Continue up to 5 rounds when new theses are still producing promising bets.
+  Stop underfilled only when additional rounds would lower the bar or source
+  coverage is genuinely exhausted.
 
 ## Promotion Gates
 
@@ -127,13 +139,22 @@ set.
 
 ### Product / OSS Promotion Gate
 
-A final idea must pass at least one:
+A final idea must pass at least one path, and the chosen path must match its
+bucket:
 
 - **Complete product**: clear user, recurring usage moment, core workflow,
   product surface, commercial or distribution path, and expansion path.
 - **High-star OSS**: 30-second demo, memorable repo asset, clear GitHub topic or
   ecosystem, contribution/extension path, and reason developers would star,
   install, share, or depend on it.
+
+Use this split explicitly:
+
+| Bucket | Normal required path | What must be proven |
+|---|---|---|
+| `dev_oss` | High-star OSS or complete product | repo asset, 30-second demo, developer ecosystem, install/share/contribute reason |
+| `vertical_b2b` | Complete product | buyer/user, recurring workflow, budget/operational pressure, substitute, product surface, expansion path |
+| `consumer_prosumer` | Complete product | recurring personal use, retention loop, substitute, product surface, broad-enough audience, emotional/utility value |
 
 Reject candidates that cannot answer:
 
@@ -142,6 +163,8 @@ Reject candidates that cannot answer:
 - What is the demo moment?
 - What accumulates over time: rules, dataset, benchmark, protocol, examples,
   integrations, community plugins, eval corpus, or workflow memory?
+- Which final bucket owns it, and why it belongs there instead of being a
+  developer tool in disguise or a broad market label with no product surface?
 
 ## History Relation Rules
 

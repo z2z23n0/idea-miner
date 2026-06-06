@@ -71,6 +71,12 @@ function nonEmptyArray(value) {
   return Array.isArray(value) && value.length > 0;
 }
 
+const allowedFinalBuckets = new Set([
+  'dev_oss',
+  'vertical_b2b',
+  'consumer_prosumer',
+]);
+
 function isGenericFeedUrl(url) {
   return /reddit\.com\/r\/[^/]+\/(?:new|top|hot)?\/?$/i.test(url)
     || /news\.ycombinator\.com\/?(?:news|newest|show|ask)?$/i.test(url)
@@ -185,6 +191,8 @@ function checkIdea(jsonFile, sourceNotes, errors) {
 
   const requiredShortJson = [
     ['name', 'name'],
+    ['final_bucket', 'final_bucket'],
+    ['bucket_fit', 'bucket_fit'],
     ['history_relation', 'history_relation'],
     ['verdict', 'verdict'],
     ['confidence', 'confidence'],
@@ -203,6 +211,10 @@ function checkIdea(jsonFile, sourceNotes, errors) {
 
   for (const [field, title] of requiredShortJson) {
     if (!nonBlank(idea[field])) errors.push(`${label}: missing ${title}`);
+  }
+
+  if (nonBlank(idea.final_bucket) && !allowedFinalBuckets.has(idea.final_bucket)) {
+    errors.push(`${label}: invalid final_bucket ${idea.final_bucket}`);
   }
 
   for (const [field, title] of requiredLongJson) {
@@ -270,6 +282,9 @@ function checkIdea(jsonFile, sourceNotes, errors) {
   if (!hasAny(md, [/repo\/star 资产/i, /star asset/i, /长期资产/])) {
     errors.push(`${label}: dossier must include repo/star asset`);
   }
+  if (!hasAny(md, [/分桶/i, /final bucket/i, /final_bucket/i, /dev_oss|vertical_b2b|consumer_prosumer/i])) {
+    errors.push(`${label}: dossier must include final bucket and bucket-fit reasoning`);
+  }
 }
 
 if (!runDir) {
@@ -296,6 +311,9 @@ if (fs.existsSync(path.join(absRunDir, 'report.md'))) {
   const reportSections = [
     '今天值得看的方向',
     '最终 Ideas',
+    'Bucket：dev_oss',
+    'Bucket：vertical_b2b',
+    'Bucket：consumer_prosumer',
     '被放弃的方向',
     '来源附录',
     '保存位置',
@@ -315,6 +333,9 @@ if (fs.existsSync(path.join(absRunDir, 'report.md'))) {
   if (!/repo\/star 资产|长期资产/.test(report)) {
     errors.push('report.md must include repo/star asset or long-term asset fields');
   }
+  if (!/dev_oss/.test(report) || !/vertical_b2b/.test(report) || !/consumer_prosumer/.test(report)) {
+    errors.push('report.md must include the three final buckets: dev_oss, vertical_b2b, consumer_prosumer');
+  }
 }
 
 if (fs.existsSync(path.join(absRunDir, 'source-notes.jsonl'))) {
@@ -325,6 +346,24 @@ if (fs.existsSync(path.join(absRunDir, 'source-notes.jsonl'))) {
 const ideaJsonFiles = listFiles(ideasDir, '.json');
 if (ideaJsonFiles.length === 0) {
   errors.push('ideas/ must contain per-idea JSON files');
+}
+if (ideaJsonFiles.length > 9) {
+  errors.push('ideas/ must contain at most 9 final or paused idea JSON files for the 3-bucket report');
+}
+
+const bucketCounts = Object.fromEntries([...allowedFinalBuckets].map((bucket) => [bucket, 0]));
+for (const jsonFile of ideaJsonFiles) {
+  try {
+    const idea = readJson(jsonFile);
+    if (allowedFinalBuckets.has(idea.final_bucket)) {
+      bucketCounts[idea.final_bucket] += 1;
+    }
+  } catch {
+    // Detailed parse errors are reported in the full checkIdea pass below.
+  }
+}
+for (const [bucket, count] of Object.entries(bucketCounts)) {
+  if (count > 3) errors.push(`${bucket}: contains ${count} ideas; each bucket may contain at most 3`);
 }
 
 for (const jsonFile of ideaJsonFiles) {
