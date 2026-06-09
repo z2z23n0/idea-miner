@@ -16,8 +16,10 @@ source modules 必须按 AI bucket 扩展：`ai_oss` 覆盖 Reddit、Hacker News
 
 最终报告和每个 final idea dossier 必须围绕 Idea Spine / Product Shape 写成短产品说明，不要写成故事小剧场，也不要写成机械字段清单。报告必须让一个没参与挖掘的人只读报告也能说清楚这个 idea 是什么产品或 repo、核心对象是什么、输入输出是什么、第一版边界是什么、为什么不是薄包装。Reader Check 必须由单独 Report Reader 完成：它只能读最终报告，不能读 source notes、dossiers、chat history 或内部 scratchpad；它要逐个 idea 写出“我理解它是什么 / 载体和目标用户 / 核心对象 / 输入或权限 / 输出或状态 / 用户动作 / 第一版边界 / 为什么不是 prompt、checker、Action 或 wrapper / 还不清楚的地方 / verdict pass|rewrite|reject”。如果 reader 说不清产品形态，先重写或移出 final。若 shell 可用，artifact 落盘后运行 `node skills/idea-discovery-workflow/scripts/check-run-artifacts.mjs <run_dir>`；失败就修 artifacts 并重跑，不能把 artifact check failed 的 run 当正常成功。
 
+最终报告必须是中文可读的产品说明。必要的专有名词、真实产品名、仓库名和常见技术缩写可以保留英文；非常见英文术语、临时发明的协议名/对象名、以及不显然的领域短语，第一次承担解释作用时必须加中文括注或用一句中文解释清楚。Reader Check 必须单独判断中文读者是否能读懂这些术语；如果只能靠英文对象名列表复述 idea，verdict 必须是 rewrite。
+
 必须联网或使用可用实时工具核验所有当前性、竞品、市场和来源判断。无法访问某信息源时，明确标注“未覆盖/受限”，不要编造。不要把热闹话题、viral 帖、单个抱怨、单个产品新闻或“AI 能做出来”直接当成机会。Evidence 用来刹车和 sharpen，不用来压低想象力。
 
 若当前环境提供真实 sub-agent / multi-agent 工具，就实际创建并调度；尤其 Report Reader 应尽量作为独立 agent/session 执行。否则模拟角色并在报告和 reader-review 里说明。
 
-最终中文输出，严格使用 `idea-discovery-workflow` 的固定报告格式，并按 `ai_oss`、`ai_product`、`ai_prosumer` 分桶。完整报告必须作为普通 Markdown 正文输出，放在任何宿主环境控制块之前。若某个 bucket 第一轮找不到 3 个过线 idea，必须根据 kill reasons 换 thesis seed、AI-era capability shift、产品 archetype、product form、core object、repo/product asset、target user、source module 继续补源；若最终仍不足 3 个，必须用 `candidate-ledger.jsonl` 证明补搜轮次和 kill reasons，不得降低标准凑数。报告末尾必须写明 artifact 保存路径；如果保存失败，要明确说明失败原因。
+最终中文输出，严格使用 `idea-discovery-workflow` 的固定报告格式，并按 `ai_oss`、`ai_product`、`ai_prosumer` 分桶。完整报告必须作为普通 Markdown 正文输出，放在任何宿主环境控制块之前。不要因为总数已经有 3 个 idea 就停止；停止条件是每个 bucket 满 3 个，或每个 underfilled bucket 都完成 bucket-specific replenish proof 并通过 checker。若某个 bucket 第一轮找不到 3 个过线 idea，必须根据 kill reasons 换 thesis seed、AI-era capability shift、产品 archetype、product form、core object、repo/product asset、target user、source module 继续补源；若最终仍不足 3 个，必须用 `candidate-ledger.jsonl` 证明该 bucket 的补搜轮次和 kill reasons，不得降低标准凑数。报告末尾必须写明 artifact 保存路径；如果保存失败，要明确说明失败原因。

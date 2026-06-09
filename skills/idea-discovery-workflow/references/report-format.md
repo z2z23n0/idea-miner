@@ -4,6 +4,14 @@ Final output must be Chinese Markdown. The report is a product memo for a
 reader, not an internal checklist and not a story scene. It should let a reader
 explain what concrete AI product or OSS project would exist.
 
+Necessary proper nouns, product names, repo names, and common technical
+abbreviations may stay in English. Uncommon English terms, invented protocol or
+object names, and non-obvious domain phrases must get a Chinese parenthetical
+gloss or an explanatory Chinese sentence the first time they carry the
+explanation. If the reader needs to understand a sentence full of English object
+names before they can understand the idea, rewrite it in Chinese first and keep
+the English only as labels.
+
 The report should not become a table of fields. Use normal paragraphs. A good
 idea section makes the reader understand:
 
@@ -35,8 +43,8 @@ Use these buckets by default:
   independent developers, or other understandable prosumer users.
 
 Each bucket may contain up to 3 ideas. If a bucket is underfilled, say
-`本轮不足 3 个，不降标补位` and summarize the replenish proof from
-`candidate-ledger.jsonl`.
+`本轮不足 3 个，不降标补位` for that bucket and summarize that bucket's
+replenish proof from `candidate-ledger.jsonl`.
 
 For each selected idea, write 3-6 plain Chinese sentences. The opening should
 already be understandable; do not make the reader wait for a later checklist.
@@ -148,6 +156,8 @@ or chat. For every selected idea it must include:
 - what remains unclear, if anything;
 - whether the idea relies on vague jargon, field filling, story theater, or
   "not X, but Y";
+- whether uncommon English terms or invented object names are explained in
+  Chinese well enough for a Chinese reader;
 - verdict: `pass`, `rewrite`, or `reject`.
 
 Any selected idea with `rewrite` or `reject` must be revised or removed before

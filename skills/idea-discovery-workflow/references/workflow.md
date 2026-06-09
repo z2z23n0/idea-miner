@@ -131,6 +131,8 @@ executed.
 - Every replenish attempt must be recorded in `candidate-ledger.jsonl`. A report
   may say a bucket is underfilled only when the ledger shows what was tried,
   what changed, what candidates were found, and why each was killed or parked.
+  Underfilled proof is bucket-specific: if `ai_product` or `ai_prosumer` is
+  underfilled, rows for `ai_oss` do not prove that bucket was replenished.
 
 ## Product Shape Gate
 
@@ -227,7 +229,10 @@ recommended for every recurring run. Each row should be compact JSON:
 ```
 
 The ledger is not a dumping ground for every search result. It is proof that the
-run widened the search space before accepting an underfilled bucket.
+run widened the search space before accepting an underfilled bucket. For every
+underfilled bucket, the ledger should show at least three replenish rounds unless
+the report explicitly explains why continuing would lower the bar or why source
+coverage was genuinely exhausted.
 
 ## Independent Reader Review
 
@@ -249,6 +254,8 @@ For each selected idea, the reader must record:
 - what they still do not understand;
 - whether the explanation relies on forbidden vague phrasing, jargon, field
   filling, story theater, or "not X, but Y" as the main explanation;
+- whether uncommon English terms, invented protocol names, or object names are
+  explained in Chinese with a parenthetical gloss or explanatory sentence;
 - `pass`, `rewrite`, or `reject`.
 
 The CEO / Orchestrator must revise or reject any idea marked `rewrite` or

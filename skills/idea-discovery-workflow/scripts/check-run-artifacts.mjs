@@ -90,6 +90,109 @@ function hasStoryTheater(text) {
     || /(?:她|他|他们|某个|一位)[^。\n]{0,40}(?:点击|打开|发现)[^。\n]{0,80}(?:系统接管|AI 接管|agent 接管)/i.test(text);
 }
 
+const commonEnglishTerms = new Set([
+  'ai',
+  'ai_oss',
+  'ai_product',
+  'ai_prosumer',
+  'api',
+  'app',
+  'browser',
+  'cli',
+  'csv',
+  'css',
+  'docker',
+  'git',
+  'github',
+  'html',
+  'http',
+  'https',
+  'idea',
+  'ideas',
+  'json',
+  'llm',
+  'mcp',
+  'npm',
+  'oauth',
+  'oss',
+  'product',
+  'pypi',
+  'repo',
+  'sdk',
+  'sql',
+  'stt',
+  'toml',
+  'ts',
+  'tts',
+  'uri',
+  'url',
+  'vad',
+  'web',
+  'workflow',
+  'xls',
+  'xlsx',
+  'yaml',
+]);
+
+function isCommonEnglishTerm(token) {
+  const normalized = token.toLowerCase();
+  if (commonEnglishTerms.has(normalized)) return true;
+  if (/^[A-Z0-9+]{2,6}$/.test(token)) return true;
+
+  const parts = normalized.split(/[\/_.+-]+/).filter(Boolean);
+  return parts.length > 1 && parts.every((part) => {
+    return commonEnglishTerms.has(part) || /^[a-z0-9]{1,4}$/.test(part);
+  });
+}
+
+function uncommonEnglishTokens(line) {
+  const cleaned = line
+    .replace(/https?:\/\/\S+/g, ' ')
+    .replace(/\/[\w./-]+/g, ' ');
+  const tokens = cleaned.match(/\b[A-Za-z][A-Za-z0-9+._/-]*\b/g) || [];
+  return tokens.filter((token) => !isCommonEnglishTerm(token));
+}
+
+function chineseExplanationCount(line) {
+  const parenthetical = line.match(/[（(][^）)\n]{0,100}[\u4e00-\u9fff][^）)\n]{0,100}[）)]/g) || [];
+  const explanationPhrases = line.match(/也就是|即|指的是|这里指|可以理解为|中文可理解为|意思是|下称|简称|这个词指|这个对象指/g) || [];
+  return parenthetical.length + explanationPhrases.length;
+}
+
+function reportBodyForReadability(report) {
+  const cutoffs = [
+    report.search(/^# 来源附录\s*$/m),
+    report.search(/^# 保存位置\s*$/m),
+  ].filter((index) => index >= 0);
+  if (cutoffs.length === 0) return report;
+  return report.slice(0, Math.min(...cutoffs));
+}
+
+function checkPlainChineseReadability(text, label, errors, context = 'text') {
+  const lines = text.split(/\r?\n/);
+  let inCodeFence = false;
+
+  lines.forEach((rawLine, index) => {
+    const line = rawLine.trim();
+    if (/^```/.test(line)) {
+      inCodeFence = !inCodeFence;
+      return;
+    }
+    if (inCodeFence) return;
+    if (!line || /^#{1,6}\s/.test(line) || /^\|/.test(line) || /^- https?:\/\//.test(line)) return;
+
+    const tokens = uncommonEnglishTokens(line);
+    if (tokens.length < 14) return;
+
+    const explanationCount = chineseExplanationCount(line);
+    const hasEnoughExplanations = explanationCount >= Math.ceil(tokens.length / 18);
+    if (!hasEnoughExplanations) {
+      const sample = [...new Set(tokens)].slice(0, 8).join(', ');
+      errors.push(`${label}: ${context} line ${index + 1} has ${tokens.length} uncommon English terms without enough Chinese gloss/explanation (${sample})`);
+    }
+  });
+}
+
 function checkProductShapeCoverage(text, label, errors, context = 'text') {
   const checks = [
     ['product/repo form', [/产品形态/, /仓库形态/, /载体/, /Product Shape/i, /Idea Spine/i, /\bSaaS\b/i, /\bCLI\b/i, /\bAPI\b/i, /GitHub OSS/i, /浏览器插件/, /桌面 app/, /工作台/, /approval layer/i, /console/i]],
@@ -288,6 +391,7 @@ function checkIdea(jsonFile, sourceNotes, readerReviewText, errors) {
   }
 
   const md = readText(mdFile);
+  checkPlainChineseReadability(md, label, errors, 'dossier prose');
   checkProductShape(idea, md, label, errors);
   checkSourceSupport(idea, md, sourceNotes, label, errors);
 
@@ -381,6 +485,7 @@ function checkIdea(jsonFile, sourceNotes, readerReviewText, errors) {
     if (verdict !== 'pass') {
       errors.push(`${label}: reader review must include pass verdict after revision`);
     }
+    checkPlainChineseReadability(reviewSlice, label, errors, 'reader review');
     checkProductShapeCoverage(reviewSlice, label, errors, 'reader review');
     if (/Scenario Run|scenario_run|场景运行|可运行场景|系统接管/.test(reviewSlice)) {
       errors.push(`${label}: reader review still uses obsolete Scenario Run wording`);
@@ -406,6 +511,33 @@ function readReaderReview(absRunDir, errors) {
   return '';
 }
 
+function bucketWindow(report, bucket) {
+  const escaped = escapeRegExp(bucket);
+  const heading = new RegExp(`^#{1,4}\\s+Bucket：${escaped}\\s*$`, 'm');
+  const match = heading.exec(report);
+  if (match) {
+    const rest = report.slice(match.index + match[0].length);
+    const next = rest.search(/^#{1,4}\s+/m);
+    return (next >= 0 ? rest.slice(0, next) : rest).trim();
+  }
+
+  const index = report.indexOf(bucket);
+  if (index < 0) return '';
+  return report.slice(Math.max(0, index - 500), index + 1000);
+}
+
+function reportMentionsBucketUnderfilled(report, bucket) {
+  const window = bucketWindow(report, bucket);
+  return /本轮不足\s*3\s*个|不足\s*3|underfilled|不降标补位/i.test(window);
+}
+
+function reportExplainsEarlyReplenishStop(report, bucket) {
+  const window = bucketWindow(report, bucket);
+  return /(?:继续|再找|再补|更多轮)[^。\n]{0,120}(?:降标|降低标准|耗尽|受限|无法|没有新|没有过线)/i.test(window)
+    || /(?:source coverage|coverage|sources?)[^。\n]{0,80}(?:exhausted|limited|blocked)/i.test(window)
+    || /(?:覆盖|来源|补源)[^。\n]{0,80}(?:耗尽|受限|无法继续)/.test(window);
+}
+
 function checkCandidateLedger(rows, bucketCounts, report, errors) {
   const underfilledBuckets = [...allowedFinalBuckets].filter((bucket) => bucketCounts[bucket] < 3);
   const reportClaimsUnderfilled = /本轮不足 3 个|underfilled|不足 3/.test(report);
@@ -414,11 +546,25 @@ function checkCandidateLedger(rows, bucketCounts, report, errors) {
     return;
   }
 
+  for (const bucket of underfilledBuckets) {
+    const bucketRows = rows.filter((row) => row.bucket === bucket);
+    const rounds = new Set(bucketRows.map((row) => row.round));
+    if (bucketRows.length === 0) {
+      errors.push(`${bucket}: underfilled bucket must have bucket-specific candidate-ledger rows`);
+    }
+    if (!reportMentionsBucketUnderfilled(report, bucket)) {
+      errors.push(`${bucket}: report must explicitly say this bucket is underfilled and not filled by lowering the bar`);
+    }
+    if (rounds.size < 3 && !reportExplainsEarlyReplenishStop(report, bucket)) {
+      errors.push(`${bucket}: underfilled bucket must show at least 3 replenish rounds or explain why further replenish would lower the bar / exhaust coverage`);
+    }
+  }
+
   rows.forEach((row, index) => {
     const label = `candidate-ledger.jsonl:${index + 1}`;
     if (!Number.isInteger(row.round) || row.round < 1) errors.push(`${label}: round must be a positive integer`);
     if (!allowedFinalBuckets.has(row.bucket)) errors.push(`${label}: invalid bucket ${row.bucket}`);
-    if (!nonEmptyArray(row.changed)) errors.push(`${label}: changed must list what search dimension changed`);
+    if (!nonEmptyArray(row.changed) || row.changed.length < 2) errors.push(`${label}: changed must list at least two search dimensions that changed`);
     if (!wordy(row.query_or_source)) errors.push(`${label}: missing query_or_source`);
     if (!wordy(row.candidate)) errors.push(`${label}: missing candidate`);
     if (!wordy(row.product_shape_summary)) errors.push(`${label}: missing product_shape_summary`);
@@ -496,6 +642,7 @@ if (fs.existsSync(path.join(absRunDir, 'report.md'))) {
   if (hasForbiddenContrast(report)) {
     errors.push('report.md uses the forbidden core-explanation pattern "不是 X，而是 Y"');
   }
+  checkPlainChineseReadability(reportBodyForReadability(report), 'report.md', errors, 'report prose before source appendix');
 }
 
 readerReviewText = readReaderReview(absRunDir, errors);

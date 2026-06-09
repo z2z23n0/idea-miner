@@ -107,6 +107,12 @@ Check, and CEO Decision. Do not duplicate its rubrics here.
   as `reader-review.md` or `reader-review.json`. Rewrite or reject ideas that
   remain abstract, jargon-heavy, field-filled, story-theater, or
   integration-only.
+- Final reports and reader reviews must be readable Chinese. Necessary proper
+  nouns, product names, repo names, and common technical abbreviations may stay
+  in English, but uncommon English terms or invented object names must get a
+  Chinese parenthetical gloss or an explanatory Chinese sentence the first time
+  they carry the explanation. Do not let a list of English object names do the
+  work that Chinese product prose should do.
 - For every final idea, persist a handoff-ready dossier. Persist a paused dossier
   only for a strong idea with one clearly named unresolved issue; do not save
   vetoed, weak, internal-only, or "could be a small tool" ideas as handoff work.
