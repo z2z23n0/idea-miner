@@ -1,5 +1,7 @@
 # idea-miner
 
+[English](README.md) | [Simplified Chinese](README.zh-CN.md)
+
 Put spare agent tokens to work finding startup and open-source ideas worth
 building.
 
@@ -213,12 +215,12 @@ prompts/customization-block.md
 Customization examples:
 
 ```text
-主要关注 thesis：agent-readable software, AI coding aftershocks, AI workflow products
-排除方向：unfamiliar vertical SaaS, crypto, generic SEO
-final bucket：ai_oss 最多 3 个 / ai_product 最多 3 个 / ai_prosumer 最多 3 个
-偏好形态：complete AI product / high-star GitHub OSS / AI workflow app / MCP server / Skill / SDK
-成功标准：AI-core product / AI-native workflow / GitHub stars / real installs / paid SaaS / repeat usage
-不算 final：GitHub Action-only / CI gate / PR comment / thin wrapper
+focus thesis: agent-readable software, AI coding aftershocks, AI workflow products
+exclude: unfamiliar vertical SaaS, crypto, generic SEO
+final buckets: up to 3 ai_oss / up to 3 ai_product / up to 3 ai_prosumer
+preferred forms: complete AI product / high-star GitHub OSS / AI workflow app / MCP server / Skill / SDK
+success signals: AI-core product / AI-native workflow / GitHub stars / real installs / paid SaaS / repeat usage
+not final ideas: GitHub Action-only / CI gate / PR comment / thin wrapper
 ```
 
 ## Helper Scripts
