@@ -1,10 +1,13 @@
 # idea-miner
 
-Automatic startup and open-source idea mining for agents.
+Put spare agent tokens to work finding startup and open-source ideas worth
+building.
 
-`idea-miner` helps an agent turn high-imagination AI-era theses into startup and
-open-source product bets. It starts from thesis generation, sketches AI-focused
-product/OSS bets, then scans sources to kill, sharpen, or de-risk those bets.
+`idea-miner` helps an agent with spare token budget, a quiet automation window,
+or a standing research slot turn high-imagination AI-era theses into startup
+and open-source product bets. It starts from thesis generation, sketches
+AI-focused product/OSS bets, then scans sources to kill, sharpen, or de-risk
+those bets.
 
 The repo contains two agent skills plus a few helper scripts. The skills define
 the research workflow, source policy, role contracts, pressure-test rubrics,
