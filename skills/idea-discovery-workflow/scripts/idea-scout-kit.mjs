@@ -140,6 +140,22 @@ const sourceModules = [
     nativeFeeds: ['alternatives/tutorial/comparison pages', 'GitHub topics', 'pricing pages', 'support docs'],
     use: ['kill checks', 'repeatability', 'market/category language'],
   },
+  {
+    bucket: 'cross_bucket',
+    name: 'Trend radar',
+    nativeFeeds: [
+      'AI news sites',
+      'AI/builder newsletters',
+      'analyst newsletters',
+      'curated lab/platform, builder/devtool, and market/reporter X/Twitter lists',
+    ],
+    use: [
+      'new vocabulary',
+      'launch clusters',
+      'platform or pricing shifts',
+      'thesis refresh and query generation, not final proof',
+    ],
+  },
 ];
 
 const aiLabels = [
@@ -174,6 +190,8 @@ const evidenceQueries = [
   '"{bet}" Chrome extension',
   '"{bet}" App Store review',
   '"{bet}" YouTube demo',
+  '"{bet}" newsletter',
+  '"{bet}" "AI news"',
   'site:news.ycombinator.com "{bet}"',
   'site:reddit.com "{bet}"',
   'site:github.com "{bet}" issues',
@@ -188,6 +206,8 @@ const explicitTopicTemplates = [
   'site:reddit.com "{topic}" alternative',
   '"alternative to" "{topic}" "open source"',
   '"{topic}" benchmark OR conformance OR eval',
+  '"{topic}" newsletter',
+  '"{topic}" "AI news"',
 ];
 
 function fill(template, value, placeholder) {

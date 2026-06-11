@@ -108,6 +108,7 @@ market judgment.
 | Product / platform news | Official blogs, release notes, changelogs, Show HN, Product Hunt, new agent/devtool features |
 | Competitor gaps | Closed source, no self-hosting, expensive pricing, poor docs, complex setup, slow issue response |
 | Open-source ecosystem | GitHub topics, trending projects, releases, stars/forks, PRs, tutorials, dependencies |
+| Trend radar | AI news sites, builder newsletters, analyst newsletters, curated X/Twitter lists |
 | Trend windows | Repeated signals across multiple communities in the last 7-30 days |
 | Reviews / evaluations | G2, Capterra, Chrome Web Store, App Store, Product Hunt comments, blog/video reviews |
 | AI product categories | Product Hunt, launch pages, pricing pages, docs, user communities, app stores, review sites, comparison pages |
@@ -120,6 +121,13 @@ should match the target bucket, but the default world stays AI-focused rather
 than drifting into unfamiliar vertical industries. Final ideas should be
 AI-core or AI-native workflow by default. Non-AI ideas belong in backlog unless
 the user explicitly asks to widen scope.
+Trend radar sources such as AI news sites, newsletters, and curated X/Twitter
+lists are useful for noticing new vocabulary, launch clusters, platform shifts,
+and timing. They are query generators, not proof: radar-triggered candidates
+still need confirmation from bucket-native sources such as official docs,
+pricing/changelog pages, GitHub, HN/Reddit, Product Hunt, app or extension
+reviews, package/download evidence, or direct competitor pages before final
+selection.
 GitHub Actions, CI gates, PR comments, templates, hooks, checklists, and thin
 wrappers can be integration surfaces, but not the final idea body.
 

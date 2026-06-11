@@ -151,6 +151,32 @@ coverage and limitations. Default modules:
 - Cross-bucket search: direct competitors, indirect substitutes, "alternative
   to", pricing, review backlash, support docs, tutorials, comparison pages,
   forum complaints, and current platform changes.
+- Trend radar: AI news sites, builder newsletters, analyst newsletters, and
+  curated X/Twitter lists. Use them to notice new platform shifts, vocabulary,
+  launch clusters, and unusually active conversations. Do not treat them as
+  proof that a final idea is valuable.
+
+Trend radar sources are allowed early in evidence sweep and replenish rounds,
+but they have a narrow job: generate or refresh thesis candidates, timing
+questions, and platform-change checks. A radar signal can promote a search
+query, not a final idea. Before a radar-triggered candidate enters final, confirm
+it with at least one bucket-native or primary source such as official docs,
+pricing/changelog pages, GitHub repos/issues, HN/Reddit discussion, Product
+Hunt, app/extension reviews, customer stories, package/download evidence, or
+direct competitor pages.
+
+Default radar set:
+
+- AI news and product radar: The Decoder, VentureBeat AI, Axios AI+, MIT
+  Technology Review's AI coverage, and other current AI news/category pages.
+- Builder newsletters and blogs: TLDR AI, The Batch, Latent Space / AI
+  Engineer, Simon Willison, Import AI, and similar AI builder or research feeds.
+- Analyst and market newsletters: SemiAnalysis, Stratechery, The Information's
+  AI Agenda, and other sources that explain platform economics, distribution,
+  infra cost, or company strategy.
+- X/Twitter lists: separate lab/platform accounts, builder/devtool accounts,
+  and market/reporter/investor accounts. Do not use generic trending topics as
+  proof; record the specific account/list context and confirm elsewhere.
 
 If a source class cannot be accessed, mark it as `未覆盖/受限`. Do not replace
 AI product or AI prosumer coverage with more developer sources unless the run is
@@ -167,6 +193,7 @@ explicitly scoped to developer tooling.
 | Pain/complaints | repeated workflow pain, current workaround, switching language | support or kill a bet |
 | Competitor gaps | closed source, expensive, hard to self-host, weak docs, poor UX | locate wedge or reject crowded ideas |
 | Reviews/evals | low-star complaints, praise patterns, why people switch | test substitutes and distribution |
+| Trend radar | AI news sites, newsletters, analyst notes, curated X/Twitter lists | notice shifts and generate queries, not final proof |
 | Trend window | repeated signals across 7-30 days | timing check, not proof by itself |
 
 ## Promotion Fit
