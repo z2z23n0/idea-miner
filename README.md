@@ -196,6 +196,11 @@ for Codex, or adapt the same instructions for another agent runtime.
 The schedule belongs to the host environment. Keep the prompt focused on the
 run objective, source preferences, exclusions, and output expectations.
 
+In Codex, configure recurring full discovery runs as cron automations against
+the workspace, not as heartbeats attached to a long-lived thread. A heartbeat
+should only be a thin reminder or controller; it should not carry the complete
+daily discovery context.
+
 Optional customization can be appended from:
 
 ```text

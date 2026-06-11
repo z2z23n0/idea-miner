@@ -127,4 +127,6 @@ Check, and CEO Decision. Do not duplicate its rubrics here.
 Automations should stay thin: schedule, destination, language, display rule,
 final bucket target, and the instruction to run this skill using
 `ai-founder-playbook`. The detailed workflow should live in this skill, not
-inside the automation prompt.
+inside the automation prompt. In Codex, recurring full discovery runs should be
+cron workspace jobs so each run starts with a fresh execution context. Use
+thread heartbeats only for thin reminders or controllers.
