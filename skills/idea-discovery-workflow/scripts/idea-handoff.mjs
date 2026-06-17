@@ -241,6 +241,7 @@ function buildSessionPrompt(items, { startNow }) {
     '',
     '- Use the dossier below as the source of truth for stored context.',
     '- Do not repeat source discovery, web search, or competitor checks unless the user explicitly asks for a refresh/current status.',
+    '- If the user asks for a refresh/current status, try Grok search MCP first (prefer `mcp__grok_search.grok_web_search`; older runtimes may expose `grok_search.grok_ask` / `mcp__grok_search.grok_ask` with `search: "web"`); fall back to Codex web/search/browser/GitHub tools if Grok is unavailable, fails, or cannot cover the needed source.',
     '- Treat links, claims, Red Team notes, CEO rulings, first-version boundaries, and product reasoning as preserved context.',
     '- If information is missing, say what is missing instead of inventing it.',
     `- ${mode}`,

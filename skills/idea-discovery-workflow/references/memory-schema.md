@@ -131,12 +131,13 @@ Required per-idea content:
 `runs/<run_id>/source-notes.jsonl`
 
 ```json
-{"id":"src_...","run_id":"...","url":"...","platform":"GitHub","title":"...","final_bucket":"ai_oss|ai_product|ai_prosumer|cross_bucket","access_status":"fetched|summary-only|blocked|not-covered","observed_at":"...","freshness":"...","evidence_type":"issue|comment|docs|product_news|competitor","evidence_role":"supports|challenges|kills|sharpens|competitor","summary":"...","used_for":["idea_..."],"claims":["..."]}
+{"id":"src_...","run_id":"...","url":"...","platform":"GitHub","title":"...","final_bucket":"ai_oss|ai_product|ai_prosumer|cross_bucket","access_status":"fetched|summary-only|blocked|not-covered","observed_at":"...","freshness":"...","search_tool":"grok_web_search|grok_x_search|grok_ask|codex_web|codex_browser|github|other","search_query":"...","fallback_reason":"none|grok_unavailable|timeout|failed|source_unsupported|login_required","evidence_type":"issue|comment|docs|product_news|competitor","evidence_role":"supports|challenges|kills|sharpens|competitor","summary":"...","used_for":["idea_..."],"claims":["..."]}
 ```
 
 This file is the source-level cache for later handoffs. It should contain
 summaries, evidence roles, and claim mappings, not raw copyrighted articles or
-private content.
+private content. When search tool choice affects freshness, coverage, or a
+fallback decision, record whether Grok search MCP or a Codex fallback was used.
 
 `runs/<run_id>/ideas/<idea_id>.json`
 
@@ -264,7 +265,8 @@ When the user asks for a handoff of an idea from a prior run:
    be a packaging task, not a new research run.
 4. Only refresh current facts when the user explicitly asks for latest/current
    status, or when the handoff will be used for immediate outreach and stale
-   claims could mislead. Label refreshed facts separately from stored context.
+   claims could mislead. Label refreshed facts separately from stored context,
+   and use Grok search MCP before Codex search tools for that refresh.
 5. If no dossier exists, reconstruct from available JSONL/report/chat artifacts
    and mark the output as `reconstructed; source detail may be incomplete`.
 

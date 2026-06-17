@@ -266,6 +266,8 @@ console.log();
 
 console.log('## Source Modules For Evidence Sweep');
 console.log();
+console.log('搜索工具优先级：先尝试 Grok search MCP（优先 `mcp__grok_search.grok_web_search`；旧接口可用时用 `grok_search.grok_ask` / `mcp__grok_search.grok_ask` 并传 `search: "web"`）；MCP 不可用、超时、失败或覆盖不了目标来源时，再回退 Codex 自带 web/search/browser/GitHub 工具，并在来源记录里说明。');
+console.log();
 console.log('| Bucket | 模块 | source-native feeds | 用途 | 覆盖状态 |');
 console.log('|---|---|---|---|---|');
 for (const module of sourceModules) {
@@ -335,7 +337,7 @@ console.log();
 
 console.log('## Evidence Sweep Queries');
 console.log();
-console.log('先有 bet sketch，再把 `{bet}` 替换成产品名、category、protocol、demo asset、核心 workflow 或竞品类别。');
+console.log('先有 bet sketch，再把 `{bet}` 替换成产品名、category、protocol、demo asset、核心 workflow 或竞品类别。执行查询时先用 Grok search MCP，失败后再回退 Codex 自带搜索工具。');
 console.log();
 for (const q of evidenceQueries) {
   console.log(`- \`${q}\``);

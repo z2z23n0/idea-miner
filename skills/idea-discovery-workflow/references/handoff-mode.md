@@ -25,7 +25,11 @@ research run.
 Do not browse, search, or re-run competitor checks by default. If the user asks
 for "最新", "刷新", "current", distribution prep, or similar current-state work,
 refresh only the facts that need freshness and label them separately from the
-stored dossier context.
+stored dossier context. For those refreshes, first try Grok search MCP
+(prefer `mcp__grok_search.grok_web_search`; older runtimes may expose
+`grok_search.grok_ask` / `mcp__grok_search.grok_ask` with `search: "web"`),
+then fall back to Codex web/search/browser/GitHub tools if Grok is unavailable,
+fails, or cannot cover the needed source.
 
 ## New Session Delivery
 
@@ -83,7 +87,8 @@ If no dossier exists:
 2. Mark the output as `reconstructed; source detail may be incomplete`.
 3. Do not silently fill gaps by inventing source detail.
 4. Ask before doing a fresh web research pass unless the user already requested
-   a refresh.
+   a refresh. If a refresh is requested, use Grok search MCP first and fall
+   back to Codex search tools when needed.
 
 ## Handoff Output Contract
 

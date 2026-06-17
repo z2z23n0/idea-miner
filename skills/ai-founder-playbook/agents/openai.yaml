@@ -1,7 +1,7 @@
 interface:
   display_name: "AI Founder Playbook"
   short_description: "拷打商业/开源想法，扫描竞品，并生成去 AI 味 launch 包"
-  default_prompt: "Use $ai-founder-playbook to decide whether this is a commercial product, open-source project, or hybrid idea, pressure-test it, scan competitors/community signals, then choose HN/Reddit/GitHub/Product Hunt/X/LinkedIn launch channels and draft non-AI-sounding posts, replies, risks, and manual publishing checklists."
+  default_prompt: "Use $ai-founder-playbook to decide whether this is a commercial product, open-source project, or hybrid idea, pressure-test it, scan competitors/community signals with Grok search MCP before Codex built-in search tools, then choose HN/Reddit/GitHub/Product Hunt/X/LinkedIn launch channels and draft non-AI-sounding posts, replies, risks, and manual publishing checklists."
 
 policy:
   allow_implicit_invocation: true
