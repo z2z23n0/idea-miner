@@ -132,6 +132,23 @@ Evidence weight should be low during generation and higher during Red Team:
 roughly 40% imagination/new thesis, 20% AI relevance, 20% product/OSS clarity,
 10% feasibility, 10% evidence.
 
+## Search Tool Preference
+
+All web, realtime, competitor, trend, community, product, and source freshness
+searches should first try the Grok search MCP. Prefer
+`mcp__grok_search.grok_web_search` for web search; older runtimes may expose
+`grok_search.grok_ask` or `mcp__grok_search.grok_ask` with `search: "web"`. If
+the MCP is not available in the current session, fails to start, times out,
+returns an access/tool error, or does not cover the source class needed, fall
+back to Codex's built-in web/search/browser/GitHub tools.
+
+Record the search tool used in `source-notes.jsonl` when it affected coverage,
+freshness, or a fallback decision. For X/Twitter, do not assume native X search
+is available through the CLI-backed Grok MCP; use
+`mcp__grok_search.grok_x_search` only when it is exposed, otherwise try web
+queries such as `site:x.com ...`, use another available current-source tool if
+present, or mark the X-only source as `未覆盖/受限`.
+
 ## Source Modules
 
 After thesis generation, use source modules as independent lenses. Record

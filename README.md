@@ -84,6 +84,14 @@ Recurring runs also save per-idea dossiers. Handoff should be a packaging step:
 read the stored dossier, write a temporary handoff file, and avoid web refreshes
 unless the user explicitly asks for current status.
 
+Whenever a run, market scan, launch scan, or requested refresh needs web or
+realtime search, try the Grok search MCP first, preferably
+`mcp__grok_search.grok_web_search` for web search. Older runtimes may expose
+`grok_search.grok_ask` / `mcp__grok_search.grok_ask` and require
+`search: "web"`. If Grok is unavailable, times out, fails, or cannot cover the
+needed source class, fall back to Codex built-in web/search/browser/GitHub tools
+and record the fallback in source or coverage notes.
+
 When the host runtime exposes Codex thread/session tools, a handoff can also be
 delivered directly into new sessions. By default, multiple ideas are handed off
 to separate sessions; use an explicit "same session" or "combined" instruction
@@ -274,7 +282,9 @@ node skills/idea-discovery-workflow/scripts/check-run-artifacts.mjs ~/.idea-mine
 Resolves a stored idea by name or alias and copies its handoff-ready dossier to
 a temporary handoff file. With `--session-prompt`, it also writes a prompt that
 can be passed to a fresh Codex session. It does not browse the web or create
-sessions by itself.
+sessions by itself; if the receiving session is later asked for a current
+refresh, it should use Grok search MCP first and fall back to Codex search tools
+when needed.
 
 ```bash
 node skills/idea-discovery-workflow/scripts/idea-handoff.mjs "Tool-Call Compatibility"

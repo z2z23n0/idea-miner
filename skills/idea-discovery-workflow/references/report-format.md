@@ -166,6 +166,8 @@ the final artifacts are considered complete.
 # 来源附录
 
 Deduplicate links and group them by source bucket.
+Note the search tool and fallback reason for sources where Grok availability,
+coverage, or a Codex fallback affected confidence.
 
 # 保存位置
 

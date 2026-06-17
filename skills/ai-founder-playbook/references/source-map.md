@@ -60,6 +60,11 @@ Playbook 的核心抽象：
 ## 使用提醒
 
 - 若用户要评估当下机会，必须重新搜索竞品、价格、法规、融资/平台变化。
+- 重新搜索时先尝试 Grok search MCP（优先
+  `mcp__grok_search.grok_web_search`；旧接口可用时用
+  `grok_search.grok_ask` / `mcp__grok_search.grok_ask` 并传
+  `search: "web"`）；不可用或失败时再回退 Codex 自带
+  web/search/browser/GitHub 工具。
 - 若用户要求 Twitter/X、HN、GitHub、Reddit、Product Hunt 或评论站扫描，不要只用 playbook 判断；必须给外部信号和搜索边界。
 - 若用户只给一句 idea，先输出初判和最高杠杆问题，不要编造市场事实。
 - 若用户要“像投资人一样看”，要同时看市场、团队、分发、商业模式和可防守性。

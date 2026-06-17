@@ -62,6 +62,11 @@ only as a fallback and state that in the report and `reader-review` artifact.
 ## Signal Scout
 
 - Builds the source plan and Signal Portfolio after thesis/bet sketches exist.
+- Runs search with the shared tool preference: try Grok search MCP
+  (prefer `mcp__grok_search.grok_web_search`; older runtimes may expose
+  `grok_search.grok_ask` / `mcp__grok_search.grok_ask` with `search: "web"`)
+  before Codex built-in search tools, and record fallback/limited coverage when
+  it matters.
 - Builds a bucketed source plan for `ai_oss`, `ai_product`, and `ai_prosumer`.
   Do not replace missing AI product/prosumer coverage with extra developer
   sources unless the user explicitly scopes the run to developer tooling.
@@ -136,6 +141,11 @@ only as a fallback and state that in the report and `reader-review` artifact.
 - Searches direct competitors, indirect substitutes, OSS, SaaS, browser
   extensions, CLIs, templates, internal manual workflows, platform features, and
   platform-native absorption paths.
+- Starts competitor and substitute searches with Grok search MCP
+  (prefer `mcp__grok_search.grok_web_search`; older runtimes may expose
+  `grok_search.grok_ask` / `mcp__grok_search.grok_ask` with `search: "web"`),
+  then falls back to Codex web/search/browser/GitHub tools when Grok is
+  unavailable, fails, or lacks the needed source access.
 - For `ai_oss`, checks GitHub topics, related repos, package ecosystems,
   issues/discussions, HN/Reddit mentions, docs, releases, and abandoned-but-loved
   projects.

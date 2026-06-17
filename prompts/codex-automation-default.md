@@ -6,4 +6,4 @@
 
 最终中文输出：使用 `idea-discovery-workflow` 固定报告格式，按三个 bucket 分桶；写明 artifact 保存路径和 artifact check 状态。必须保存 `report.md`、`reader-review.md` 或 `reader-review.json`、`candidate-ledger.jsonl`、`source-notes.jsonl`、`handoff-index.md`、以及每个 final idea 的 Markdown/JSON dossier。
 
-必须联网或使用可用实时工具核验当前性、竞品、市场和来源判断。无法访问的信息源标注“未覆盖/受限”，不要编造。
+必须联网或使用可用实时工具核验当前性、竞品、市场和来源判断。所有搜索先尝试 Grok search MCP（优先 `mcp__grok_search.grok_web_search`；旧接口可用时用 `grok_search.grok_ask` / `mcp__grok_search.grok_ask` 并传 `search: "web"`）；如果 MCP 不可用、超时、调用失败或覆盖不了目标来源，再使用 Codex 自带 web/search/browser/GitHub 工具，并在来源记录里说明回退。无法访问的信息源标注“未覆盖/受限”，不要编造。

@@ -65,6 +65,17 @@ Check, and CEO Decision. Do not duplicate its rubrics here.
 
 - Always use current web/realtime tools for current claims, competitors,
   adoption, pricing, releases, and source freshness.
+- For any web/realtime/search step, first try the Grok search MCP
+  (prefer `mcp__grok_search.grok_web_search` for web search; older runtimes may
+  expose `grok_search.grok_ask` / `mcp__grok_search.grok_ask` with
+  `search: "web"`). If that MCP is unavailable, times out, fails, or cannot
+  cover the needed source class, fall back to Codex's built-in
+  web/search/browser/GitHub tools and record the fallback in source notes or
+  coverage notes. Do not assume
+  native X/Twitter search works through the CLI-backed Grok MCP; use
+  `mcp__grok_search.grok_x_search` only when it is exposed, otherwise use web
+  search or another available tool and mark X-only coverage as limited when
+  needed.
 - If a source cannot be accessed, mark it `未覆盖/受限`; do not infer content.
 - Default discovery is thesis-first and imagination-led, not evidence-first or
   complaint-mining-first. Unless the user asks for a narrow market scan, generate

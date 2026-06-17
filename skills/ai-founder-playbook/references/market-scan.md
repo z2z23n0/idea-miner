@@ -10,9 +10,23 @@
 
 当用户要求“找找有没有”“现在有没有竞品”“最近大家在讨论什么”“Twitter/HN/GitHub/Reddit 上有没有信号”时，必须联网或使用可用研究工具。不要凭印象回答。
 
+搜索工具优先级：
+
+1. 先尝试 Grok search MCP：优先 `mcp__grok_search.grok_web_search`；旧接口
+   可用时用 `grok_search.grok_ask` / `mcp__grok_search.grok_ask` 并传
+   `search: "web"`。
+2. 如果 MCP 不在当前会话工具列表里、启动/握手超时、调用失败、结果明显
+   不覆盖目标来源，或任务需要 GitHub/浏览器登录态等专用能力，回退到
+   Codex 自带 web/search/browser/GitHub 工具。
+3. 在“搜索范围”或来源记录里写清用了 Grok、回退到 Codex，或某来源
+   `未覆盖/受限`。不要把回退失败补成推断事实。
+
 如果某个平台无法直接访问：
 
-- X/Twitter：用 web search、帖子聚合页、搜索引擎缓存或可用浏览器登录态；无法访问时明确说明。
+- X/Twitter：不要默认认为 CLI-backed Grok MCP 有原生 X search；只有当前
+  会话暴露 `mcp__grok_search.grok_x_search` 时才用它。否则先用 Grok web
+  search 查 `site:x.com ...`、帖子聚合页、搜索引擎缓存或可用浏览器登录态；
+  无法访问时明确说明。
 - Reddit：先用 `site:reddit.com/r/<subreddit> <关键词>` 搜索；直接 API/页面失败时换搜索引擎。
 - HN：用 Algolia/HN search、`site:news.ycombinator.com`、Show HN/Ask HN 查询。
 - GitHub：用 GitHub search、topics、stars、recent commits、issues/discussions、README、release notes。

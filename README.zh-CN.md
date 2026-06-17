@@ -51,6 +51,8 @@ prepare_run
 
 周期性运行还会保存每个想法的 dossier。Handoff 应该只是打包步骤：读取已存 dossier，写入临时 handoff 文件，并避免刷新网页；只有用户明确要求当前状态时才重新查。
 
+任何运行、市场扫描、发布扫描或用户要求的当前性刷新，只要涉及 web / 实时搜索，都先尝试 Grok search MCP，优先用 `mcp__grok_search.grok_web_search`；如果运行环境只暴露旧接口，则用 `grok_search.grok_ask` / `mcp__grok_search.grok_ask` 并传 `search: "web"`。如果 Grok 不可用、超时、调用失败或覆盖不了目标来源，再回退 Codex 自带 web/search/browser/GitHub 工具，并在 source notes 或覆盖记录里说明回退。
+
 当宿主 runtime 暴露 Codex thread/session 工具时，handoff 也可以直接交付到新 session。默认多个想法会分别交付到多个 session；如果想放到同一个 session，需要明确说 "same session" 或 "combined"。普通的新 session handoff 只应该让接收 session 确认已收到上下文并等待，不应该自动开始研究或实现，除非用户明确要求。
 
 ## Skills
@@ -239,6 +241,8 @@ runs/<run_id>/
 ```
 
 顶层 JSONL 文件是索引。每个 final 或可恢复 paused idea 的详细上下文，应该放在 `runs/<run_id>/ideas/<idea_id>.md`，包含 source links、source-to-claim mapping、竞品推理、Red Team records、CEO decisions、core thesis、AI relevance、promotion-gate result、demo moment、repo/star assets 和首版边界。
+
+`source-notes.jsonl` 里涉及当前性、覆盖差异或回退判断的来源，应该记录使用的搜索工具、查询或回退原因，方便后续 handoff 知道哪些来源经过 Grok，哪些来源是因为 MCP 不可用或不覆盖目标来源而回退到 Codex 工具。
 
 `handoff-events.jsonl` 记录交付事件，例如“idea X 已 handoff 到 Codex thread Y”，这样后续追问就不必依赖聊天历史。
 

@@ -34,7 +34,7 @@ prepare_run
 | load_history | Orchestrator | evidence store | backlog snapshot, aliases, prior final/paused/rejected ideas, recent source URLs |
 | generate_thesis_portfolio | Thesis Scout + Orchestrator | user goal, AI/product/OSS thesis seeds, history | 20-30 high-imagination theses |
 | sketch_product_oss_bets | Idea Drafter | thesis portfolio | 8-12 product/OSS bet sketches with draft product shapes |
-| collect_evidence | Signal Scout | bet sketches and source modules | current signals, competitors, kill evidence, supporting links |
+| collect_evidence | Signal Scout | bet sketches and source modules | current signals, competitors, kill evidence, supporting links; search starts with Grok search MCP and falls back to Codex tools when unavailable |
 | normalize_signals | Signal Scout | raw signals | Signal Portfolio with buckets and evidence role |
 | ai_relevance_gate | CEO + Red Team | bet sketches, user goal | AI-core / AI-native workflow / AI-leveraged / non-AI exceptional / non-AI reject labels |
 | product_shape_gate | CEO + Report Reader | serious bets | pass/rewrite/reject based on whether the reader can explain what product or repo would exist |
@@ -73,6 +73,12 @@ executed.
 - The run begins with thesis generation, not complaint mining. Generate
   high-imagination theses before browsing or evidence collection unless the user
   explicitly asks for a narrow market scan.
+- Any search, browsing, realtime, competitor, or source freshness check starts
+  by trying Grok search MCP (prefer `mcp__grok_search.grok_web_search`; older
+  runtimes may expose `grok_search.grok_ask` / `mcp__grok_search.grok_ask` with
+  `search: "web"`). If Grok search MCP is unavailable or unsuitable for that
+  source, use Codex's built-in web/search/browser/GitHub tools and record the
+  fallback where coverage matters.
 - Evidence is used after bet sketches exist. It can sharpen, support, or kill a
   bet, but it should not reduce the run to "one complaint -> one small tool".
 - Every final candidate must pass:

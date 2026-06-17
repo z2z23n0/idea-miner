@@ -19,6 +19,11 @@ description: Use as a rigorous AI-native startup/open-source project advisor whe
 - 不要把“存在某种可用形态”误判为“值得按用户目标推进”。内部工具、side project、研究脚本、dogfood v0.1 只有在用户目标就是内部提效时才算正向结论。
 - 重复追问时，不要因为用户态度变化而改 verdict。只有新增事实、目标变化或评估对象变了，才能改变结论，并明确说明变化点。
 - 如果结论依赖当前市场、竞品、法规、价格、融资环境或工具能力，先联网核验；不要凭旧印象判断。
+- 涉及外部搜索、竞品、社区信号、产品新闻或来源新鲜度时，先尝试
+  Grok search MCP：优先 `mcp__grok_search.grok_web_search`；旧接口可用时用
+  `grok_search.grok_ask` / `mcp__grok_search.grok_ask` 并传
+  `search: "web"`。如果 Grok search MCP 不可用、超时、失败或覆盖不了目标
+  来源，再回退到 Codex 自带 web/search/browser/GitHub 工具，并说明搜索边界。
 - 缺少关键事实时，只问 1-3 个最高杠杆问题；若可合理假设，就明确假设后继续推进。
 
 ## 快速 Intake

@@ -55,7 +55,7 @@
 1. **目标类型**：商业产品 / 开源影响力项目 / 混合型。
 2. **发布目标**：只选一个主目标：feedback、stars、installs、trial、waitlist、paid pilot、contributors、sales call。
 3. **受众和场景**：写清楚谁会在什么工作流里关心。
-4. **外部扫描**：如果要发 HN/Reddit/GitHub/Product Hunt/X/LinkedIn，先查相似发布、相关讨论、社区规则、竞品反应和近期热点。
+4. **外部扫描**：如果要发 HN/Reddit/GitHub/Product Hunt/X/LinkedIn，先查相似发布、相关讨论、社区规则、竞品反应和近期热点。搜索先尝试 Grok search MCP（优先 `mcp__grok_search.grok_web_search`；旧接口可用时用 `grok_search.grok_ask` / `mcp__grok_search.grok_ask` 并传 `search: "web"`）；MCP 不可用、超时、失败或不覆盖目标来源时，再回退 Codex 自带 web/search/browser/GitHub 工具，并说明边界。
 5. **渠道选择**：给 fit、风险、准备成本、预期指标，选 1-3 个主渠道。
 6. **叙事骨架**：一句话 angle，不同渠道改写，不能复制粘贴。
 7. **发帖包**：每个渠道输出发帖角度、社区规则、标题、正文、首评/补充评论、评论回复库、风险等级、人工发布 checklist。
