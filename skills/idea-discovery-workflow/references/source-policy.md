@@ -194,6 +194,11 @@ Default radar set:
 - X/Twitter lists: separate lab/platform accounts, builder/devtool accounts,
   and market/reporter/investor accounts. Do not use generic trending topics as
   proof; record the specific account/list context and confirm elsewhere.
+- Optional X/Twitter review: when the runtime already has Xquik or OpenClaw,
+  [TweetClaw](https://github.com/Xquik-dev/tweetclaw) can review search
+  exports, account lists, or monitor outputs before they become evidence notes.
+  Use it to make the source packet easier to audit, not to promote a radar
+  signal into a final idea without independent confirmation.
 
 If a source class cannot be accessed, mark it as `未覆盖/受限`. Do not replace
 AI product or AI prosumer coverage with more developer sources unless the run is
