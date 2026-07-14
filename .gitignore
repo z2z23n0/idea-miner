@@ -1,25 +1,5 @@
 .DS_Store
-
-# Local runtime data
+node_modules/
 .codex/
-data/
-runs/
-*.db
-*.sqlite
-*.sqlite3
-*.jsonl
-
-# Secrets and local env
-.env
-.env.*
-!.env.example
-*.pem
-*.key
-*.p12
-
-# Logs and scratch
-*.log
-tmp/
-temp/
-.ml-cache/
 .mainline/local.toml
+.ml-cache/
