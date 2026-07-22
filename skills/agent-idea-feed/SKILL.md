@@ -7,6 +7,8 @@ description: Turns concrete tasks from seven fixed public sources into a one-off
 
 这个 skill 只做一件事：从七个固定来源找到具体任务，把它们改写成有意思、能一句话讲清楚的完整任务型 Agent idea。
 
+它也是 `daily-idea-miner` 的第一条发现线。组合运行时仍保持本 skill 的轻量契约；海外验证、开源可替代性和国内竞品判断交给 `personal-opportunity-scan`，不要塞回这 21 条任务灵感里。
+
 不要调用或复刻旧的 `idea-discovery-workflow`、`ai-founder-playbook`、thesis、bucket、Red Team、Competitor、CEO、Report Reader、candidate ledger、dossier 或 artifact checker。
 
 不要读取或使用旧 Mainline idea intent、`~/.codex/data/idea-discovery`、旧 run artifact 或旧 automation memory。唯一历史来源是 `node scripts/seen-store.mjs list` 返回的种子和新运行记录。
